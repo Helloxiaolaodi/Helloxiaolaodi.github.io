@@ -4,8 +4,8 @@
 // tufted.margin-note 可以让你在边栏中放置内容
 // 宽大的边栏是 tufte 样式的特点，将注释放于其中并与正文并排，便于对照
 #tufted.margin-note({
-  image("imgs/tufted-duck-female-with-duckling.webp")
-  image("imgs/tufted-duck-male.webp")
+  image("imgs/home-photo-1.jpg")
+  image("imgs/home-photo-2.jpg")
 })
 
 #tufted.margin-note[
@@ -25,7 +25,7 @@
 
 上过班的人。知道早高峰地铁的拥挤，也体会过下班后还要挤时间训练、写东西的滋味。正因为上过班，才更清楚自己想过的生活长什么样。
 
-#figure(caption: "杨三多 · Helloxiaolaodi")[#image("imgs/profile.jpg")]
+#figure(caption: "杨三多 · Helloxiaolaodi")[#image("imgs/profile.jpg", width: 420pt)]
 
 这里是我的个人网站，用来存放科研笔记、骑行日志和一些没处安放的生活碎片。欢迎随便逛逛。
 
