@@ -9,28 +9,30 @@
 })
 
 #tufted.margin-note[
-  凤头潜鸭（学名 _Aythya fuligula_）是一种中型潜水鸭，原生于欧亚大陆。凭借卓越的潜水能力，它们能深入水下捕食猎物。
+  杨三多（Helloxiaolaodi）\
+  研究生在读 · 骑行爱好者 · 上过班的人
 ]
 #tufted.margin-note[
-  The tufted duck (_Aythya fuligula_) is a medium-sized diving duck native to Eurasia. Known for its diving ability, it can plunge to great depths to forage for food.
+  Yang Sanduo (Helloxiaolaodi) \
+  Master's student · Cycling enthusiast · Someone who has worked a 9-to-5.
 ]
 
-= Tufted 博客模板
+= 杨三多
 
-这是一个基于 #link("https://typst.app/")[Typst] 和 #link("https://github.com/vsheg/tufted")[Tufted] 的静态网站构建模板，手把手教你搭建简洁、美观的个人博客、作品集和简历设计。
+研究生在读。日常在实验室里与文献、数据和代码周旋，偶尔抬头，发现窗外天气正好。
 
-#figure(caption: "网站示例")[#image("imgs/devices.webp")]
+骑行爱好者。车轮碾过齐鲁大地、江南水乡与塞外雪山，也碾过城市通勤路上的每一道裂缝。单车是我丈量世界的方式，也是我给自己留的一条退路。
 
-如果你通过访问本地地址（运行 `preview` 或其他本地服务）中看到了本页面，说明你已经成功安装了依赖、成功构建了网页、成功运行了预览。恭喜你！
+上过班的人。知道早高峰地铁的拥挤，也体会过下班后还要挤时间训练、写东西的滋味。正因为上过班，才更清楚自己想过的生活长什么样。
 
-想要使用这个模板编写你自己的网站，你需要学会使用 Typst。放心，非常好上手。
+#figure(caption: "杨三多 · Helloxiaolaodi")[#image("imgs/profile.jpg")]
 
-我在目前的网站中包含了尽可能多的 Typst 用例#footnote[例如文字、段落、分级标题、引用块、代码块、有序列表、无序列表、表格、图片、公式、链接、脚注、参考文献、嵌入 markdown 等。这块文字便是脚注，使用 `#footnote()` 函数编写。]，你可以在源代码中看到这些内容的 Typst 实现。我也包含了丰富的文档来帮助你编写页面和部署网站，你可以在 #link("/Docs/")[Docs] 页看到这些文档。
+这里是我的个人网站，用来存放科研笔记、骑行日志和一些没处安放的生活碎片。欢迎随便逛逛。
 
-== 🎨 样式特点
+== 关于这个网站
 
-#link("https://edwardtufte.github.io/tufte-css/")[*Tufte 样式*] 源于数据可视化大师 Edward Tufte#footnote[爱德华·罗尔夫·塔夫特（生于1942年3月14日），常被称为“ET”，是美国统计学家，耶鲁大学政治学、统计学与计算机科学荣休教授。他因在信息设计领域的著述和作为数据可视化领域的先驱而闻名。] 的设计理念，主张“内容至上”与极简主义，力求去除一切干扰信息的视觉杂音。
+- #link("/Blog/")[博客]：科研笔记、骑行日志与生活随笔。
+- #link("/CV/")[简历]：教育背景、赛事经历与作品。
+- #link("/Docs/")[文档]：Typst 与本站的搭建说明。
 
-#link("https://edwardtufte.github.io/tufte-css/")[*The Tufte style*] originates from the design philosophy of data visualization master _Edward Tufte_#footnote[Edward Rolf Tufte (/ˈtʌfti/; born March 14, 1942), sometimes known as "ET", is an American statistician and professor emeritus of political science, statistics, and computer science at Yale University. He is noted for his writings on information design and as a pioneer in the field of data visualization.], advocating for a "content-first" approach and minimalism while striving to eliminate all visual noise that distracts from the information.
-
-其最鲜明的特点是采用*宽大的侧边栏布局*，将注释、参考文献和图表直接并排展示在正文旁，取代了传统的脚注或尾注，配合优雅的*衬线字体*与*类纸张背景*，在数字屏幕上复刻了如经典学术著作般清晰、优雅、沉浸的深度阅读体验。
+如果你也有想记录的江湖，不妨从这里开始。
