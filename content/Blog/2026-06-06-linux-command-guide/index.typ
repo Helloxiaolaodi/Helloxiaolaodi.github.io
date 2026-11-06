@@ -4,7 +4,7 @@
 #show: template.with(
   title: "生信常用命令速查：Linux / Conda / Slurm / QIIME 2 / R / Python / Git",
   description: "面向 26 级同学的生信常用命令速查：Linux Shell、Conda、Slurm、QIIME 2、R、Python 与 Git 的日常操作与排错速查。",
-  date: datetime(year: 2026, month: 11, day: 6),
+  date: datetime(year: 2026, month: 6, day: 6),
   lang: "zh",
 )
 

@@ -5,7 +5,7 @@
 #show: template.with(
   title: "菜鸟杨三多江湖行纪：单骑七千里，一蓑烟雨任平生",
   description: "2023 至 2024 年的骑行日志：淄博风雨、连云港夜骑、齐鲁七千里、阿勒泰雪山、绍兴铁三、青岛至南京 540 公里、廊坊折戟与 BRM 五百公里认证。",
-  date: datetime(year: 2026, month: 11, day: 5),
+  date: datetime(year: 2026, month: 6, day: 7),
   lang: "zh",
 )
 
