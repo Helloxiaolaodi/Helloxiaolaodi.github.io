@@ -24,7 +24,7 @@ df -h                   # 看磁盘各分区的使用情况
 free -h                 # 看内存用了多少
 ```
 
-=== touch / mkdir / cp / mv / rm
+=== touch / mkdir / cp / mv / rm / cd
 
 ```bash
 touch file.txt                              # 建个空文件
@@ -33,11 +33,7 @@ cp source.txt dest.txt                      # 复制文件
 cp -r dir1/ dir2/                           # 复制整个目录
 mv old_name.txt new_name.txt                # 移动 / 改名
 rm -i file.txt                              # 删之前先问一下
-```
 
-=== cd
-
-```bash
 cd /home/user/project/         # 用绝对路径进入
 cd ../                         # 返回上一级
 cd ~                           # 回主目录

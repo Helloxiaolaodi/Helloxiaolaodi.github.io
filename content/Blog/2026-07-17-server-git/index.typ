@@ -16,7 +16,7 @@
 
 整套方案聚焦真正高频且稳定的操作：SSH 密钥认证、HTTPS/SSL 报错的解决、Personal Access Token 的替代方案、分支切换与查看、以及最核心的 `git status` → `git add` → `git commit` → `git push` 四步工作流。
 
-=== 1. 最终效果与适用场景
+== 1. 最终效果与适用场景
 
 这套 Git 配置适合以下场景：
 
@@ -33,11 +33,11 @@
 - 多分支无缝切换与同步
 - 完整的 daily workflow：`git status` → `git add` → `git commit` → `git push`
 
-=== 2. 预先检查：先确认哪些已安装、哪些还没配
+== 2. 预先检查：先确认哪些已安装、哪些还没配
 
 在做任何修改之前，建议先盘点当前 Git 环境。
 
-==== 2.1 检查 Git 版本
+=== 2.1 检查 Git 版本
 
 ```bash
 git --version
@@ -45,7 +45,7 @@ git --version
 
 如果输出类似 `git version 1.8.3.1`，说明是 CentOS 7 的默认老旧版本。这个版本在通过 HTTPS 克隆 GitHub 仓库时会遇到 SSL 报错（见第 5.1 节和第 9.1 节），推荐使用 SSH 方案绕过。
 
-==== 2.2 检查 SSH 密钥是否已存在
+=== 2.2 检查 SSH 密钥是否已存在
 
 ```bash
 ls -la ~/.ssh/
@@ -53,7 +53,7 @@ ls -la ~/.ssh/
 
 如果看到 `id_rsa` 和 `id_rsa.pub` 两个文件，说明已经生成过密钥。如果没有，需要按第 5.2 节生成。
 
-==== 2.3 检查 Git 身份配置
+=== 2.3 检查 Git 身份配置
 
 ```bash
 git config --global user.name
@@ -62,7 +62,7 @@ git config --global user.email
 
 如果返回空或不是你期望的值，需要按第 5.4 节配置。
 
-==== 2.4 检查远程仓库 URL（如果已经克隆过）
+=== 2.4 检查远程仓库 URL（如果已经克隆过）
 
 进入仓库目录后运行：
 
@@ -72,7 +72,7 @@ git remote -v
 
 如果远程 URL 以 `https://` 开头，且你的服务器 Git 版本 ≤ 1.8.3.1，强烈建议改为 SSH 格式（见第 3 节）。
 
-=== 3. 完整的 SSH 密钥认证 + Git 仓库配置方案
+== 3. 完整的 SSH 密钥认证 + Git 仓库配置方案
 
 下面是从零开始在服务器上完整配置 Git + SSH 的标准流程。如果你服务器上还没有任何配置，直接按顺序执行即可。
 
@@ -122,7 +122,7 @@ git clone git@github.com:用户名/仓库名.git /目标/路径/
 *请务必键盘敲入完整的 `yes` 三个字母再按回车*（不要只输 `y` 或直接回车）。只要这一次成功输入了 `yes`，以后对 GitHub 的任何 Git 操作都不会再弹出提示。
 ]
 
-=== 4. 最小改动版：已有 SSH 密钥，只需克隆和配置
+== 4. 最小改动版：已有 SSH 密钥，只需克隆和配置
 
 如果你的服务器已经配好了 SSH 密钥（即 `~/.ssh/id_rsa.pub` 的公钥已添加到 GitHub），只需要两步即可开始工作：
 
@@ -143,7 +143,7 @@ git clone git@github.com:用户名/仓库名.git /目标/路径/
 
 到此为止就可以正常使用了。之后所有 `git push`、`git pull` 都不需要输入密码。
 
-=== 5. 各操作的详解、配置、验证与使用
+== 5. 各操作的详解、配置、验证与使用
 
 === 5.1 Git Clone：HTTPS 与 SSH 的差异 & 老旧 Git 的 SSL 坑
 
@@ -429,7 +429,7 @@ git diff
 git status
 ```
 
-=== 6. 新服务器从零到一的完整配置命令
+== 6. 新服务器从零到一的完整配置命令
 
 如果拿到一台全新的服务器账号，只需要按顺序执行以下命令，即可完成从零开始的完整 Git + SSH 配置：
 
@@ -468,11 +468,11 @@ git config --global --list
 git remote -v
 ```
 
-=== 7. 高频使用姿势
+== 7. 高频使用姿势
 
 配置完成后，平时最常用的通常就是下面这些动作。
 
-==== 7.1 每日开始工作：先拉取最新代码
+=== 7.1 每日开始工作：先拉取最新代码
 
 ```bash
 cd /项目/路径/
@@ -481,7 +481,7 @@ git pull
 
 _养成习惯：每次在服务器上开始写新代码前，先 `git pull` 确保代码是最新的。_
 
-==== 7.2 每日结束工作：推送到 GitHub 备份
+=== 7.2 每日结束工作：推送到 GitHub 备份
 
 ```bash
 git status
@@ -492,7 +492,7 @@ git push
 
 _每天工作结束准备关掉终端前，顺手走一遍这四步，相当于把 GitHub 当成了最安全的云端备份。_
 
-==== 7.3 在多分支之间切换
+=== 7.3 在多分支之间切换
 
 ```bash
 # 查看所有分支
@@ -507,20 +507,20 @@ git branch
 
 _切换到某个分支后，文件夹里的文件会自动变成该分支的内容。之后的 `git push` 也只会推送到该分支。_
 
-==== 7.4 查看当前改了哪些文件
+=== 7.4 查看当前改了哪些文件
 
 ```bash
 git status
 git diff
 ```
 
-==== 7.5 查看最近的提交记录
+=== 7.5 查看最近的提交记录
 
 ```bash
 git log --oneline -5
 ```
 
-==== 7.6 常见排错：Push 推送失败 (Rejected)
+=== 7.6 常见排错：Push 推送失败 (Rejected)
 
 ```bash
 # 如果你在执行推送时报错退出，且提示 [rejected]：
@@ -545,7 +545,7 @@ git pull origin Yanglun_v2
 git push origin Yanglun_v2
 ```
 
-=== 8. 注意事项
+== 8. 注意事项
 
 这套配置虽然已经比较稳，但在服务器环境里仍然有几条边界需要明确。
 
@@ -557,9 +557,9 @@ git push origin Yanglun_v2
 - *`.gitignore` 要配好。* 不要把大型数据文件（如 `.biom`、`.fastq`、中间结果）提交到 Git。
 - *每次操作前务必确认所在目录和分支。* 用 `pwd` 和 `git branch` 确认你在正确的仓库和分支中，避免误操作。
 
-=== 9. 常见故障排查
+== 9. 常见故障排查
 
-==== 9.1 HTTPS 克隆时报 `SSL connect error`
+=== 9.1 HTTPS 克隆时报 `SSL connect error`
 
 原因：Git 1.8.3.1 不支持 GitHub 要求的新版 TLS 协议。
 
@@ -568,7 +568,7 @@ git push origin Yanglun_v2
 + *改用 SSH 方式克隆*（最推荐，见第 3 节）
 + 如果有 sudo 权限，升级加密库：`sudo yum update -y nss curl libcurl`
 
-==== 9.2 `git push` 时报 `Permission denied (publickey)`
+=== 9.2 `git push` 时报 `Permission denied (publickey)`
 
 检查步骤：
 
@@ -582,14 +582,14 @@ ssh -T git@github.com
 
 如果 `ssh -T` 报 Permission denied，说明公钥没有正确添加到 GitHub。重新执行第 5.2 节的步骤，确保公钥完整复制并添加到了 GitHub。
 
-==== 9.3 `git push` 时报 `Authentication failed`
+=== 9.3 `git push` 时报 `Authentication failed`
 
 如果你用的是 HTTPS 远程 URL，这个报错说明你输入了 GitHub 登录密码而不是 Personal Access Token。解决方案：
 
 + 改用 SSH（推荐，永久解决）
 + 或者在 `git push` 提示输入密码时使用 Token（见第 5.3 节）
 
-==== 9.4 分支切换时报错 `error: Your local changes would be overwritten`
+=== 9.4 分支切换时报错 `error: Your local changes would be overwritten`
 
 这说明你有未提交的修改。先处理修改再切换：
 
@@ -604,7 +604,7 @@ git stash
 git checkout 目标分支
 ```
 
-==== 9.5 `git push` 被拒绝（远程有新提交）
+=== 9.5 `git push` 被拒绝（远程有新提交）
 
 ```bash
 # 先拉取最新代码
@@ -614,7 +614,7 @@ git pull
 git push
 ```
 
-==== 9.6 终端弹出 `gnome-ssh-askpass` 警告
+=== 9.6 终端弹出 `gnome-ssh-askpass` 警告
 
 这是因为服务器没有图形界面，Git 试图弹窗叫你输密码失败了，属于表面现象。解决方案：
 
@@ -624,7 +624,7 @@ unset SSH_ASKPASS
 
 可以将这行加入 `~/.bashrc` 以永久生效。
 
-=== 10. 最终结论
+== 10. 最终结论
 
 一套真正适合科研服务器的 Git 配置，关键不在于花哨的 GUI 工具，而在于把最核心的几个动作做到极致稳定：
 
@@ -636,4 +636,4 @@ unset SSH_ASKPASS
 
 如果后续需要进一步优化，我的建议顺序是：先补 `.gitignore` 的精细配置（避免大文件误提交），再学习 `git stash` 和 `git rebase`，最后考虑 `git hooks` 等自动化流程。
 
-== Hello World
+Hello World
