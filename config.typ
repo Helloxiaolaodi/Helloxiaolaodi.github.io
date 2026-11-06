@@ -20,7 +20,7 @@
   /// 网站作者。用于生成 <meta name="author"> 标签。（可选）
   author: "Helloxiaolaodi",
   /// 网站描述。用于 SEO 搜索引擎摘要和社交媒体分享预览。（可选）
-  description: "杨三多的个人网站：科研笔记、骑行日志与生活随笔。",
+  description: "杨三多(Helloxiaolaodi)의 개인 웹사이트: 연구 노트, 라이딩 기록과 일상 에세이.",
   /// 站点的根 URL (例如 "https://example.com")。用于生成 Canonical URL 元数据。（可选）
   website-url: "https://helloxiaolaodi.github.io/",
   /// 网站的默认语言，例如 "zh" 或 "en"，默认为 "zh"。
@@ -31,8 +31,8 @@
   
   /// 自定义页眉元素列表 (content 数组)。显示在页面顶部。
   header-elements: (
-    [你好，我是杨三多],
-    [研究生在读 · 骑行爱好者 · 上过班的人],
+    [안녕하세요, 杨三多입니다],
+    [대학원 재학 · 라이딩 애호가 · 직장 생활을 해본 사람],
   ),
   /// 自定义页脚元素列表 (content 数组)，显示在页面底部。
   footer-elements: (

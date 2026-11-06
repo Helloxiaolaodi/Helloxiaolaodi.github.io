@@ -167,7 +167,7 @@
                 }
                 // RSS feed icon
                 if feed-dir != none and feed-dir.len() > 0 {
-                  let label = if lang == "zh" { "订阅 RSS" } else { "Subscribe via RSS" }
+                  let label = if lang == "zh" { "订阅 RSS" } else if lang == "ko" { "RSS 구독" } else { "Subscribe via RSS" }
                   html.elem(
                     "a",
                     attrs: (

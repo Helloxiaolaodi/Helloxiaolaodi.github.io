@@ -14,21 +14,21 @@ Email: #link("mailto:yangsanduo2025@gmail.com", "yangsanduo2025@gmail.com")
 #h(3em)
 GitHub: #link("https://github.com/Helloxiaolaodi")[Helloxiaolaodi]
 
-== 个人简介 · About Me
+== 자기소개 · About Me
 
 _Cracking codes and microbes, mile by mile._
 
-== 教育背景 · Education
+== 학력 · Education
 
-- *2018–2020*：本科，烟台大学。
+- *2018–2020*: 학부, 옌타이 대학.
 
-== 赛事与成就 · Skills & Contributions
+== 대회 및 성과 · Skills & Contributions
 
-- 山海骑缘——第九届环连云港自行车骑行大会（2023）
-- 中国·上虞第十七届攀浪节铁人三项（2023）
-- 首届“天姥山杯”新昌天姥山自行车爬坡赛（2023）
-- 耀骑北京 BRM200 第二站 · 大小芭蕉扇（2024）
+- 산해기연 — 제9회 롄윈강 일주 자전거 라이딩 대회 (2023)
+- 중국·상위 제17회 반랑절 철인3종 (2023)
+- 제1회 "톈무산배" 신창 톈무산 자전거 힐클라임 대회 (2023)
+- 야오치 베이징 BRM200 2차전 · 대소파초선 (2024)
 
-== 发表成果 · Publications & Blogs
+== 발표 성과 · Publications & Blogs
 
-- #link("https://www.bilibili.com/video/BV12d4y1m7GS?vd_source=0cf8a32a4d54b190caa1411f664fe728")[Bilibili 视频：BV12d4y1m7GS]
+- #link("https://www.bilibili.com/video/BV12d4y1m7GS?vd_source=0cf8a32a4d54b190caa1411f664fe728")[Bilibili 영상: BV12d4y1m7GS]
