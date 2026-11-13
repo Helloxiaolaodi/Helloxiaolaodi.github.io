@@ -10,6 +10,12 @@
 == 2026
 
 #tufted.blog-entry(
+  date: datetime(year: 2026, month: 11, day: 13),
+  path: "2026-11-13-zotero-google-docs/",
+  title: "科研利器之 Zotero 在 Google Docs 中的文献引用",
+)
+
+#tufted.blog-entry(
   date: datetime(year: 2026, month: 10, day: 28),
   path: "2026-10-28-typst-guide/",
   title: "科研利器之 Typst 的安装与使用",
