@@ -23,7 +23,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 搜索 `zotero`，点击 Zotero Connector 的“添加至 Chrome”。
 
 #figure(
-  image("imgs/03-chrome-toolbar-extensions.png"),
+  image("imgs/01-chrome-toolbar-extensions.png"),
   caption: [浏览器工具栏中的 Zotero Connector 扩展],
 )
 
@@ -45,7 +45,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 左侧选择分类（如 Periodontics），右侧列表即为待引用条目。
 
 #figure(
-  image("imgs/13-zotero-document-preferences.png"),
+  image("imgs/03-zotero-document-preferences.png"),
   caption: [Document Preferences 对话框],
 )
 
@@ -54,7 +54,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 选中条目，右侧 Info 面板显示标题、作者、期刊、年份、卷期页码；参考文献的准确性取决于此。
 
 #figure(
-  image("imgs/18-gdocs-reference-list.png"),
+  image("imgs/04-gdocs-reference-list.png"),
   caption: [自动生成的 1–6 号参考文献],
 )
 
@@ -67,7 +67,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 Zotero 菜单栏 Edit → Settings。
 
 #figure(
-  image("imgs/11-google-authorize.png"),
+  image("imgs/05-google-authorize.png"),
   caption: [确认授权并 Continue],
 )
 
@@ -76,7 +76,7 @@ Zotero 菜单栏 Edit → Settings。
 Settings → Cite → Get Additional Styles...
 
 #figure(
-  image("imgs/12-gdocs-document-preferences.png"),
+  image("imgs/06-gdocs-document-preferences.png"),
   caption: [选样式、语言后点 OK],
 )
 
@@ -85,7 +85,7 @@ Settings → Cite → Get Additional Styles...
 Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 #figure(
-  image("imgs/14-gdocs-zotero-menu.png"),
+  image("imgs/07-gdocs-zotero-menu.png"),
   caption: [Zotero 菜单中的 Add/edit citation],
 )
 
@@ -100,7 +100,7 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 在账号选择页选中要使用的账号。
 
 #figure(
-  image("imgs/09-zotero-cite-style-list.png"),
+  image("imgs/08-zotero-cite-style-list.png"),
   caption: [Cite 列表与 Style Preview],
 )
 
@@ -109,7 +109,7 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 阅读权限说明后点击 Continue。
 
 #figure(
-  image("imgs/06-zotero-edit-menu.png"),
+  image("imgs/09-zotero-edit-menu.png"),
   caption: [Edit → Settings],
 )
 
@@ -121,6 +121,11 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 Zotero → Document preferences：Citation Style 选 Nature Communications，Language 选 English (UK)，点 OK。建议保持 Automatically update citations 勾选，文献库变动时自动同步。
 
+#figure(
+  image("imgs/10-zotero-library.png"),
+  caption: [选中分类后右侧显示待引用条目],
+)
+
 #line()
 
 == 六、插入文内引用
@@ -129,13 +134,18 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 
 光标置于引用处，Zotero → Add/edit citation...
 
+#figure(
+  image("imgs/11-zotero-style-repository.png"),
+  caption: [在样式仓库搜索并安装 Nature Communications],
+)
+
 === 6.2 批量选择
 
 搜索并勾选文献，本例 6 条，点 Add all；单篇文献的引用，鼠标单击该文献条目即可。
 
 #figure(
-  image("imgs/15-zotero-add-all.png"),
-  caption: [选中 6 条后点 Add all],
+  image("imgs/12-gdocs-refresh-bibliography.png"),
+  caption: [用 Refresh 同步引用与列表],
 )
 
 === 6.3 确认插入
@@ -143,8 +153,8 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 上方列出 6 条已选引用，确认后点插入按钮，文中出现成组编号（如 1–6）。
 
 #figure(
-  image("imgs/16-zotero-citation-chips.png"),
-  caption: [确认已选引用并插入],
+  image("imgs/13-zotero-item-info.png"),
+  caption: [Info 面板中的作者、期刊、年份等字段],
 )
 
 #line()
@@ -156,18 +166,13 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 文末写好 Reference 标题，光标置于其下，Zotero → Add/edit bibliography。
 
 #figure(
-  image("imgs/17-gdocs-add-bibliography.png"),
-  caption: [在 Reference 下插入文献列表],
+  image("imgs/14-gdocs-refresh-menu.png"),
+  caption: [不一致时用 Refresh 同步],
 )
 
 === 7.2 查看结果
 
 列表按 Nature Communications 样式自动排版，编号 1–6，信息取自 2.2 核对的元数据。
-
-#figure(
-  image("imgs/05-zotero-item-info.png"),
-  caption: [Info 面板中的作者、期刊、年份等字段],
-)
 
 #line()
 
@@ -178,8 +183,8 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 修改文献库后，Zotero → Refresh 同步引用与列表。
 
 #figure(
-  image("imgs/19-gdocs-refresh-bibliography.png"),
-  caption: [用 Refresh 同步引用与列表],
+  image("imgs/15-gdocs-add-bibliography.png"),
+  caption: [在 Reference 下插入文献列表],
 )
 
 === 8.2 切换样式
@@ -187,8 +192,8 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 Zotero → Document preferences 可随时更换样式，全文自动重排。
 
 #figure(
-  image("imgs/20-gdocs-document-preferences-menu.png"),
-  caption: [通过 Document preferences 更换样式],
+  image("imgs/16-zotero-citation-chips.png"),
+  caption: [确认已选引用并插入],
 )
 
 #line()
