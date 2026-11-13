@@ -24,7 +24,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 
 #figure(
   image("imgs/01-chrome-toolbar-extensions.png"),
-  caption: [浏览器工具栏中的 Zotero Connector 扩展],
+  caption: [扩展程序面板中的 Zotero Connector 与“管理扩展程序”入口],
 )
 
 === 1.2 确认已启用
@@ -33,7 +33,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 
 #figure(
   image("imgs/02-chrome-extensions-page.png"),
-  caption: [扩展程序页中的应用商店入口与已启用的 Connector],
+  caption: [扩展程序页中的 Chrome 应用商店入口与已启用的 Zotero Connector],
 )
 
 #line()
@@ -46,7 +46,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 
 #figure(
   image("imgs/03-zotero-document-preferences.png"),
-  caption: [Document Preferences 对话框],
+  caption: [Document Preferences 中选中 Nature Communications],
 )
 
 === 2.2 核对元数据
@@ -55,7 +55,7 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 
 #figure(
   image("imgs/04-gdocs-reference-list.png"),
-  caption: [自动生成的 1–6 号参考文献],
+  caption: [Reference 标题下生成的 1–6 号参考文献],
 )
 
 #line()
@@ -68,7 +68,7 @@ Zotero 菜单栏 Edit → Settings。
 
 #figure(
   image("imgs/05-google-authorize.png"),
-  caption: [确认授权并 Continue],
+  caption: [Google 授权页：确认权限并点 Continue],
 )
 
 === 3.2 获取更多样式
@@ -77,7 +77,7 @@ Settings → Cite → Get Additional Styles...
 
 #figure(
   image("imgs/06-gdocs-document-preferences.png"),
-  caption: [选样式、语言后点 OK],
+  caption: [Google Docs 中选择 Nature Communications 与 English (UK)],
 )
 
 === 3.3 搜索并安装
@@ -86,7 +86,7 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 #figure(
   image("imgs/07-gdocs-zotero-menu.png"),
-  caption: [Zotero 菜单中的 Add/edit citation],
+  caption: [Google Docs 的 Zotero 菜单：Add/edit citation],
 )
 
 #line()
@@ -101,7 +101,7 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 #figure(
   image("imgs/08-zotero-cite-style-list.png"),
-  caption: [Cite 列表与 Style Preview],
+  caption: [Settings → Cite 中的样式列表与 Style Preview],
 )
 
 === 4.2 授予权限
@@ -110,7 +110,7 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 #figure(
   image("imgs/09-zotero-edit-menu.png"),
-  caption: [Edit → Settings],
+  caption: [Zotero 菜单栏的 Edit 菜单],
 )
 
 #line()
@@ -123,7 +123,7 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 
 #figure(
   image("imgs/10-zotero-library.png"),
-  caption: [选中分类后右侧显示待引用条目],
+  caption: [左侧分类与右侧文献条目列表],
 )
 
 #line()
@@ -136,7 +136,7 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 
 #figure(
   image("imgs/11-zotero-style-repository.png"),
-  caption: [在样式仓库搜索并安装 Nature Communications],
+  caption: [Style Search 输入 Nature Com 并选择 Nature Communications],
 )
 
 === 6.2 批量选择
@@ -145,17 +145,12 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 
 #figure(
   image("imgs/12-gdocs-refresh-bibliography.png"),
-  caption: [用 Refresh 同步引用与列表],
+  caption: [Zotero 菜单中的 Refresh 与文末文献列表],
 )
 
 === 6.3 确认插入
 
 上方列出 6 条已选引用，确认后点插入按钮，文中出现成组编号（如 1–6）。
-
-#figure(
-  image("imgs/13-zotero-item-info.png"),
-  caption: [Info 面板中的作者、期刊、年份等字段],
-)
 
 #line()
 
@@ -166,13 +161,18 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 文末写好 Reference 标题，光标置于其下，Zotero → Add/edit bibliography。
 
 #figure(
-  image("imgs/14-gdocs-refresh-menu.png"),
-  caption: [不一致时用 Refresh 同步],
+  image("imgs/13-gdocs-refresh-menu.png"),
+  caption: [Zotero 菜单中的 Refresh],
 )
 
 === 7.2 查看结果
 
 列表按 Nature Communications 样式自动排版，编号 1–6，信息取自 2.2 核对的元数据。
+
+#figure(
+  image("imgs/14-zotero-item-info.png"),
+  caption: [选中条目后右侧 Info 面板中的元数据],
+)
 
 #line()
 
@@ -184,7 +184,7 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 
 #figure(
   image("imgs/15-gdocs-add-bibliography.png"),
-  caption: [在 Reference 下插入文献列表],
+  caption: [通过 Add/edit bibliography 在 Reference 下插入列表],
 )
 
 === 8.2 切换样式
@@ -193,7 +193,7 @@ Zotero → Document preferences 可随时更换样式，全文自动重排。
 
 #figure(
   image("imgs/16-zotero-citation-chips.png"),
-  caption: [确认已选引用并插入],
+  caption: [引用选择器中已选的 6 条文献],
 )
 
 #line()
