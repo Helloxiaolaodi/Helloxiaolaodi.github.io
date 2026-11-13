@@ -18,18 +18,13 @@
 
 Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网页文献。
 
-#figure(
-  image("imgs/03-chrome-toolbar-extensions.png"),
-  caption: [浏览器工具栏中的 Zotero Connector 扩展],
-)
-
 === 1.1 从 Chrome 应用商店安装
 
 搜索 `zotero`，点击 Zotero Connector 的“添加至 Chrome”。
 
 #figure(
-  image("imgs/01-chrome-webstore-search.png"),
-  caption: [应用商店搜索 zotero 并添加至 Chrome],
+  image("imgs/03-chrome-toolbar-extensions.png"),
+  caption: [浏览器工具栏中的 Zotero Connector 扩展],
 )
 
 === 1.2 确认已启用
@@ -50,8 +45,8 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 左侧选择分类（如 Periodontics），右侧列表即为待引用条目。
 
 #figure(
-  image("imgs/04-zotero-library.png"),
-  caption: [选中分类后右侧显示待引用条目],
+  image("imgs/13-zotero-document-preferences.png"),
+  caption: [Document Preferences 对话框],
 )
 
 === 2.2 核对元数据
@@ -59,8 +54,8 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 选中条目，右侧 Info 面板显示标题、作者、期刊、年份、卷期页码；参考文献的准确性取决于此。
 
 #figure(
-  image("imgs/05-zotero-item-info.png"),
-  caption: [Info 面板中的作者、期刊、年份等字段],
+  image("imgs/18-gdocs-reference-list.png"),
+  caption: [自动生成的 1–6 号参考文献],
 )
 
 #line()
@@ -72,8 +67,8 @@ Zotero 桌面端管理文献，Zotero Connector 浏览器扩展负责抓取网�
 Zotero 菜单栏 Edit → Settings。
 
 #figure(
-  image("imgs/06-zotero-edit-menu.png"),
-  caption: [Edit → Settings],
+  image("imgs/11-google-authorize.png"),
+  caption: [确认授权并 Continue],
 )
 
 === 3.2 获取更多样式
@@ -81,8 +76,8 @@ Zotero 菜单栏 Edit → Settings。
 Settings → Cite → Get Additional Styles...
 
 #figure(
-  image("imgs/07-zotero-settings-get-styles.png"),
-  caption: [Cite 面板中的 Get Additional Styles],
+  image("imgs/12-gdocs-document-preferences.png"),
+  caption: [选样式、语言后点 OK],
 )
 
 === 3.3 搜索并安装
@@ -90,8 +85,8 @@ Settings → Cite → Get Additional Styles...
 Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 #figure(
-  image("imgs/08-zotero-style-repository.png"),
-  caption: [在样式仓库搜索并安装 Nature Communications],
+  image("imgs/14-gdocs-zotero-menu.png"),
+  caption: [Zotero 菜单中的 Add/edit citation],
 )
 
 #line()
@@ -105,8 +100,8 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 在账号选择页选中要使用的账号。
 
 #figure(
-  image("imgs/10-google-choose-account.png"),
-  caption: [选择 Google 账号],
+  image("imgs/09-zotero-cite-style-list.png"),
+  caption: [Cite 列表与 Style Preview],
 )
 
 === 4.2 授予权限
@@ -114,8 +109,8 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 阅读权限说明后点击 Continue。
 
 #figure(
-  image("imgs/11-google-authorize.png"),
-  caption: [确认授权并 Continue],
+  image("imgs/06-zotero-edit-menu.png"),
+  caption: [Edit → Settings],
 )
 
 #line()
@@ -126,16 +121,6 @@ Style Search 输入 `Nature Com`，点击结果中的 Nature Communications。
 
 Zotero → Document preferences：Citation Style 选 Nature Communications，Language 选 English (UK)，点 OK。建议保持 Automatically update citations 勾选，文献库变动时自动同步。
 
-#figure(
-  image("imgs/12-gdocs-document-preferences.png"),
-  caption: [选样式、语言后点 OK],
-)
-
-#figure(
-  image("imgs/13-zotero-document-preferences.png"),
-  caption: [样式、语言与自动更新选项],
-)
-
 #line()
 
 == 六、插入文内引用
@@ -143,11 +128,6 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 === 6.1 Add/edit citation
 
 光标置于引用处，Zotero → Add/edit citation...
-
-#figure(
-  image("imgs/14-gdocs-zotero-menu.png"),
-  caption: [Zotero 菜单中的 Add/edit citation],
-)
 
 === 6.2 批量选择
 
@@ -185,8 +165,8 @@ Zotero → Document preferences：Citation Style 选 Nature Communications，Lan
 列表按 Nature Communications 样式自动排版，编号 1–6，信息取自 2.2 核对的元数据。
 
 #figure(
-  image("imgs/18-gdocs-reference-list.png"),
-  caption: [自动生成的 1–6 号参考文献],
+  image("imgs/05-zotero-item-info.png"),
+  caption: [Info 面板中的作者、期刊、年份等字段],
 )
 
 #line()
