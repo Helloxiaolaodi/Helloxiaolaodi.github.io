@@ -1,0 +1,664 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style data-styled="true" data-styled-version="5.3.11">.bNGlPq{--font-size-p:var(--font-size-body);--font-size-h1:28px;--font-size-h2:22px;--font-size-h3:18px;--font-size-h4:16px;--font-size-h5:15px;--font-size-h6:15px;-webkit-box-flex:0;-webkit-flex-grow:0;-ms-flex-positive:0;flex-grow:0;-webkit-box-pack:start;-webkit-justify-content:start;-ms-flex-pack:start;justify-content:start;color:#111319;font-family:-apple-system,BlinkMacSystemFont,Inter,'Segoe UI',Roboto,Oxygen,sans-serif;font-weight:400;font-size:1em;line-height:-0.011;width:100%;}/*!sc*/
+.bNGlPq .mention{background:hsl(212 31% 95% / 1);border-radius:8px;padding-top:1px;padding-bottom:1px;padding-left:4px;padding-right:6px;font-weight:500;font-size:0.9em;cursor:default;-webkit-text-decoration:none !important;text-decoration:none !important;display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;gap:4px;vertical-align:bottom;}/*!sc*/
+.bNGlPq .mention:hover{cursor:default;background:#d7e0ea;}/*!sc*/
+.bNGlPq .mention[data-type="user"],.bNGlPq .mention[data-type="group"]{gap:0;}/*!sc*/
+.bNGlPq .mention[data-type="date"]{font-weight:inherit;}/*!sc*/
+.bNGlPq .mention.mention-user::before{content:"@";}/*!sc*/
+.bNGlPq .mention.mention-document::before{content:"+";}/*!sc*/
+.bNGlPq > div{background:transparent;}/*!sc*/
+.bNGlPq *{box-sizing:content-box;}/*!sc*/
+.bNGlPq > .ProseMirror{position:relative;outline:none;word-wrap:break-word;white-space:pre-wrap;white-space:break-spaces;padding:initial;margin:initial;}/*!sc*/
+.bNGlPq > .ProseMirror > .ProseMirror-yjs-cursor{display:none;}/*!sc*/
+.bNGlPq > .ProseMirror > *{margin-top:.5em;margin-bottom:.5em;}/*!sc*/
+.bNGlPq > .ProseMirror > *:last-child{margin-bottom:0;}/*!sc*/
+.bNGlPq > .ProseMirror > :first-child,.bNGlPq > .ProseMirror > button:first-child + *{margin-top:0 !important;}/*!sc*/
+.bNGlPq > .ProseMirror h1,.bNGlPq > .ProseMirror h2,.bNGlPq > .ProseMirror h3,.bNGlPq > .ProseMirror h4,.bNGlPq > .ProseMirror h5,.bNGlPq > .ProseMirror h6{margin-top:1em;margin-bottom:0.25em;line-height:inherit;font-weight:600;cursor:text;clear:both;}/*!sc*/
+.bNGlPq > .ProseMirror h1 + p,.bNGlPq > .ProseMirror h2 + p,.bNGlPq > .ProseMirror h3 + p,.bNGlPq > .ProseMirror h4 + p,.bNGlPq > .ProseMirror h5 + p,.bNGlPq > .ProseMirror h6 + p,.bNGlPq > .ProseMirror h1 + .ProseMirror-widget + p,.bNGlPq > .ProseMirror h2 + .ProseMirror-widget + p,.bNGlPq > .ProseMirror h3 + .ProseMirror-widget + p,.bNGlPq > .ProseMirror h4 + .ProseMirror-widget + p,.bNGlPq > .ProseMirror h5 + .ProseMirror-widget + p,.bNGlPq > .ProseMirror h6 + .ProseMirror-widget + p{margin-top:0.25em;}/*!sc*/
+.bNGlPq > .ProseMirror h1:not(.placeholder)::before,.bNGlPq > .ProseMirror h2:not(.placeholder)::before,.bNGlPq > .ProseMirror h3:not(.placeholder)::before,.bNGlPq > .ProseMirror h4:not(.placeholder)::before,.bNGlPq > .ProseMirror h5:not(.placeholder)::before,.bNGlPq > .ProseMirror h6:not(.placeholder)::before{display:none;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;color:#394351;font-size:13px;font-weight:500;line-height:0;margin-left:-24px;opacity:0;width:24px;}/*!sc*/
+.bNGlPq > .ProseMirror h1:not(.placeholder):dir(rtl)::before,.bNGlPq > .ProseMirror h2:not(.placeholder):dir(rtl)::before,.bNGlPq > .ProseMirror h3:not(.placeholder):dir(rtl)::before,.bNGlPq > .ProseMirror h4:not(.placeholder):dir(rtl)::before,.bNGlPq > .ProseMirror h5:not(.placeholder):dir(rtl)::before,.bNGlPq > .ProseMirror h6:not(.placeholder):dir(rtl)::before{margin-left:0;margin-right:-24px;}/*!sc*/
+.bNGlPq > .ProseMirror h1:hover .heading-anchor,.bNGlPq > .ProseMirror h2:hover .heading-anchor,.bNGlPq > .ProseMirror h3:hover .heading-anchor,.bNGlPq > .ProseMirror h4:hover .heading-anchor,.bNGlPq > .ProseMirror h5:hover .heading-anchor,.bNGlPq > .ProseMirror h6:hover .heading-anchor{opacity:0.75;}/*!sc*/
+.bNGlPq > .ProseMirror h1:hover .heading-anchor:hover,.bNGlPq > .ProseMirror h2:hover .heading-anchor:hover,.bNGlPq > .ProseMirror h3:hover .heading-anchor:hover,.bNGlPq > .ProseMirror h4:hover .heading-anchor:hover,.bNGlPq > .ProseMirror h5:hover .heading-anchor:hover,.bNGlPq > .ProseMirror h6:hover .heading-anchor:hover{opacity:1;}/*!sc*/
+.bNGlPq > .ProseMirror h1{font-size:var(--font-size-h1);}/*!sc*/
+.bNGlPq > .ProseMirror h2{font-size:var(--font-size-h2);}/*!sc*/
+.bNGlPq > .ProseMirror h3{font-size:var(--font-size-h3);}/*!sc*/
+.bNGlPq > .ProseMirror h4{font-size:var(--font-size-h4);}/*!sc*/
+.bNGlPq > .ProseMirror h5{font-size:var(--font-size-h5);}/*!sc*/
+.bNGlPq > .ProseMirror h6{font-size:var(--font-size-h6);}/*!sc*/
+.bNGlPq > .ProseMirror .ProseMirror-yjs-selection{-webkit-transition:background-color 500ms ease-in-out;transition:background-color 500ms ease-in-out;}/*!sc*/
+.bNGlPq > .ProseMirror .ProseMirror-yjs-cursor{position:relative;margin-left:-1px;margin-right:-1px;border-left:1px solid black;border-right:1px solid black;height:1em;word-break:normal;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}/*!sc*/
+.bNGlPq > .ProseMirror .ProseMirror-yjs-cursor::after{content:"";display:block;position:absolute;left:-8px;right:-8px;top:0;bottom:0;}/*!sc*/
+.bNGlPq > .ProseMirror .ProseMirror-yjs-cursor > div{opacity:0;-webkit-transition:opacity 100ms ease-in-out;transition:opacity 100ms ease-in-out;position:absolute;top:-1.8em;font-size:13px;background-color:rgb(250,129,0);font-style:normal;line-height:normal;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;white-space:nowrap;color:white;padding:2px 6px;font-weight:500;border-radius:4px;pointer-events:none;left:-1px;}/*!sc*/
+.bNGlPq > .ProseMirror .ProseMirror-yjs-cursor:hover > div{opacity:1;}/*!sc*/
+.bNGlPq.show-cursor-names .ProseMirror-yjs-cursor > div{opacity:1;}/*!sc*/
+.bNGlPq pre{white-space:pre-wrap;}/*!sc*/
+.bNGlPq li{position:relative;}/*!sc*/
+.bNGlPq iframe.embed{width:100%;height:400px;border:1px solid #DAE1E9;border-radius:6px;}/*!sc*/
+.bNGlPq .image,.bNGlPq .video{line-height:0;text-align:center;max-width:100%;clear:both;position:relative;z-index:1;}/*!sc*/
+.bNGlPq .image img,.bNGlPq .video img,.bNGlPq .image video,.bNGlPq .video video{pointer-events:none;display:inline-block;max-width:100%;}/*!sc*/
+.bNGlPq .image video,.bNGlPq .video video{pointer-events:initial;max-width:100%;height:auto;background:#FFFFFF;color:#111319 !important;margin:-2px;padding:2px;border-radius:8px;box-shadow:0 0 0 1px #DAE1E9;}/*!sc*/
+.bNGlPq .image .ProseMirror-selectednode img,.bNGlPq .video .ProseMirror-selectednode img{pointer-events:initial;}/*!sc*/
+.bNGlPq .image .image-wrapper,.bNGlPq .image .image-wrapper img{width:var(--image-width,auto);}/*!sc*/
+.bNGlPq td .image .image-wrapper,.bNGlPq th .image .image-wrapper,.bNGlPq td .image .image-wrapper img,.bNGlPq th .image .image-wrapper img{width:min(var(--image-width),100%);}/*!sc*/
+.bNGlPq .image.placeholder,.bNGlPq .video.placeholder{position:relative;background:#FFFFFF;margin-bottom:calc(28px + 1.2em);}/*!sc*/
+.bNGlPq .image.placeholder img,.bNGlPq .video.placeholder img,.bNGlPq .image.placeholder video,.bNGlPq .video.placeholder video{opacity:0.5;}/*!sc*/
+.bNGlPq .image.placeholder video,.bNGlPq .video.placeholder video{border-radius:8px;}/*!sc*/
+.bNGlPq .file.placeholder{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;background:#FFFFFF;box-shadow:0 0 0 1px #DAE1E9;white-space:nowrap;border-radius:8px;padding:6px 8px;max-width:840px;cursor:default;margin-top:0.5em;margin-bottom:0.5em;}/*!sc*/
+.bNGlPq .file.placeholder .title,.bNGlPq .file.placeholder .subtitle{margin-left:8px;}/*!sc*/
+.bNGlPq .file.placeholder .title{font-weight:600;font-size:14px;color:#111319;}/*!sc*/
+.bNGlPq .file.placeholder .subtitle{font-size:13px;color:#66778F;line-height:0;}/*!sc*/
+.bNGlPq .file.placeholder span{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;}/*!sc*/
+.bNGlPq .attachment-replacement-uploading .widget{opacity:0.5;}/*!sc*/
+.bNGlPq .image-replacement-uploading img{opacity:0.5;}/*!sc*/
+.bNGlPq .image-icon{display:inline-block;text-align:initial;clear:initial;vertical-align:text-bottom;}/*!sc*/
+.bNGlPq .image-icon .image-wrapper{margin:0;}/*!sc*/
+.bNGlPq .image-right-50{float:right;margin-left:2em;margin-bottom:1em;clear:initial;}/*!sc*/
+.bNGlPq .image-left-50{float:left;margin-right:2em;margin-bottom:1em;clear:initial;}/*!sc*/
+.bNGlPq .image-full-width{width:initial;max-width:100vw;clear:both;position:initial;-webkit-transform:translateX(calc(50% + var(--container-width) * -0.5 + var(--full-width-transform-offset)));-ms-transform:translateX(calc(50% + var(--container-width) * -0.5 + var(--full-width-transform-offset)));transform:translateX(calc(50% + var(--container-width) * -0.5 + var(--full-width-transform-offset)));}/*!sc*/
+.bNGlPq .image-full-width img{max-width:100vw;max-height:min(450px,50vh);object-fit:cover;object-position:center;}/*!sc*/
+.bNGlPq .table-full-width{-webkit-transform:translateX(calc(50% + 32px + var(--container-width) * -0.5 + var(--full-width-transform-offset)));-ms-transform:translateX(calc(50% + 32px + var(--container-width) * -0.5 + var(--full-width-transform-offset)));transform:translateX(calc(50% + 32px + var(--container-width) * -0.5 + var(--full-width-transform-offset)));}/*!sc*/
+.bNGlPq .table-full-width .table-scrollable,.bNGlPq .table-full-width table{width:calc(var(--container-width) - 64px);}/*!sc*/
+.bNGlPq .table-full-width.table-shadow-right::after{left:calc(var(--container-width) - 96px);}/*!sc*/
+.bNGlPq .column-resize-handle{position:absolute;right:-1px;top:0;bottom:-1px;width:2px;z-index:20;background-color:#111319;pointer-events:none;}/*!sc*/
+.bNGlPq .resize-cursor{cursor:ew-resize;cursor:col-resize;}/*!sc*/
+.bNGlPq .ProseMirror-hideselection *::selection{background:transparent;}/*!sc*/
+.bNGlPq .ProseMirror-hideselection *::-moz-selection{background:transparent;}/*!sc*/
+.bNGlPq .ProseMirror-hideselection{caret-color:transparent;}/*!sc*/
+.bNGlPq .ProseMirror-selectednode{outline:2px solid #0366d6;}/*!sc*/
+@media print{.bNGlPq .ProseMirror-selectednode{outline:none;}}/*!sc*/
+.bNGlPq li.ProseMirror-selectednode{outline:none;}/*!sc*/
+.bNGlPq li.ProseMirror-selectednode::after{content:"";position:absolute;left:-32px;right:-2px;top:-2px;bottom:-2px;border:2px solid #0366d6;pointer-events:none;}/*!sc*/
+.bNGlPq li.ProseMirror-selectednode:dir(rtl)::after{left:-2px;right:-32px;}/*!sc*/
+.bNGlPq img.ProseMirror-separator{display:inline;border:none !important;margin:0 !important;}/*!sc*/
+.bNGlPq .component-image{display:block;}/*!sc*/
+.bNGlPq .component-image:has(.image-icon){display:inline-block;vertical-align:text-bottom;}/*!sc*/
+.bNGlPq .image-commented .image-wrapper{outline:rgba(43,194,255,0.3) solid 2px;}/*!sc*/
+.bNGlPq .component-image + img.ProseMirror-separator,.bNGlPq .component-image + img.ProseMirror-separator + br.ProseMirror-trailingBreak{display:none;}/*!sc*/
+.bNGlPq .caption{border:0;display:block;font-style:italic;font-weight:normal;font-size:13px;color:#394351;padding:8px 0 4px;line-height:16px;text-align:center;min-height:1em;outline:none;background:none;resize:none;-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text;margin:0 auto !important;width:100%;max-width:100vw;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="false"] .caption{pointer-events:none;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="false"] .caption:empty{visibility:hidden;}/*!sc*/
+.bNGlPq .heading-position-anchor,.bNGlPq .image-position-anchor{color:#111319;pointer-events:none;display:block;position:relative;top:-60px;visibility:hidden;}/*!sc*/
+.bNGlPq .heading-position-anchor:hover,.bNGlPq .image-position-anchor:hover{-webkit-text-decoration:none;text-decoration:none;}/*!sc*/
+.bNGlPq .heading-position-anchor:first-child + h1,.bNGlPq .heading-position-anchor:first-child + .ProseMirror-yjs-cursor + h1,.bNGlPq .heading-position-anchor:first-child + [role=button] + [role=button] + h1,.bNGlPq .heading-position-anchor:first-child + h2,.bNGlPq .heading-position-anchor:first-child + .ProseMirror-yjs-cursor + h2,.bNGlPq .heading-position-anchor:first-child + [role=button] + [role=button] + h2,.bNGlPq .heading-position-anchor:first-child + h3,.bNGlPq .heading-position-anchor:first-child + .ProseMirror-yjs-cursor + h3,.bNGlPq .heading-position-anchor:first-child + [role=button] + [role=button] + h3,.bNGlPq .heading-position-anchor:first-child + h4,.bNGlPq .heading-position-anchor:first-child + .ProseMirror-yjs-cursor + h4,.bNGlPq .heading-position-anchor:first-child + [role=button] + [role=button] + h4{margin-top:0;}/*!sc*/
+.bNGlPq a:first-child h1,.bNGlPq a:first-child h2,.bNGlPq a:first-child h3,.bNGlPq a:first-child h4,.bNGlPq a:first-child h5,.bNGlPq a:first-child h6{margin-top:0;}/*!sc*/
+.bNGlPq h1:not(.placeholder)::before{content:"H1";}/*!sc*/
+.bNGlPq h2:not(.placeholder)::before{content:"H2";}/*!sc*/
+.bNGlPq h3:not(.placeholder)::before{content:"H3";}/*!sc*/
+.bNGlPq h4:not(.placeholder)::before{content:"H4";}/*!sc*/
+.bNGlPq h5:not(.placeholder)::before{content:"H5";}/*!sc*/
+.bNGlPq h6:not(.placeholder)::before{content:"H6";}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h1:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h1:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h2:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h2:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h3:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h3:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h4:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h4:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h5:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h5:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h6:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h6:not(.placeholder)::before{opacity:1;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h1:hover:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h1:hover:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h2:hover:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h2:hover:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h3:hover:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h3:hover:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h4:hover:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h4:hover:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h5:hover:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h5:hover:not(.placeholder)::before,.bNGlPq .ProseMirror[contenteditable="true"]:focus-within h6:hover:not(.placeholder)::before,.bNGlPq .ProseMirror-focused h6:hover:not(.placeholder)::before{opacity:0;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"] .image-wrapper.ProseMirror-selectednode > a{cursor:-webkit-zoom-in !important;cursor:-moz-zoom-in !important;cursor:zoom-in !important;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"].ProseMirror-focused .image-wrapper:not(.ProseMirror-selectednode) > a{pointer-events:none;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"]:not(.ProseMirror-focused) .image-wrapper > a[href]{cursor:pointer;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"]:not(.ProseMirror-focused) .image-wrapper > a:not([href]){pointer-events:none;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="false"] .image-wrapper > a[href]{cursor:pointer;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="false"] .image-wrapper > a:not([href]){cursor:-webkit-zoom-in;cursor:-moz-zoom-in;cursor:zoom-in;}/*!sc*/
+.bNGlPq .with-emoji{margin-left:-1em;}/*!sc*/
+.bNGlPq .emoji img{width:1em;height:1em;vertical-align:middle;position:relative;top:-0.1em;}/*!sc*/
+.bNGlPq .heading-anchor{display:none;position:absolute;left:0;top:0;bottom:0;margin-left:-26px;width:26px;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;opacity:0;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;color:#111319;cursor:var(--pointer);background:none;outline:none;border:0;padding:0;font-weight:500;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:16px;line-height:1;box-sizing:border-box;}/*!sc*/
+.bNGlPq .heading-anchor:hover{opacity:1;}/*!sc*/
+.bNGlPq .heading-anchor:dir(rtl){margin-left:0;margin-right:-26px;}/*!sc*/
+.bNGlPq .ProseMirror > h1 .heading-anchor,.bNGlPq .ProseMirror > h2 .heading-anchor,.bNGlPq .ProseMirror > h3 .heading-anchor,.bNGlPq .ProseMirror > h4 .heading-anchor,.bNGlPq .ProseMirror > h5 .heading-anchor,.bNGlPq .ProseMirror > h6 .heading-anchor{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;}/*!sc*/
+.bNGlPq .ProseMirror > h1:not(.placeholder)::before,.bNGlPq .ProseMirror > h2:not(.placeholder)::before,.bNGlPq .ProseMirror > h3:not(.placeholder)::before,.bNGlPq .ProseMirror > h4:not(.placeholder)::before,.bNGlPq .ProseMirror > h5:not(.placeholder)::before,.bNGlPq .ProseMirror > h6:not(.placeholder)::before{display:inline-block;}/*!sc*/
+.bNGlPq .placeholder::before{display:block;opacity:0;-webkit-transition:opacity 150ms ease-in-out;transition:opacity 150ms ease-in-out;content:attr(data-empty-text);pointer-events:none;height:0;color:#a2b2c3;}/*!sc*/
+.bNGlPq .ProseMirror-focused .placeholder::before,.bNGlPq .placeholder:nth-child(1)::before,.bNGlPq .placeholder:nth-child(2)::before{opacity:1;}/*!sc*/
+.bNGlPq .comment-marker{background:transparent !important;border:none !important;}/*!sc*/
+.bNGlPq .notice-block{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:relative;background:rgba(54,51,255,0.1);border-left:4px solid #3633FF;color:#111319;border-radius:4px;padding:8px 10px 8px 8px;margin:8px 0;}/*!sc*/
+.bNGlPq .notice-block a{color:#111319;-webkit-text-decoration:underline;text-decoration:underline;}/*!sc*/
+.bNGlPq .notice-block p:first-child{margin-top:0;}/*!sc*/
+.bNGlPq .notice-block p:last-child{margin-bottom:0;}/*!sc*/
+.bNGlPq .notice-block .content{-webkit-box-flex:1;-webkit-flex-grow:1;-ms-flex-positive:1;flex-grow:1;min-width:0;}/*!sc*/
+.bNGlPq .notice-block .icon{width:24px;height:24px;-webkit-align-self:flex-start;-ms-flex-item-align:start;align-self:flex-start;margin-right:4px;color:#3633FF;}/*!sc*/
+.bNGlPq .notice-block:dir(rtl) .icon{margin-right:0;margin-left:4px;}/*!sc*/
+.bNGlPq .notice-block.tip{background:rgba(245,190,49,0.1);border-left:4px solid #f5be31;color:#111319;}/*!sc*/
+.bNGlPq .notice-block.tip .icon{color:#f5be31;}/*!sc*/
+.bNGlPq .notice-block.tip a{color:#111319;}/*!sc*/
+.bNGlPq .notice-block.warning{background:rgba(215,58,73,0.1);border-left:4px solid #d73a49;color:#111319;}/*!sc*/
+.bNGlPq .notice-block.warning .icon{color:#d73a49;}/*!sc*/
+.bNGlPq .notice-block.warning a{color:#111319;}/*!sc*/
+.bNGlPq .notice-block.success{background:rgba(58,217,132,0.1);border-left:4px solid #3ad984;color:#111319;}/*!sc*/
+.bNGlPq .notice-block.success .icon{color:#3ad984;}/*!sc*/
+.bNGlPq .notice-block.success a{color:#111319;}/*!sc*/
+.bNGlPq blockquote{margin:0;padding:8px 10px 8px 1.5em;overflow:hidden;position:relative;}/*!sc*/
+.bNGlPq blockquote::before{content:"";display:inline-block;width:2px;border-radius:1px;position:absolute;margin-left:-1.5em;top:0;bottom:0;background:#DAE1E9;}/*!sc*/
+.bNGlPq blockquote:dir(rtl)::before{margin-left:0;margin-right:-1.5em;}/*!sc*/
+.bNGlPq b,.bNGlPq strong{font-weight:600;}/*!sc*/
+.bNGlPq .template-placeholder{color:#a2b2c3;border-bottom:1px dotted #a2b2c3;border-radius:2px;cursor:text;}/*!sc*/
+.bNGlPq .template-placeholder:hover{border-bottom:1px dotted #394351;}/*!sc*/
+.bNGlPq p{margin:0;min-height:1.6em;}/*!sc*/
+.bNGlPq .ProseMirror > p{position:relative;}/*!sc*/
+.bNGlPq .heading-content{position:relative;}/*!sc*/
+.bNGlPq .heading-content .comment-gutter{top:0;bottom:0;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;}/*!sc*/
+.bNGlPq .heading-content a,.bNGlPq p a{color:#111319;-webkit-text-decoration:underline;text-decoration:underline;-webkit-text-decoration-color:#808aa9;text-decoration-color:#808aa9;-webkit-text-decoration-thickness:1px;text-decoration-thickness:1px;text-underline-offset:.15em;font-weight:500;}/*!sc*/
+.bNGlPq .heading-content a:hover,.bNGlPq p a:hover{-webkit-text-decoration:underline;text-decoration:underline;-webkit-text-decoration-color:#111319;text-decoration-color:#111319;-webkit-text-decoration-thickness:1px;text-decoration-thickness:1px;}/*!sc*/
+.bNGlPq .heading-content a{font-weight:inherit;}/*!sc*/
+.bNGlPq a{color:#0366d6;cursor:pointer;}/*!sc*/
+.bNGlPq .ProseMirror-focused a{cursor:text;}/*!sc*/
+.bNGlPq a:hover{-webkit-text-decoration:none;text-decoration:none;}/*!sc*/
+.bNGlPq ul,.bNGlPq ol{margin:0 0.1em 0 0;padding:0 0 0 48px;}/*!sc*/
+.bNGlPq ul:has(p:dir(rtl)),.bNGlPq ol:has(p:dir(rtl)){direction:rtl;}/*!sc*/
+.bNGlPq ul:has(p:dir(rtl)),.bNGlPq ol:has(p:dir(rtl)),.bNGlPq ul:dir(rtl),.bNGlPq ol:dir(rtl){margin:0 0 0 0.1em;padding:0 48px 0 0;}/*!sc*/
+.bNGlPq ol ol{list-style:lower-alpha;}/*!sc*/
+.bNGlPq ol ol ol{list-style:lower-roman;}/*!sc*/
+.bNGlPq ul li,.bNGlPq ol li{position:relative;white-space:initial;text-align:start;margin-top:.25em;}/*!sc*/
+.bNGlPq ul li p,.bNGlPq ol li p{white-space:pre-wrap;}/*!sc*/
+.bNGlPq ul li > div,.bNGlPq ol li > div{width:100%;}/*!sc*/
+.bNGlPq .checklist-wrapper{position:relative;margin:1em 0;}/*!sc*/
+.bNGlPq li .checklist-wrapper{position:static;margin:0;}/*!sc*/
+.bNGlPq .checklist-completed-toggle{position:absolute;top:-8px;right:0;padding:4px 8px;font-size:12px;background:#FFFFFF;border:1px solid hsl(212 31% 88% / 1);border-radius:6px;color:#394351;cursor:var(--pointer);-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;z-index:1;opacity:0;-webkit-transition:all 100ms ease-in-out;transition:all 100ms ease-in-out;}/*!sc*/
+.bNGlPq .checklist-completed-toggle:hover{background:#FFFFFF;color:#111319;}/*!sc*/
+.bNGlPq .checklist-completed-toggle:active{-webkit-transform:scale(0.98);-ms-transform:scale(0.98);transform:scale(0.98);}/*!sc*/
+.bNGlPq .checklist-wrapper:hover .checklist-completed-toggle,.bNGlPq .checklist-wrapper:focus-within .checklist-completed-toggle{opacity:1;}/*!sc*/
+.bNGlPq .checklist-wrapper.completed-hidden .checklist-completed-toggle{opacity:1;}/*!sc*/
+.bNGlPq td .checklist-completed-toggle,.bNGlPq th .checklist-completed-toggle{top:-32px;}/*!sc*/
+.bNGlPq .checklist-wrapper.completed-hidden ul.checkbox_list > li.checked{display:none;}/*!sc*/
+.bNGlPq ul.checkbox_list{padding:0;margin-left:-24px;margin-right:0;}/*!sc*/
+.bNGlPq ul.checkbox_list > li{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;list-style:none;padding-left:24px;padding-right:0;}/*!sc*/
+.bNGlPq ul.checkbox_list:has(p:dir(rtl)){margin-left:0;margin-right:-24px;}/*!sc*/
+.bNGlPq ul.checkbox_list:has(p:dir(rtl)) > li{padding-left:0;padding-right:24px;}/*!sc*/
+.bNGlPq ul.checkbox_list > li.checked > div > p{color:#66778F;}/*!sc*/
+.bNGlPq ul li::before,.bNGlPq ol li::before{background:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3QgeD0iOCIgeT0iNyIgd2lkdGg9IjMiIGhlaWdodD0iMiIgcng9IjEiIGZpbGw9IiM0RTVDNkUiLz4KPHJlY3QgeD0iOCIgeT0iMTEiIHdpZHRoPSIzIiBoZWlnaHQ9IjIiIHJ4PSIxIiBmaWxsPSIjNEU1QzZFIi8+CjxyZWN0IHg9IjgiIHk9IjE1IiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiByeD0iMSIgZmlsbD0iIzRFNUM2RSIvPgo8cmVjdCB4PSIxMyIgeT0iNyIgd2lkdGg9IjMiIGhlaWdodD0iMiIgcng9IjEiIGZpbGw9IiM0RTVDNkUiLz4KPHJlY3QgeD0iMTMiIHk9IjExIiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiByeD0iMSIgZmlsbD0iIzRFNUM2RSIvPgo8cmVjdCB4PSIxMyIgeT0iMTUiIHdpZHRoPSIzIiBoZWlnaHQ9IjIiIHJ4PSIxIiBmaWxsPSIjNEU1QzZFIi8+Cjwvc3ZnPgo=") no-repeat;background-position:0 2px;content:"";display:inline-block;cursor:-webkit-grab;cursor:-moz-grab;cursor:grab;width:24px;height:24px;position:absolute;left:-40px;opacity:0;-webkit-transition:opacity 200ms ease-in-out;transition:opacity 200ms ease-in-out;}/*!sc*/
+.bNGlPq ul li:dir(rtl)::before,.bNGlPq ol li:dir(rtl)::before{left:auto;right:-40px;}/*!sc*/
+.bNGlPq ul li[draggable=true]::before,.bNGlPq ol li[draggable=true]::before{cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing;}/*!sc*/
+.bNGlPq ul > li.counter-2::before,.bNGlPq ol li.counter-2::before{left:-50px;}/*!sc*/
+.bNGlPq ul > li.counter-2:dir(rtl)::before,.bNGlPq ol li.counter-2:dir(rtl)::before{left:auto;right:-50px;}/*!sc*/
+.bNGlPq ul > li.hovering::before,.bNGlPq ol li.hovering::before{opacity:0.5;}/*!sc*/
+.bNGlPq ul li.ProseMirror-selectednode::after,.bNGlPq ol li.ProseMirror-selectednode::after{display:none;}/*!sc*/
+.bNGlPq ul.checkbox_list > li::before{left:0;}/*!sc*/
+.bNGlPq ul.checkbox_list > li:dir(rtl)::before{left:auto;right:0;}/*!sc*/
+.bNGlPq ul.checkbox_list > li > span[contenteditable="false"]{cursor:text;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox{display:inline-block;cursor:var(--pointer);pointer-events:initial;width:14px;height:14px;position:relative;top:1px;-webkit-transition:-webkit-transform 100ms ease-in-out;-webkit-transition:transform 100ms ease-in-out;transition:transform 100ms ease-in-out;opacity:.8;margin:0 0.5em 0 0;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox[aria-checked=true]{opacity:1;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox:active{-webkit-transform:scale(0.9);-ms-transform:scale(0.9);transform:scale(0.9);}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox svg{display:block;width:14px;height:14px;overflow:visible;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox .checkbox-box{fill:#0366d6;fill-opacity:0;stroke:#111319;stroke-width:2;-webkit-transition:fill-opacity 100ms ease-in-out,stroke 100ms ease-in-out;transition:fill-opacity 100ms ease-in-out,stroke 100ms ease-in-out;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox .checkbox-tick{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:14;stroke-dashoffset:14;-webkit-transition:stroke-dashoffset 200ms ease-in-out;transition:stroke-dashoffset 200ms ease-in-out;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox[aria-checked=true] .checkbox-box{fill-opacity:1;stroke:#0366d6;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox[aria-checked=true] .checkbox-tick{stroke-dashoffset:0;}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox:not(:has(svg)){background-image:url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0C1.34315 0 0 1.34315 0 3V11C0 12.6569 1.34315 14 3 14H11C12.6569 14 14 12.6569 14 11V3C14 1.34315 12.6569 0 11 0H3ZM3 2C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H11C11.5523 12 12 11.5523 12 11V3C12 2.44772 11.5523 2 11 2H3Z' fill='%23111319' /%3E%3C/svg%3E%0A");}/*!sc*/
+.bNGlPq ul.checkbox_list .checkbox:not(:has(svg))[aria-checked=true]{background-image:url( "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 0C1.34315 0 0 1.34315 0 3V11C0 12.6569 1.34315 14 3 14H11C12.6569 14 14 12.6569 14 11V3C14 1.34315 12.6569 0 11 0H3ZM4.26825 5.85982L5.95873 7.88839L9.70003 2.9C10.0314 2.45817 10.6582 2.36863 11.1 2.7C11.5419 3.03137 11.6314 3.65817 11.3 4.1L6.80002 10.1C6.41275 10.6164 5.64501 10.636 5.2318 10.1402L2.7318 7.14018C2.37824 6.71591 2.43556 6.08534 2.85984 5.73178C3.28412 5.37821 3.91468 5.43554 4.26825 5.85982Z' fill='%230366d6' /%3E%3C/svg%3E%0A" );}/*!sc*/
+.bNGlPq ul.checkbox_list:has(p:dir(rtl)) .checkbox{margin:0 0 0 0.5em;}/*!sc*/
+.bNGlPq li p:first-child{margin:0;word-break:break-word;}/*!sc*/
+.bNGlPq hr{position:relative;height:1em;border:0;clear:both;}/*!sc*/
+.bNGlPq hr::before{content:"";display:block;position:absolute;border-top:1px solid #E8EBED;top:0.5em;left:0;right:0;}/*!sc*/
+.bNGlPq hr.page-break{page-break-after:always;}/*!sc*/
+.bNGlPq hr.page-break::before{border-top:1px dashed #E8EBED;}/*!sc*/
+.bNGlPq .math-inline .math-src .ProseMirror,.bNGlPq code{-webkit-box-decoration-break:clone;box-decoration-break:clone;-webkit-box-decoration-break:clone;border-radius:4px;border:1px solid #E8EBED;background:#F4F7FA;padding:3px 4px;color:#2F3336;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:90%;}/*!sc*/
+.bNGlPq .math-inline .math-src .ProseMirror.inline,.bNGlPq code.inline{color:#00009f;}/*!sc*/
+@media (min-width:737px){.bNGlPq .math-inline .math-src .ProseMirror .code-word,.bNGlPq code .code-word{white-space:nowrap;}}/*!sc*/
+.bNGlPq mark{border-radius:1px;padding:2px 0;color:#111319;}/*!sc*/
+.bNGlPq mark a{color:#111319;}/*!sc*/
+.bNGlPq .external-link{cursor:pointer;display:inline-block;position:relative;top:2px;width:16px;height:16px;}/*!sc*/
+.bNGlPq .code-block{position:relative;font-size:90%;}/*!sc*/
+.bNGlPq .code-block:hover + .code-block-toggle,.bNGlPq .code-block:focus-within + .code-block-toggle,.bNGlPq .code-block + .code-block-toggle:hover,.bNGlPq .code-block + .code-block-toggle:focus{opacity:1;}/*!sc*/
+.bNGlPq .code-block[data-language=none] pre code,.bNGlPq .code-block[data-language=markdown] pre code{color:#111319;}/*!sc*/
+.bNGlPq .code-block[data-language=mermaid]:is(.code-active) + .mermaid-diagram-wrapper:not(.parse-error):not(.empty),.bNGlPq .code-block[data-language=mermaidjs]:is(.code-active) + .mermaid-diagram-wrapper:not(.parse-error):not(.empty){cursor:-webkit-zoom-in;cursor:-moz-zoom-in;cursor:zoom-in;}/*!sc*/
+.bNGlPq .code-block[data-language=mermaid]:not(.code-active),.bNGlPq .code-block[data-language=mermaidjs]:not(.code-active){height:auto;margin:0.5em 0 -0.75em 0px;overflow:hidden;position:relative;}/*!sc*/
+.bNGlPq .code-block[data-language=mermaid].ProseMirror-selectednode,.bNGlPq .code-block[data-language=mermaidjs].ProseMirror-selectednode{outline:none;}/*!sc*/
+.bNGlPq .code-block[data-language=mermaid].ProseMirror-selectednode + .mermaid-diagram-wrapper,.bNGlPq .code-block[data-language=mermaidjs].ProseMirror-selectednode + .mermaid-diagram-wrapper{outline:2px solid #0366d6;}/*!sc*/
+.bNGlPq .code-block[data-language=mermaid].ProseMirror-selectednode + .mermaid-diagram-wrapper:not(.parse-error):not(.empty),.bNGlPq .code-block[data-language=mermaidjs].ProseMirror-selectednode + .mermaid-diagram-wrapper:not(.parse-error):not(.empty){cursor:-webkit-zoom-in;cursor:-moz-zoom-in;cursor:zoom-in;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="false"] .code-block[data-language=mermaid],.bNGlPq .ProseMirror[contenteditable="false"] .code-block[data-language=mermaidjs]{height:0;overflow:hidden;}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="false"] .code-block[data-language=mermaid] + .mermaid-diagram-wrapper:not(.parse-error):not(.empty),.bNGlPq .ProseMirror[contenteditable="false"] .code-block[data-language=mermaidjs] + .mermaid-diagram-wrapper:not(.parse-error):not(.empty){cursor:-webkit-zoom-in;cursor:-moz-zoom-in;cursor:zoom-in;}/*!sc*/
+.bNGlPq .ProseMirror.exported .code-block[data-language=mermaid],.bNGlPq .ProseMirror.exported .code-block[data-language=mermaidjs]{height:auto;overflow:visible;}/*!sc*/
+.bNGlPq .ProseMirror.exported .code-block[data-language=mermaid]::after,.bNGlPq .ProseMirror.exported .code-block[data-language=mermaidjs]::after{display:none;}/*!sc*/
+.bNGlPq .ProseMirror.exported .mermaid-diagram-wrapper{display:none;}/*!sc*/
+.bNGlPq .code-block.with-line-wrap pre{white-space:pre-wrap;word-break:break-all;}/*!sc*/
+.bNGlPq .code-block.with-line-numbers pre{padding-left:calc(var(--line-number-gutter-width,0) * 1em + 1.5em);}/*!sc*/
+.bNGlPq .code-block.with-line-numbers::after{content:attr(data-line-numbers);position:absolute;padding-left:0.5em;left:1px;top:calc(1px + 0.75em);width:calc(var(--line-number-gutter-width,0) * 1em + .25em);word-break:break-all;white-space:break-spaces;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;line-height:1.4em;color:#66778F;background:#F4F7FA;text-align:right;font-variant-numeric:tabular-nums;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}/*!sc*/
+.bNGlPq .code-block.collapsed pre{pointer-events:none;max-height:calc(10 * 1.4em + 0.75em);overflow:hidden;}/*!sc*/
+.bNGlPq .code-block.collapsed::after{max-height:calc(10 * 1.4em + 0.75em);overflow:hidden;-webkit-clip-path:inset(0 0 calc(100% - 10 * 1.4em - 0.75em) 0);clip-path:inset(0 0 calc(100% - 10 * 1.4em - 0.75em) 0);}/*!sc*/
+.bNGlPq .code-block.collapsed::before{content:"";position:absolute;bottom:1px;left:1px;right:1px;height:120px;z-index:1;pointer-events:none;border-radius:0 0 4px 4px;background:linear-gradient( to bottom, rgba(244,247,250,0) 0%, rgba(244,247,250,0.8) 70%, #F4F7FA 100% );}/*!sc*/
+@media print{.bNGlPq .code-block.collapsed pre{max-height:none;overflow:visible;}.bNGlPq .code-block.collapsed::after{max-height:none;overflow:visible;-webkit-clip-path:none;clip-path:none;}.bNGlPq .code-block.collapsed::before{display:none;}}/*!sc*/
+.bNGlPq .code-block-toggle{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:absolute;z-index:2;left:50%;-webkit-transform:translate3d(-50%,-50px,0);-ms-transform:translate3d(-50%,-50px,0);transform:translate3d(-50%,-50px,0);margin:0;padding:0 8px;border:0;border-radius:100px;background:#FFFFFF;color:#111319;box-shadow:rgba(0,0,0,0.07) 0px 1px 2px,hsl(212 31% 88% / 1) 0 0 0 1px inset;font-size:13px;font-weight:500;height:24px;cursor:var(--pointer);-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-appearance:none !important;-moz-appearance:none !important;appearance:none !important;opacity:0;-webkit-transition:opacity 150ms ease;transition:opacity 150ms ease;pointer-events:auto;}/*!sc*/
+.bNGlPq .code-block-toggle:hover{background:hsl(212 31% 95% / 1);}/*!sc*/
+@media print{.bNGlPq .code-block-toggle{display:none !important;}}/*!sc*/
+.bNGlPq .mermaid-diagram-wrapper{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;margin:0.75em 0;min-height:1.6em;background:#F4F7FA;border-radius:6px;border:1px solid #E8EBED;padding:8px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;}/*!sc*/
+.bNGlPq .mermaid-diagram-wrapper *{font-family:-apple-system,BlinkMacSystemFont,Inter,'Segoe UI',Roboto,Oxygen,sans-serif;}/*!sc*/
+.bNGlPq .mermaid-diagram-wrapper.empty{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:14px;color:#a2b2c3;}/*!sc*/
+.bNGlPq .mermaid-diagram-wrapper.parse-error{font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:14px;color:#FF5C80;}/*!sc*/
+.bNGlPq pre{display:block;overflow-x:auto;padding:0.75em 1em;line-height:1.4em;position:relative;background:#F4F7FA;border-radius:4px;border:1px solid #E8EBED;margin:.5em 0;-webkit-font-smoothing:initial;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;direction:ltr;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none;color:#2F3336;}/*!sc*/
+.bNGlPq pre code{font-size:inherit;background:none;padding:0;border:0;}/*!sc*/
+.bNGlPq table{width:100%;border-collapse:separate;border-radius:6px;margin-top:1em;box-sizing:border-box;border:1px solid #DAE1E9;border-left:0;border-spacing:0;}/*!sc*/
+.bNGlPq table *{box-sizing:border-box;}/*!sc*/
+.bNGlPq table tr{position:relative;border-bottom:1px solid #DAE1E9;border-color:inherit;}/*!sc*/
+.bNGlPq table td,.bNGlPq table th{position:relative;vertical-align:top;position:relative;padding:4px 8px;text-align:start;font-weight:normal;border-left:1px solid #DAE1E9;border-top:1px solid #DAE1E9;}/*!sc*/
+.bNGlPq table th{background:#FFFFFF;background-image:linear-gradient( rgba(218,225,233,0.25), rgba(218,225,233,0.25) );color:#394351;font-weight:500;}/*!sc*/
+.bNGlPq table tr:first-child th,.bNGlPq table tr:first-child td{border-top:0;}/*!sc*/
+.bNGlPq table tr:first-child th[data-first-column],.bNGlPq table tr:first-child td[data-first-column]{border-top-left-radius:6px;}/*!sc*/
+.bNGlPq table th[data-first-column][data-last-row],.bNGlPq table td[data-first-column][data-last-row]{border-bottom-left-radius:6px;}/*!sc*/
+.bNGlPq table tr:first-child th[data-last-column],.bNGlPq table tr:first-child td[data-last-column]{border-top-right-radius:6px;}/*!sc*/
+.bNGlPq table th[data-last-column][data-last-row],.bNGlPq table td[data-last-column][data-last-row]{border-bottom-right-radius:6px;}/*!sc*/
+.bNGlPq table td .component-embed{padding:4px 0;}/*!sc*/
+.bNGlPq table td[data-bgcolor],.bNGlPq table th[data-bgcolor]{color:var(--cell-text-color);background:linear-gradient(var(--cell-bg-color),var(--cell-bg-color)),linear-gradient(#FFFFFF,#FFFFFF);}/*!sc*/
+.bNGlPq table td[data-bgcolor] p,.bNGlPq table th[data-bgcolor] p,.bNGlPq table td[data-bgcolor] a,.bNGlPq table th[data-bgcolor] a,.bNGlPq table td[data-bgcolor] p a,.bNGlPq table th[data-bgcolor] p a{color:var(--cell-text-color,inherit);}/*!sc*/
+.bNGlPq table td[data-bgcolor] a,.bNGlPq table th[data-bgcolor] a,.bNGlPq table td[data-bgcolor] p a,.bNGlPq table th[data-bgcolor] p a{-webkit-text-decoration:underline;text-decoration:underline;-webkit-text-decoration-color:var(--cell-text-color,inherit);text-decoration-color:var(--cell-text-color,inherit);}/*!sc*/
+.bNGlPq table .selectedCell{box-shadow:inset 0 0 0 9999px rgba(3,102,214,0.1);background-clip:padding-box;}/*!sc*/
+@media print{.bNGlPq table .selectedCell{box-shadow:none;}}/*!sc*/
+.bNGlPq table .table-add-row,.bNGlPq table .table-add-column{display:block;position:absolute;background:#0366d6;cursor:var(--pointer);}/*!sc*/
+.bNGlPq table .table-add-row:hover::after,.bNGlPq table .table-add-column:hover::after{width:16px;height:16px;z-index:20;background-color:#0366d6;background-size:16px 16px;background-position:50% 50%;background-image:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDVDMTEuNDQ3NyA1IDExIDUuNDQ3NzIgMTEgNlYxMUg2QzUuNDQ3NzIgMTEgNSAxMS40NDc3IDUgMTJDNSAxMi41NTIzIDUuNDQ3NzIgMTMgNiAxM0gxMVYxOEMxMSAxOC41NTIzIDExLjQ0NzcgMTkgMTIgMTlDMTIuNTUyMyAxOSAxMyAxOC41NTIzIDEzIDE4VjEzSDE4QzE4LjU1MjMgMTMgMTkgMTIuNTUyMyAxOSAxMkMxOSAxMS40NDc3IDE4LjU1MjMgMTEgMTggMTFIMTNWNkMxMyA1LjQ0NzcyIDEyLjU1MjMgNSAxMiA1WiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=");}/*!sc*/
+.bNGlPq table .table-add-row::before,.bNGlPq table .table-add-column::before{content:"";display:block;cursor:var(--pointer);position:absolute;width:24px;height:24px;}/*!sc*/
+.bNGlPq table .table-add-row{bottom:-1px;left:-16px;width:0;height:2px;z-index:1;}/*!sc*/
+.bNGlPq table .table-add-row::after{content:"";position:absolute;bottom:-1px;left:-10px;width:4px;height:4px;display:block;border-radius:100%;background-color:#DAE1E9;}/*!sc*/
+.bNGlPq table .table-add-row:hover{width:calc(var(--table-width) - 48px);}/*!sc*/
+.bNGlPq table .table-add-row:hover::after{bottom:-7.5px;left:-16px;}/*!sc*/
+.bNGlPq table .table-add-row::before{bottom:-12px;left:-18px;}/*!sc*/
+.bNGlPq table .table-add-row.first{bottom:auto;top:-1px;}/*!sc*/
+.bNGlPq table .table-add-row.first::before{bottom:auto;top:-12px;}/*!sc*/
+.bNGlPq table .table-add-column{top:-16px;right:-1px;width:2px;height:0;z-index:1;}/*!sc*/
+.bNGlPq table .table-add-column::after{content:"";position:absolute;top:-10px;right:-1px;width:4px;height:4px;display:block;border-radius:100%;background-color:#DAE1E9;}/*!sc*/
+.bNGlPq table .table-add-column:hover{height:calc(var(--table-height) - 32px + 6px);}/*!sc*/
+.bNGlPq table .table-add-column:hover::after{top:-16px;right:-7px;}/*!sc*/
+.bNGlPq table .table-add-column::before{top:-16px;right:-12px;}/*!sc*/
+.bNGlPq table .table-add-column.first{right:auto;left:-1px;}/*!sc*/
+.bNGlPq table .table-add-column.first::before{right:auto;left:-12px;}/*!sc*/
+.bNGlPq table .table-grip-column::after{content:"";cursor:-webkit-grab;cursor:-moz-grab;cursor:grab;position:absolute;top:-16px;left:0;width:100%;height:12px;background:#DAE1E9;display:block;}/*!sc*/
+.bNGlPq table .table-grip-column:hover::after{background:#111319;}/*!sc*/
+body.table-dragging .sc-fBWQRz table .table-grip-column:hover::after{background:#DAE1E9;}/*!sc*/
+.bNGlPq table .table-grip-column.first::after{border-top-left-radius:3px;border-bottom-left-radius:3px;}/*!sc*/
+.bNGlPq table .table-grip-column.selected::after{background:#0366d6;}/*!sc*/
+.bNGlPq table [data-last-column] .table-grip-column::after{border-top-right-radius:3px;border-bottom-right-radius:3px;}/*!sc*/
+.bNGlPq table .table-grip-row::after{content:"";cursor:-webkit-grab;cursor:-moz-grab;cursor:grab;position:absolute;left:-16px;top:0;height:100%;width:12px;background:#DAE1E9;border-color:#FFFFFF;display:block;}/*!sc*/
+.bNGlPq table .table-grip-row:hover::after{background:#111319;}/*!sc*/
+body.table-dragging .sc-fBWQRz table .table-grip-row:hover::after{background:#DAE1E9;}/*!sc*/
+.bNGlPq table .table-grip-row.first::after{border-top-left-radius:3px;border-top-right-radius:3px;}/*!sc*/
+.bNGlPq table .table-grip-row.selected::after{background:#0366d6;}/*!sc*/
+.bNGlPq table [data-last-row] .table-grip-row::after{border-bottom-left-radius:3px;border-bottom-right-radius:3px;}/*!sc*/
+.bNGlPq table .table-grip::after{content:"";cursor:var(--pointer);background:#DAE1E9;width:13px;height:13px;border-radius:13px;border:2px solid #FFFFFF;position:absolute;top:-18px;left:-18px;display:block;z-index:10;}/*!sc*/
+.bNGlPq table .table-grip:hover::after{background:#111319;}/*!sc*/
+.bNGlPq table .table-grip.selected::after{background:#0366d6;}/*!sc*/
+.bNGlPq table .table-grip.dragging::after{background:#0366d6;opacity:0.5;}/*!sc*/
+@media print{.bNGlPq table .table-add-row,.bNGlPq table .table-add-column,.bNGlPq table .table-grip,.bNGlPq table .table-grip-column,.bNGlPq table .table-grip-row{display:none;}}/*!sc*/
+.bNGlPq .table-drag-drop-indicator{position:absolute;background:#0366d6;pointer-events:none;z-index:100;opacity:0;-webkit-transition:opacity 100ms ease-in-out;transition:opacity 100ms ease-in-out;}/*!sc*/
+.bNGlPq .table-drag-drop-indicator.active{opacity:1;}/*!sc*/
+.bNGlPq .table-drag-drop-indicator[data-type="row"]{height:2px;border-radius:1px;}/*!sc*/
+.bNGlPq .table-drag-drop-indicator[data-type="column"]{width:2px;border-radius:1px;}/*!sc*/
+.bNGlPq .table-grip-row.dragging::after,.bNGlPq .table-grip-column.dragging::after{cursor:-webkit-grabbing;cursor:-moz-grabbing;cursor:grabbing;background:#0366d6;opacity:0.5;}/*!sc*/
+.bNGlPq .table-drag-indicator-left,.bNGlPq .table-drag-indicator-right{position:absolute;top:0;width:2px;height:calc(var(--table-height) - 32px - 10px);background:#0366d6;z-index:100;pointer-events:none;}/*!sc*/
+.bNGlPq .table-drag-indicator-left{left:-1px;}/*!sc*/
+.bNGlPq .table-drag-indicator-right{right:-1px;}/*!sc*/
+.bNGlPq .table-drag-indicator-top,.bNGlPq .table-drag-indicator-bottom{position:absolute;left:0;height:2px;width:calc(var(--table-width) - 64px - 2px);background:#0366d6;z-index:100;pointer-events:none;}/*!sc*/
+.bNGlPq .table-drag-indicator-top{top:-1px;}/*!sc*/
+.bNGlPq .table-drag-indicator-bottom{bottom:-1px;}/*!sc*/
+.bNGlPq .table-wrapper{position:relative;}/*!sc*/
+.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child{position:relative;z-index:2;}/*!sc*/
+.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child > th{z-index:2;}/*!sc*/
+.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child > th{-webkit-transform:translateY(calc(var(--header-offset,64px) + var(--sticky-scroll-offset,0px)));-ms-transform:translateY(calc(var(--header-offset,64px) + var(--sticky-scroll-offset,0px)));transform:translateY(calc(var(--header-offset,64px) + var(--sticky-scroll-offset,0px)));box-shadow:0 -1px 0 #DAE1E9,0 1px 0 #DAE1E9;border-radius:0 !important;}/*!sc*/
+.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child > th .table-grip-column,.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child > th .table-add-column,.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child > th .table-add-row,.bNGlPq .table-sticky-header > .table-scrollable > table > tbody > tr:first-child > th .table-grip{display:none;}/*!sc*/
+.bNGlPq .table-sticky-header > .table-grip{display:none;}/*!sc*/
+.bNGlPq .table-scrollable{position:relative;margin:-1em -32px -0.5em;-webkit-scrollbar-width:thin;-moz-scrollbar-width:thin;-ms-scrollbar-width:thin;scrollbar-width:thin;-webkit-scrollbar-color:transparent transparent;-moz-scrollbar-color:transparent transparent;-ms-scrollbar-color:transparent transparent;scrollbar-color:transparent transparent;overflow-y:hidden;overflow-x:auto;overflow-anchor:none;padding-top:1em;padding-bottom:.5em;padding-left:32px;padding-right:32px;-webkit-transition:border 250ms ease-in-out 0s;transition:border 250ms ease-in-out 0s;}/*!sc*/
+.bNGlPq .table-scrollable:hover{-webkit-scrollbar-color:#bdc6cb #F4F7FA;-moz-scrollbar-color:#bdc6cb #F4F7FA;-ms-scrollbar-color:#bdc6cb #F4F7FA;scrollbar-color:#bdc6cb #F4F7FA;}/*!sc*/
+.bNGlPq .table-scrollable ::-webkit-scrollbar{height:14px;background-color:transparent;}/*!sc*/
+.bNGlPq .table-scrollable:hover ::-webkit-scrollbar{background-color:#F4F7FA;}/*!sc*/
+.bNGlPq .table-scrollable ::-webkit-scrollbar-thumb{background-color:transparent;border:3px solid transparent;border-radius:7px;}/*!sc*/
+.bNGlPq .table-scrollable:hover ::-webkit-scrollbar-thumb{background-color:#bdc6cb;border-color:#F4F7FA;}/*!sc*/
+.bNGlPq .table-shadow-left::before,.bNGlPq .table-shadow-right::after{content:"";position:absolute;top:1px;bottom:0;left:-1em;width:32px;z-index:20;-webkit-transition:box-shadow 250ms ease-in-out;transition:box-shadow 250ms ease-in-out;border:0px solid transparent;pointer-events:none;}/*!sc*/
+.bNGlPq .table-shadow-left::before{left:-32px;right:auto;box-shadow:16px 0 16px -16px inset rgba(0,0,0,0.25);border-left:32px solid #FFFFFF;}/*!sc*/
+.bNGlPq .table-shadow-right::after{right:-32px;left:auto;box-shadow:-16px 0 16px -16px inset rgba(0,0,0,0.25);border-right:32px solid #FFFFFF;}/*!sc*/
+.bNGlPq .block-menu-trigger{opacity:0;pointer-events:none;display:inline;width:24px;height:24px;color:#394351;background:none;position:absolute;-webkit-transition:color 150ms cubic-bezier(0.175,0.885,0.32,1.275), opacity 150ms ease-in-out;transition:color 150ms cubic-bezier(0.175,0.885,0.32,1.275), opacity 150ms ease-in-out;outline:none;border:0;padding:0;margin-top:1px;margin-left:-28px;border-radius:4px;}/*!sc*/
+.bNGlPq .block-menu-trigger:hover,.bNGlPq .block-menu-trigger:focus{cursor:var(--pointer);color:#111319;background:hsl(212 31% 95% / 1);}/*!sc*/
+.bNGlPq .ProseMirror[contenteditable="true"]:focus-within,.bNGlPq .ProseMirror-focused .block-menu-trigger,.bNGlPq .block-menu-trigger:active,.bNGlPq .block-menu-trigger:focus{opacity:1;pointer-events:initial;}/*!sc*/
+.bNGlPq .ProseMirror-gapcursor{display:none;pointer-events:none;position:absolute;}/*!sc*/
+.bNGlPq .ProseMirror-gapcursor::after{content:"";display:block;position:absolute;top:-2px;width:20px;border-top:1px solid #111319;-webkit-animation:ProseMirror-cursor-blink 1.1s steps(2,start) infinite;animation:ProseMirror-cursor-blink 1.1s steps(2,start) infinite;}/*!sc*/
+@-webkit-keyframes ProseMirror-cursor-blink{to{visibility:hidden;}}/*!sc*/
+@keyframes ProseMirror-cursor-blink{to{visibility:hidden;}}/*!sc*/
+.bNGlPq .ProseMirror-focused .ProseMirror-gapcursor{display:block;}/*!sc*/
+.bNGlPq del{color:#66778F;-webkit-text-decoration:strikethrough;text-decoration:strikethrough;}/*!sc*/
+@media print{.bNGlPq .placeholder::before,.bNGlPq .block-menu-trigger,.bNGlPq .heading-anchor,.bNGlPq button.show-source-button,.bNGlPq h1:not(.placeholder)::before,.bNGlPq h2:not(.placeholder)::before,.bNGlPq h3:not(.placeholder)::before,.bNGlPq h4:not(.placeholder)::before,.bNGlPq h5:not(.placeholder)::before,.bNGlPq h6:not(.placeholder)::before{display:none;}.bNGlPq .image{page-break-inside:avoid;}.bNGlPq .comment-marker{border:0;background:none;}.bNGlPq .page-break{opacity:0;}.bNGlPq pre{overflow-x:hidden;white-space:pre-wrap;}.bNGlPq em,.bNGlPq blockquote{font-family:"SF Pro Text",-apple-system,BlinkMacSystemFont,Inter,'Segoe UI',Roboto,Oxygen,sans-serif;}}/*!sc*/
+.bNGlPq li > .toggle-block{position:relative;top:0.4em;}/*!sc*/
+.bNGlPq .toggle-block{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;position:relative;}/*!sc*/
+.bNGlPq .toggle-block:focus-within{-webkit-transition-delay:0.1s;transition-delay:0.1s;}/*!sc*/
+.bNGlPq .toggle-block.folded:dir(rtl){--rotate-by:90deg;}/*!sc*/
+.bNGlPq .toggle-block.folded:dir(ltr){--rotate-by:-90deg;}/*!sc*/
+.bNGlPq .toggle-block.folded > .toggle-block-content > :is(:not(.toggle-block-head)){display:none;}/*!sc*/
+.bNGlPq .toggle-block.folded > .toggle-block-content > :is(a.heading-name){display:unset;}/*!sc*/
+.bNGlPq .toggle-block.folded > .toggle-block-button{opacity:1;}/*!sc*/
+.bNGlPq .toggle-block.folded > .toggle-block-button svg{-webkit-transform:rotate(var(--rotate-by));-ms-transform:rotate(var(--rotate-by));transform:rotate(var(--rotate-by));pointer-events:none;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button{-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;--line-height:var(--line-height-p);--font-size:var(--font-size-p);color:#111319;opacity:0.75;cursor:var(--pointer);background:none;outline:none;border:0;margin:0;padding:0;height:calc(var(--line-height) * var(--font-size));width:20px;overflow:unset;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button:has(+ .toggle-block-content > .toggle-block-head > h1){--line-height:calc(var(--line-height-h) + 0.2);--font-size:var(--font-size-h1);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button:has(+ .toggle-block-content > .toggle-block-head > h2){--line-height:calc(var(--line-height-h) + 0.2);--font-size:var(--font-size-h2);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button:has(+ .toggle-block-content > .toggle-block-head > h3){--line-height:calc(var(--line-height-h) + 0.2);--font-size:var(--font-size-h3);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button:has(+ .toggle-block-content > .toggle-block-head > h4){--line-height:calc(var(--line-height-h) + 0.2);--font-size:var(--font-size-h4);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button:focus,.bNGlPq .toggle-block > .toggle-block-button:hover{opacity:1;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-button > svg{-webkit-transition:-webkit-transform 200ms ease-out;-webkit-transition:transform 200ms ease-out;transition:transform 200ms ease-out;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content{-webkit-box-flex:1;-webkit-flex-grow:1;-ms-flex-positive:1;flex-grow:1;overflow:unset;min-width:0;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > :is(:not(.toggle-block-head)){margin-top:0.5em;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > :is(:first-child){margin-top:0;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > .toggle-block-head > *{margin-top:0;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > .toggle-block-head.placeholder:has(> :is(h1,h2,h3,h4))::before{font-weight:600;}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > .toggle-block-head.placeholder:has(> h1)::before{font-size:var(--font-size-h1);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > .toggle-block-head.placeholder:has(> h2)::before{font-size:var(--font-size-h2);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > .toggle-block-head.placeholder:has(> h3)::before{font-size:var(--font-size-h3);}/*!sc*/
+.bNGlPq .toggle-block > .toggle-block-content > .toggle-block-head.placeholder:has(> h4)::before{font-size:var(--font-size-h4);}/*!sc*/
+.bNGlPq .math-node{min-width:1em;min-height:1em;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;cursor:auto;white-space:pre-wrap;overflow-x:auto;overflow-y:hidden;}/*!sc*/
+.bNGlPq .math-node.empty-math .math-render::before{content:"Empty math";color:#a2b2c3;font-size:14px;}/*!sc*/
+.bNGlPq .math-node .math-render.parse-error::before{content:"(math error)";color:#FF5C80;cursor:help;}/*!sc*/
+.bNGlPq .math-node.ProseMirror-selectednode{outline:none;}/*!sc*/
+.bNGlPq .math-node .math-src{display:none;color:#ff0000;tab-size:4;}/*!sc*/
+.bNGlPq .math-node .math-src .ProseMirror-focused{border-radius:2px;outline:none;}/*!sc*/
+.bNGlPq .math-node.ProseMirror-selectednode .math-src{display:inline;}/*!sc*/
+.bNGlPq .math-node.ProseMirror-selectednode .math-render{display:none;}/*!sc*/
+.bNGlPq math-inline{display:inline;white-space:nowrap;}/*!sc*/
+.bNGlPq math-inline .math-render{display:inline-block;}/*!sc*/
+.bNGlPq math-inline .math-src .ProseMirror{display:inline;margin:0px 3px;}/*!sc*/
+.bNGlPq math-block{display:block;}/*!sc*/
+.bNGlPq math-block .math-render{display:block;}/*!sc*/
+.bNGlPq math-block.ProseMirror-selectednode,.bNGlPq math-block.empty-math{border-radius:4px;border:1px solid #E8EBED;background:#F4F7FA;padding:0.75em 1em;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,Courier,monospace;font-size:90%;}/*!sc*/
+.bNGlPq math-block.empty-math{text-align:center;}/*!sc*/
+.bNGlPq math-block .math-src .ProseMirror{width:100%;display:block;outline:none;}/*!sc*/
+.bNGlPq math-block .katex-display{margin:0;}/*!sc*/
+.bNGlPq .katex-html *::selection{background-color:none !important;}/*!sc*/
+.bNGlPq .math-node.math-select .math-render{background-color:#c0c0c0ff;}/*!sc*/
+.bNGlPq math-inline.math-select .math-render{padding-top:2px;}/*!sc*/
+.bNGlPq .no-cursor{caret-color:transparent;}/*!sc*/
+.bNGlPq div:focus .fake-cursor,.bNGlPq span:focus .fake-cursor{margin-right:-1px;border-left-width:1px;border-left-style:solid;-webkit-animation:ProseMirror-cursor-blink 1.1s steps(2,start) infinite;animation:ProseMirror-cursor-blink 1.1s steps(2,start) infinite;position:relative;z-index:1;}/*!sc*/
+.bNGlPq .token.comment,.bNGlPq .token.prolog,.bNGlPq .token.doctype,.bNGlPq .token.cdata{color:#008000;}/*!sc*/
+.bNGlPq .token.punctuation{color:#393a34;}/*!sc*/
+.bNGlPq .token.namespace{opacity:0.7;}/*!sc*/
+.bNGlPq .token.boolean,.bNGlPq .token.number{color:#0550ae;}/*!sc*/
+.bNGlPq .token.property,.bNGlPq .token.variable{color:#ff0000;}/*!sc*/
+.bNGlPq .token.tag{color:#800000;}/*!sc*/
+.bNGlPq .token.char,.bNGlPq .token.builtin,.bNGlPq .token.string{color:#a31515;}/*!sc*/
+.bNGlPq .token.selector{color:#800000;}/*!sc*/
+.bNGlPq .token.attr-name{color:#ff0000;}/*!sc*/
+.bNGlPq .token.attr-value,.bNGlPq .token.attr-value .token.punctuation{color:#2F3336;}/*!sc*/
+.bNGlPq .token.operator{color:#393a34;}/*!sc*/
+.bNGlPq .token.namespace{opacity:0.8;}/*!sc*/
+.bNGlPq .token.entity,.bNGlPq .token.url,.bNGlPq .language-css .token.string,.bNGlPq .style .token.string{color:#ff0000;}/*!sc*/
+.bNGlPq .token.attr-value,.bNGlPq .token.keyword,.bNGlPq .token.control,.bNGlPq .token.directive,.bNGlPq .token.unit{color:#00009f;}/*!sc*/
+.bNGlPq .token.function,.bNGlPq .token.class-name-definition{color:#393A34;}/*!sc*/
+.bNGlPq .token.class-name{color:#00578a;}/*!sc*/
+.bNGlPq .token.statement,.bNGlPq .token.regex,.bNGlPq .token.atrule{color:#ff0000;}/*!sc*/
+.bNGlPq .token.placeholder,.bNGlPq .token.variable{color:#3d8fd1;}/*!sc*/
+.bNGlPq .token.deleted{color:#394351;background-color:rgba(255,180,173,0.25);}/*!sc*/
+.bNGlPq .token.inserted{color:#111319;background-color:rgba(18,138,41,0.16);-webkit-text-decoration:none;text-decoration:none;}/*!sc*/
+.bNGlPq .token.italic{font-style:italic;}/*!sc*/
+.bNGlPq .token.important,.bNGlPq .token.bold{font-weight:bold;}/*!sc*/
+.bNGlPq .token.constant{color:#0550ae;}/*!sc*/
+.bNGlPq .token.parameter{color:#2F3336;}/*!sc*/
+.bNGlPq .token.important{color:#e90e90;}/*!sc*/
+.bNGlPq .token.entity{cursor:help;}/*!sc*/
+.bNGlPq .diff-node-insertion,.bNGlPq .diff-insertion:not([class^="component-"]),.bNGlPq .diff-insertion > *{color:#111319;background-color:rgba(18,138,41,0.16);-webkit-text-decoration:none;text-decoration:none;}/*!sc*/
+.bNGlPq .diff-node-insertion.current-diff,.bNGlPq .diff-insertion:not([class^="component-"]).current-diff,.bNGlPq .diff-insertion > *.current-diff{outline-color:#3a4156;background-color:rgba(32,226,69,0.16);-webkit-animation:kJsUDm 150ms 1;animation:kJsUDm 150ms 1;}/*!sc*/
+.bNGlPq .diff-node-insertion[class*="component-"]{outline:4px solid rgba(18,138,41,0.16);}/*!sc*/
+.bNGlPq .diff-node-insertion td,.bNGlPq .diff-node-insertion th{border-color:rgba(18,138,41,0.16);}/*!sc*/
+.bNGlPq .diff-node-insertion[class*="component-"],.bNGlPq .diff-node-insertion.math-node,.bNGlPq ul.diff-node-insertion,.bNGlPq li.diff-node-insertion{border-radius:6px;}/*!sc*/
+.bNGlPq td.diff-node-insertion,.bNGlPq th.diff-node-insertion{border-color:rgba(18,138,41,0.16);}/*!sc*/
+.bNGlPq .diff-node-deletion,.bNGlPq .diff-deletion:not([class^="component-"]),.bNGlPq .diff-deletion > *{color:#394351;background-color:rgba(255,180,173,0.25);-webkit-text-decoration:line-through;text-decoration:line-through;}/*!sc*/
+.bNGlPq .diff-node-deletion.current-diff,.bNGlPq .diff-deletion:not([class^="component-"]).current-diff,.bNGlPq .diff-deletion > *.current-diff{outline-color:rgba(255,255,255,0.25);background-color:rgba(255,255,255,0.25);-webkit-animation:cmcTak 150ms 1;animation:cmcTak 150ms 1;}/*!sc*/
+.bNGlPq .diff-node-deletion[class*="component-"]{outline:4px solid rgba(255,180,173,0.25);}/*!sc*/
+.bNGlPq .diff-node-deletion .mention{background-color:rgba(255,180,173,0.25);}/*!sc*/
+.bNGlPq .diff-node-deletion td,.bNGlPq .diff-node-deletion th{border-color:rgba(255,180,173,0.25);}/*!sc*/
+.bNGlPq .diff-node-deletion[class*="component-"],.bNGlPq .diff-node-deletion.math-node,.bNGlPq ul.diff-node-deletion,.bNGlPq li.diff-node-deletion{border-radius:6px;}/*!sc*/
+.bNGlPq td.diff-node-deletion,.bNGlPq th.diff-node-deletion{border-color:rgba(255,180,173,0.25);}/*!sc*/
+.bNGlPq .diff-node-modification,.bNGlPq .diff-modification:not([class^="component-"]),.bNGlPq .diff-modification > *{color:#111319;background-color:rgba(255,165,0,0.3);-webkit-text-decoration:none;text-decoration:none;}/*!sc*/
+.bNGlPq .diff-node-modification.current-diff,.bNGlPq .diff-modification:not([class^="component-"]).current-diff,.bNGlPq .diff-modification > *.current-diff{outline-color:#ffb733;background-color:rgba(255,165,0,0.5);-webkit-animation:vHVMc 150ms 1;animation:vHVMc 150ms 1;}/*!sc*/
+.bNGlPq .diff-node-modification{background-color:rgba(255,165,0,0.3);}/*!sc*/
+.bNGlPq .diff-node-modification[class*="component-"]{outline:4px solid rgba(255,165,0,0.5);}/*!sc*/
+.bNGlPq .diff-node-modification td,.bNGlPq .diff-node-modification th{border-color:rgba(255,165,0,0.5);}/*!sc*/
+.bNGlPq .diff-node-modification[class*="component-"],.bNGlPq .diff-node-modification.math-node,.bNGlPq ul.diff-node-modification,.bNGlPq li.diff-node-modification{border-radius:6px;}/*!sc*/
+.bNGlPq td.diff-node-modification,.bNGlPq th.diff-node-modification{border-color:rgba(255,165,0,0.5);}/*!sc*/
+.bNGlPq ::highlight(search-results){background-color:rgba(255,213,0,0.25);}/*!sc*/
+.bNGlPq ::highlight(search-results-current){background-color:rgba(255,213,0,0.75);color:#111319;}/*!sc*/
+.bNGlPq .find-result:not(:has(.mention)),.bNGlPq .find-result .mention{background:rgba(255,213,0,0.25);}/*!sc*/
+.bNGlPq .find-result.current-result:not(:has(.mention)),.bNGlPq .find-result.current-result .mention{background:rgba(255,213,0,0.75);-webkit-animation:iWoRBt 150ms 1;animation:iWoRBt 150ms 1;color:#111319;}/*!sc*/
+.bNGlPq .attachment{display:block;color:#111319 !important;box-shadow:0 0 0 1px #DAE1E9;white-space:nowrap;border-radius:8px;padding:6px 8px;}/*!sc*/
+.bNGlPq .image > img{width:auto;height:auto;}/*!sc*/
+.bNGlPq:lang(th) p,.bNGlPq:lang(lo) p,.bNGlPq:lang(km) p,.bNGlPq:lang(my) p{line-height:1.7;}/*!sc*/
+.bNGlPq:lang(th) .ProseMirror > p,.bNGlPq:lang(lo) .ProseMirror > p,.bNGlPq:lang(km) .ProseMirror > p,.bNGlPq:lang(my) .ProseMirror > p{margin-top:0.8em;margin-bottom:0.8em;}/*!sc*/
+.bNGlPq:lang(hi) p,.bNGlPq:lang(mr) p,.bNGlPq:lang(ne) p,.bNGlPq:lang(bn) p,.bNGlPq:lang(gu) p,.bNGlPq:lang(pa) p,.bNGlPq:lang(te) p,.bNGlPq:lang(ta) p,.bNGlPq:lang(ml) p,.bNGlPq:lang(si) p{line-height:1.7;}/*!sc*/
+.bNGlPq:lang(hi) .ProseMirror > p,.bNGlPq:lang(mr) .ProseMirror > p,.bNGlPq:lang(ne) .ProseMirror > p,.bNGlPq:lang(bn) .ProseMirror > p,.bNGlPq:lang(gu) .ProseMirror > p,.bNGlPq:lang(pa) .ProseMirror > p,.bNGlPq:lang(te) .ProseMirror > p,.bNGlPq:lang(ta) .ProseMirror > p,.bNGlPq:lang(ml) .ProseMirror > p,.bNGlPq:lang(si) .ProseMirror > p{margin-top:0.8em;margin-bottom:0.8em;}/*!sc*/
+.bNGlPq:lang(bo) p{line-height:1.8;}/*!sc*/
+.bNGlPq:lang(bo) .ProseMirror > p{margin-top:0.8em;margin-bottom:0.8em;}/*!sc*/
+.bNGlPq:lang(ar) p,.bNGlPq:lang(fa) p,.bNGlPq:lang(ur) p,.bNGlPq:lang(he) p{line-height:1.6;}/*!sc*/
+.bNGlPq:lang(am) p,.bNGlPq:lang(mn) p{line-height:1.7;}/*!sc*/
+.bNGlPq:lang(am) .ProseMirror > p,.bNGlPq:lang(mn) .ProseMirror > p{margin-top:0.8em;margin-bottom:0.8em;}/*!sc*/
+data-styled.g53[id="sc-fBWQRz"]{content:"bNGlPq,"}/*!sc*/
+html{line-height:1.15;-webkit-text-size-adjust:100%;}/*!sc*/
+body{margin:0;}/*!sc*/
+main{display:block;}/*!sc*/
+h1{font-size:2em;margin:0.67em 0;}/*!sc*/
+hr{box-sizing:content-box;height:0;overflow:visible;}/*!sc*/
+pre{font-family:monospace,monospace;font-size:1em;}/*!sc*/
+a{background-color:transparent;}/*!sc*/
+abbr[title]{border-bottom:none;-webkit-text-decoration:underline;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted;}/*!sc*/
+b,strong{font-weight:bolder;}/*!sc*/
+code,kbd,samp{font-family:monospace,monospace;font-size:1em;}/*!sc*/
+small{font-size:80%;}/*!sc*/
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline;}/*!sc*/
+sub{bottom:-0.25em;}/*!sc*/
+sup{top:-0.5em;}/*!sc*/
+img{border-style:none;}/*!sc*/
+button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0;}/*!sc*/
+button,input{overflow:visible;}/*!sc*/
+button,select{text-transform:none;}/*!sc*/
+button,[type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button;}/*!sc*/
+button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0;}/*!sc*/
+button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText;}/*!sc*/
+fieldset{padding:0.35em 0.75em 0.625em;}/*!sc*/
+legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal;}/*!sc*/
+progress{vertical-align:baseline;}/*!sc*/
+textarea{overflow:auto;}/*!sc*/
+[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0;}/*!sc*/
+[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto;}/*!sc*/
+[type="search"]{-webkit-appearance:textfield;outline-offset:-2px;}/*!sc*/
+[type="search"]::-webkit-search-decoration{-webkit-appearance:none;}/*!sc*/
+::-webkit-file-upload-button{-webkit-appearance:button;font:inherit;}/*!sc*/
+details{display:block;}/*!sc*/
+summary{display:list-item;}/*!sc*/
+template{display:none;}/*!sc*/
+[hidden]{display:none;}/*!sc*/
+*{box-sizing:border-box;}/*!sc*/
+html{--line-height-body:1.5;--font-size-body:16px;}/*!sc*/
+html,body{width:100%;margin:0;padding:0;print-color-adjust:exact;--pointer:default;--scrollbar-width:calc(100vw - 100cqw);overscroll-behavior-x:none;--line-height-p:var(--line-height-body);--line-height-h:1.25;}/*!sc*/
+@media print{html,body{background:none !important;}}/*!sc*/
+body,button,input,optgroup,select,textarea{font-family:-apple-system,BlinkMacSystemFont,Inter,'Segoe UI',Roboto,Oxygen,sans-serif;}/*!sc*/
+body{font-size:var(--font-size-body);line-height:var(--line-height-body);color:#111319;overscroll-behavior-y:none;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;padding-right:calc(0 - var(--removed-body-scroll-bar-size)) !important;}/*!sc*/
+@media (min-width:737px){html,body{min-height:0;}}/*!sc*/
+@media (min-width:737px) and (display-mode:standalone){body:after{content:"";display:block;position:fixed;top:0;left:0;right:0;height:1px;background:#DAE1E9;z-index:10000;}}/*!sc*/
+a{color:#0366d6;-webkit-text-decoration:none;text-decoration:none;cursor:pointer;}/*!sc*/
+h1,h2,h3,h4,h5,h6{font-weight:500;line-height:var(--line-height-h);margin-top:1em;margin-bottom:0.5em;}/*!sc*/
+h1{font-size:36px;}/*!sc*/
+h2{font-size:26px;}/*!sc*/
+h3{font-size:20px;}/*!sc*/
+h4{font-size:18px;}/*!sc*/
+h5{font-size:16px;}/*!sc*/
+p,dl,ol,ul,pre,blockquote{margin-top:1em;margin-bottom:1em;}/*!sc*/
+hr{border:0;height:0;border-top:1px solid #DAE1E9;}/*!sc*/
+:focus-visible{outline-color:#0366d6;outline-offset:-1px;outline-width:initial;}/*!sc*/
+:root{--sat:env(safe-area-inset-top);--sar:env(safe-area-inset-right);--sab:env(safe-area-inset-bottom);--sal:env(safe-area-inset-left);}/*!sc*/
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{-webkit-animation-duration:0.01ms !important;animation-duration:0.01ms !important;-webkit-animation-iteration-count:1 !important;animation-iteration-count:1 !important;-webkit-transition-duration:0.01ms !important;transition-duration:0.01ms !important;-webkit-scroll-behavior:auto !important;-moz-scroll-behavior:auto !important;-ms-scroll-behavior:auto !important;scroll-behavior:auto !important;}}/*!sc*/
+[id^="doffscreen-mermaid"]{position:absolute !important;left:-9999px !important;top:-9999px !important;}/*!sc*/
+.table-dragging,.table-dragging *,.table-dragging *::before,.table-dragging *::after{cursor:-webkit-grabbing !important;cursor:-moz-grabbing !important;cursor:grabbing !important;}/*!sc*/
+.resize-dragging,.resize-dragging *,.resize-dragging *::before,.resize-dragging *::after{cursor:var(--resize-drag-cursor) !important;}/*!sc*/
+data-styled.g55[id="sc-global-fztRqr1"]{content:"sc-global-fztRqr1,"}/*!sc*/
+.kPjVtW{max-width:calc( 52em + 88px );margin:0 auto;padding:0 1em;}/*!sc*/
+data-styled.g56[id="sc-hknOHE"]{content:"kPjVtW,"}/*!sc*/
+@-webkit-keyframes kJsUDm{0%{box-shadow:0 0 0 1px rgba(32,226,69,0.16);}50%{box-shadow:0 0 0 4px rgba(32,226,69,0.16);}100%{box-shadow:0 0 0 1px rgba(32,226,69,0.16);}}/*!sc*/
+@keyframes kJsUDm{0%{box-shadow:0 0 0 1px rgba(32,226,69,0.16);}50%{box-shadow:0 0 0 4px rgba(32,226,69,0.16);}100%{box-shadow:0 0 0 1px rgba(32,226,69,0.16);}}/*!sc*/
+data-styled.g57[id="sc-keyframes-kJsUDm"]{content:"kJsUDm,"}/*!sc*/
+@-webkit-keyframes cmcTak{0%{box-shadow:0 0 0 1px rgba(255,255,255,0.25);}50%{box-shadow:0 0 0 4px rgba(255,255,255,0.25);}100%{box-shadow:0 0 0 1px rgba(255,255,255,0.25);}}/*!sc*/
+@keyframes cmcTak{0%{box-shadow:0 0 0 1px rgba(255,255,255,0.25);}50%{box-shadow:0 0 0 4px rgba(255,255,255,0.25);}100%{box-shadow:0 0 0 1px rgba(255,255,255,0.25);}}/*!sc*/
+data-styled.g58[id="sc-keyframes-cmcTak"]{content:"cmcTak,"}/*!sc*/
+@-webkit-keyframes vHVMc{0%{box-shadow:0 0 0 1px rgba(255,165,0,0.5);}50%{box-shadow:0 0 0 4px rgba(255,165,0,0.5);}100%{box-shadow:0 0 0 1px rgba(255,165,0,0.5);}}/*!sc*/
+@keyframes vHVMc{0%{box-shadow:0 0 0 1px rgba(255,165,0,0.5);}50%{box-shadow:0 0 0 4px rgba(255,165,0,0.5);}100%{box-shadow:0 0 0 1px rgba(255,165,0,0.5);}}/*!sc*/
+data-styled.g59[id="sc-keyframes-vHVMc"]{content:"vHVMc,"}/*!sc*/
+@-webkit-keyframes iWoRBt{0%{box-shadow:0 0 0 1px rgba(255,213,0,0.75);}50%{box-shadow:0 0 0 4px rgba(255,213,0,0.75);}100%{box-shadow:0 0 0 1px rgba(255,213,0,0.75);}}/*!sc*/
+@keyframes iWoRBt{0%{box-shadow:0 0 0 1px rgba(255,213,0,0.75);}50%{box-shadow:0 0 0 4px rgba(255,213,0,0.75);}100%{box-shadow:0 0 0 1px rgba(255,213,0,0.75);}}/*!sc*/
+data-styled.g60[id="sc-keyframes-iWoRBt"]{content:"iWoRBt,"}/*!sc*/
+</style></head><body><article class="sc-hknOHE kPjVtW"><h1 dir="ltr">5. Slurm</h1><div dir="ltr" class="sc-fBWQRz bNGlPq"><div id="content" class="ProseMirror exported" contenteditable="false" translate="no"><h1 dir="auto" class="heading-content">1. 简介</h1><p dir="auto">Slurm(Simple Linux Utility for Resource Management， <a href="http://slurm.schedmd.com/" class="use-hover-preview" rel="noopener noreferrer nofollow">http://slurm.schedmd.com/</a> )是开源的、具有容错性和高度可扩展的Linux集群超级计算系统资源管理和作业调度系统。超级计算系统可利用Slurm对资源和作业进行管理，以避免相互干扰，提高运行效率。</p><p dir="auto">用户工具包含 <code class="inline" spellcheck="false">srun</code> 运行作业、 <code class="inline" spellcheck="false">scancel</code> 终止排队中或运行中的作业、 <code class="inline" spellcheck="false">sinfo</code> 查看系统状态、 <code class="inline" spellcheck="false">squeue</code> 查看作业状态、 <code class="inline" spellcheck="false">sacct</code> 查看运行中或结束了的作业及作业步信息等命令。</p><p dir="auto"><div class="image" draggable="true"><img src="attachments/0c7862e8-c1ff-444f-b012-dd426e0e864f.png" width="291" height="244" alt="来源于https://slurm.schedmd.com/quickstart.html" contenteditable="false"><p class="caption">来源于https://slurm.schedmd.com/quickstart.html</p></div><br class="ProseMirror-trailingBreak"></p><h1 dir="auto" class="heading-content">2. 术语</h1><ul><li><p dir="auto">Login Node：用户登录节点，用于用户登录的节点。（mu01是登陆节点）</p></li><li><p dir="auto">Compute Node：计算节点，运行作业计算任务的节点，需运行slurmd服务。（cu01至cu10和gpu01是计算节点）</p></li><li><p dir="auto">Partition：队列、分区。用于对计算节点、作业并行规模、作业时长、用户等进行分组管理，以合理分配资源。</p></li></ul><p dir="auto"><div class="image" draggable="true"><img src="attachments/33ff705b-bb75-4bee-bdfe-b290f6180347.png" width="361" height="297" contenteditable="false"></div><br class="ProseMirror-trailingBreak"></p><h1 dir="auto" class="heading-content">3. 日常操作</h1><h2 dir="auto" class="heading-content">3.1 查看节点状态</h2><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 看分区和节点状态
+sinfo                                          # 分区概览
+sinfo -N                                       # 按节点显示
+sinfo -N | grep idle                           # 只看空闲节点</code></pre></div><p dir="auto"><div class="image" draggable="true"><img src="attachments/360ce4bd-4a9b-4c03-831b-1ad055c71c67.png" width="889" height="218" alt="" contenteditable="false"></div><br class="ProseMirror-trailingBreak"></p><p dir="auto">执行 <code class="inline" spellcheck="false">sinfo</code> 命令，如果<code class="inline" spellcheck="false">STATE</code>列显示为down、drain且跟着*符号，表示该节点处于异常状态。</p><p dir="auto"><div class="image" draggable="true"><img src="attachments/cf355f19-c1d2-4320-a3c1-0bb60017d3dd.png" width="445" height="152" alt="来源于https://zhuanlan.zhihu.com/p/571973164" contenteditable="false"><p class="caption">来源于https://zhuanlan.zhihu.com/p/571973164</p></div><br class="ProseMirror-trailingBreak"></p><h2 dir="auto" class="heading-content">3.2 查看资源情况</h2><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 详细资源信息
+scontrol show nodes | grep -E 'NodeName=|CPUAlloc=|CPUTot='</code></pre></div><p dir="auto"><div class="image" draggable="true"><img src="attachments/3d017b08-d9e0-4bbc-9269-f321be690409.png" width="1289" height="875" contenteditable="false"></div><br class="ProseMirror-trailingBreak"></p><h2 dir="auto" class="heading-content">3.3 提交任务</h2><p dir="auto"><code class="inline" spellcheck="false">.sh</code> 或 <code class="inline" spellcheck="false">.slurm</code>是常用和标准的 Slurm 作业脚本扩展名（注意，<code class="inline" spellcheck="false">.script</code>等文件扩展名在功能上是与<code class="inline" spellcheck="false">.sh</code> 或 <code class="inline" spellcheck="false">.slurm</code>完全等同的，Slurm 并不依赖扩展名来解析或运行你的作业脚本）。</p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 提交任务
+sbatch job_script.slurm</code></pre></div><p dir="auto">在提交作业前，初学者常会混淆三个核心命令。简单来说：</p><ul><li><p dir="auto"><code class="inline" spellcheck="false"><strong>sbatch</strong></code><strong>（批处理）</strong>：提交后立即返回终端，作业在后台排队。适合长时间、正式的批量计算。</p></li><li><p dir="auto"><code class="inline" spellcheck="false"><strong>salloc</strong></code><strong>（实时分配）</strong>：阻塞终端，直到申请到资源并在计算节点上获得一个交互式 shell。适合需要申请特定资源后，自己手动分步执行 <code class="inline" spellcheck="false">srun</code> 命令的调试场景。</p></li><li><p dir="auto"><code class="inline" spellcheck="false"><strong>srun</strong></code><strong>（交互式）</strong>：在登录节点直接运行 <code class="inline" spellcheck="false">srun</code> 会阻塞终端，直到任务执行完毕。千万不要在登录节点直接跑重型计算。</p></li></ul><h2 dir="auto" class="heading-content">3.4 取消任务</h2><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 取消单个任务
+scancel &lt;jobid&gt;</code></pre></div><p dir="auto">如果一次性取消了大量运行中的任务，计算节点可能会因为来不及清理而产生僵尸进程。稳妥的做法是先停排队中的（PD），再分批停运行中的（R）。</p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 稳妥一点：先停 pending，再停 running
+# 取消 pending 状态的任务（可以一起取消）
+squeue -h -j &lt;jobid&gt; -t PD -o "%i" | xargs -r -n 20 scancel
+
+# 取消 running 状态的任务：每次取消3个，隔一分钟，给节点留出清理时间
+squeue -h -j &lt;jobid&gt; -t R -o "%i" | head -n 3 | xargs -r scancel
+sleep 60
+squeue -h -j &lt;jobid&gt; -t R -o "%i" | head -n 3 | xargs -r scancel</code></pre></div><p dir="auto">或取消自己的所有任务：</p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 取消自己的所有任务
+scancel -u $USER</code></pre></div><h2 dir="auto" class="heading-content">3.5 查看任务状态</h2><p dir="auto"><strong>作业管理：</strong><code class="inline" spellcheck="false"><strong>squeue</strong></code></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 查看所有任务
+squeue
+
+# 查看自己任务
+squeue -u yanglun</code></pre></div><p dir="auto"><div class="image" draggable="true"><img src="attachments/dea021bc-78fe-4653-a313-08a8b7d2d1ea.png" width="1343" height="524" contenteditable="false"></div><br class="ProseMirror-trailingBreak"></p><p dir="auto"><code class="inline" spellcheck="false">ST</code>列表示任务的状态，其中 R 表示运行，PD 表示待处理。</p><p dir="auto"><code class="inline" spellcheck="false">TIME</code>列表示任务运行时长（格式为<em>days-hours:minutes:seconds</em>）。</p><p dir="auto"><code class="inline" spellcheck="false">NODELIST(REASON)</code>列则表明任务当前运行的位置或其仍处于待处理状态的原因。</p><p dir="auto"><div class="image" draggable="true"><img src="attachments/225869c4-7ac1-4cd7-9c73-e23dba20204c.png" width="439" height="168" alt="来源于https://zhuanlan.zhihu.com/p/571973164" contenteditable="false"><p class="caption">来源于https://zhuanlan.zhihu.com/p/571973164</p></div><br class="ProseMirror-trailingBreak"></p><p dir="auto"><strong>作业管理：</strong><code class="inline" spellcheck="false"><strong>scontrol</strong></code></p><p dir="auto"><code class="inline" spellcheck="false">squeue</code> 只能看队列摘要，如果你想查看<strong>某个作业为什么一直排队（PD）、它被分配到了具体哪台节点、工作目录在哪</strong>，就需要用 <code class="inline" spellcheck="false">scontrol</code>。</p><div class="tableWrapper table-wrapper"><div class="table-scrollable"><table style="--default-cell-min-width: 25px; min-width: 265px;"><colgroup><col style="width: 240px;"><col></colgroup><tbody><tr><th style="min-width: 240px;"><p dir="auto"><strong>命令</strong></p></th><th><p dir="auto"><strong>作用</strong></p></th></tr><tr><td style="min-width: 240px;"><p dir="auto"><code class="inline" spellcheck="false">scontrol show job &lt;jobid&gt;</code></p></td><td><p dir="auto">查看作业的详细信息（包含分配的具体节点/工作目录/环境变量等）</p></td></tr><tr><td style="min-width: 240px;"><p dir="auto"><code class="inline" spellcheck="false">scontrol hold &lt;jobid&gt;</code></p></td><td><p dir="auto">挂起排队中的作业（不取消，保留位置）</p></td></tr><tr><td style="min-width: 240px;"><p dir="auto"><code class="inline" spellcheck="false">scontrol release &lt;jobid&gt;</code></p></td><td><p dir="auto">恢复被挂起的作业</p></td></tr><tr><td style="min-width: 240px;"><p dir="auto"><code class="inline" spellcheck="false">scontrol requeue &lt;jobid&gt;</code></p></td><td><p dir="auto">让作业重新排队（可用于作业跑完后重跑）</p></td></tr></tbody></table></div></div><h2 dir="auto" class="heading-content">3.6 查看<strong>资源消耗</strong></h2><div class="tableWrapper table-wrapper"><div class="table-scrollable"><table style="--default-cell-min-width: 25px; min-width: 75px;"><colgroup><col><col><col></colgroup><tbody><tr><th><p dir="auto"><strong>命令</strong></p></th><th><p dir="auto"><strong>适用状态</strong></p></th><th><p dir="auto"><strong>典型用途</strong></p></th></tr><tr><td><p dir="auto"><code class="inline" spellcheck="false"><strong>sstat</strong></code></p></td><td><p dir="auto">仅运行中的作业</p></td><td><p dir="auto">实时查看当前作业的CPU、内存（MaxRSS）等资源使用情况</p></td></tr><tr><td><p dir="auto"><code class="inline" spellcheck="false"><strong>sacct</strong></code></p></td><td><p dir="auto">运行中或已结束的作业</p></td><td><p dir="auto">查询历史记录，作业结束后用退出码、峰值内存进行审计</p></td></tr></tbody></table></div></div><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 实时查看当前作业的CPU、内存等资源使用情况
+sstat -j &lt;jobid&gt; --format=JobID,MaxRSS,AveCPU</code></pre></div><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 查看指定作业的基本记账信息
+sacct -j &lt;jobid&gt;
+
+# 自定义输出列，查看退出码、实际耗时和峰值内存
+sacct -j &lt;jobid&gt; --format=JobID,JobName,State,ExitCode,Elapsed,MaxRSS
+
+# 如果想知道作业在队列里等了多久
+sacct -j &lt;jobid&gt; --format=JobID,Submit,Start,End,Elapsed
+
+# 查看自己从某天开始的所有作业记录
+sacct -u $USER --starttime=2026-11-01</code></pre></div><p dir="auto"><code class="inline" spellcheck="false">sacct</code>查询的是Slurm的记账数据库，可以查看已结束作业的退出码、实际耗时、峰值内存、CPU使用等。</p><p dir="auto"><div class="image" draggable="true"><img src="attachments/0ecb7e60-195d-4155-881d-6c7ff3d3b562.png" width="1232" height="211" alt="" contenteditable="false"></div><br class="ProseMirror-trailingBreak"></p><p dir="auto"><code class="inline" spellcheck="false">MaxRSS</code>（峰值常驻内存）对于调优<code class="inline" spellcheck="false">--mem</code>申请量特别有用：如果<code class="inline" spellcheck="false">MaxRSS</code>远低于你申请的<code class="inline" spellcheck="false">--mem</code>，下次可以适当调低，提高排队优先级。</p><h1 dir="auto" class="heading-content">4. slurm脚本</h1><p dir="auto">从性能和管理角度出发，建议将相关任务合并为一个多步骤的 Slurm 作业。原因在于，Slurm 调度多个步骤所消耗的资源远低于分别管理多个独立作业。</p><p dir="auto">通常，一个标准的 Slurm 脚本可划分为两个部分：</p><ul><li><p dir="auto"><strong>Header</strong>：负责设置所需的计算资源配置（如节点、时间、内存等）。</p></li><li><p dir="auto"><strong>Command</strong>：包含实际需要执行的计算命令。</p></li></ul><h2 dir="auto" class="heading-content">4.1 <strong>header</strong></h2><p dir="auto"><code class="inline" spellcheck="false">SLURM</code> 脚本包含带有 <strong>#SBATCH</strong> 的 Header，其中，Short Form 和 Long Form 任选一种使用即可。</p><p dir="auto"><strong>Short Form</strong>：使用单连字符，后跟值，无需等号。例如：-N 4</p><p dir="auto"><strong>Long Form</strong>：使用双连字符，后跟单词（单词间用连字符分隔），且必须使用等号。例如：--nodes=4</p><div class="tableWrapper table-wrapper"><div class="table-scrollable"><table style="--default-cell-min-width: 25px; width: 730.6666666666667px;"><colgroup><col style="width: 103.33333333333337px;"><col style="width: 157px;"><col style="width: 158px;"><col style="width: 312.33333333333337px;"></colgroup><tbody><tr><th style="min-width: 103.33333333333337px;"><p dir="auto"><strong>Short Form</strong></p></th><th style="min-width: 157px;"><p dir="auto"><strong>Long Form</strong></p></th><th style="min-width: 158px;"><p dir="auto"><strong>英文术语解读</strong></p></th><th style="min-width: 312.33333333333337px;"><p dir="auto">功能说明</p></th></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-J</p></td><td style="min-width: 157px;"><p dir="auto">--job-name</p></td><td style="min-width: 158px;"><p dir="auto">Job Name</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">为作业命名</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-N</p></td><td style="min-width: 157px;"><p dir="auto">--nodes</p></td><td style="min-width: 158px;"><p dir="auto">Number of Nodes</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">申请的节点数量</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-n </p></td><td style="min-width: 157px;"><p dir="auto">--ntasks</p></td><td style="min-width: 158px;"><p dir="auto">Number of Tasks</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">申请的任务数量</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-p</p></td><td style="min-width: 157px;"><p dir="auto">--partition</p></td><td style="min-width: 158px;"><p dir="auto">Partition</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定分区/队列</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-o</p></td><td style="min-width: 157px;"><p dir="auto">--output</p></td><td style="min-width: 158px;"><p dir="auto">Output File</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定输出（.out）文件路径</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-e</p></td><td style="min-width: 157px;"><p dir="auto">--error</p></td><td style="min-width: 158px;"><p dir="auto">Error File</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定错误（.err）文件路径</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-t</p></td><td style="min-width: 157px;"><p dir="auto">--time</p></td><td style="min-width: 158px;"><p dir="auto">Time Limit</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定作业运行时长，超时会终止（可选）</p><p dir="auto">10-00:00:00代表10天-0小时:0分钟:0秒</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-c</p></td><td style="min-width: 157px;"><p dir="auto">--cpus-per-task</p></td><td style="min-width: 158px;"><p dir="auto">CPUs per Task</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">为每个任务分配CPU核心数（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto">-a</p></td><td style="min-width: 157px;"><p dir="auto">--array</p></td><td style="min-width: 158px;"><p dir="auto">Job Array</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">提交作业数组，用于批量处理（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--mem</p></td><td style="min-width: 158px;"><p dir="auto">Memory per Node</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">申请每个节点的内存资源（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--nodelist</p></td><td style="min-width: 158px;"><p dir="auto">Node List</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定作业运行在特定的节点（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--ntasks-per-node</p></td><td style="min-width: 158px;"><p dir="auto">Tasks per Node</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定每个节点上运行的任务数（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--mail-user</p></td><td style="min-width: 158px;"><p dir="auto">Email Address</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定接收通知的邮箱地址（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--mail-type</p></td><td style="min-width: 158px;"><p dir="auto">Notification Events</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">指定接收邮件的时机（如 BEGIN, END, FAIL, ALL）（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--gpus</p></td><td style="min-width: 158px;"><p dir="auto">GPUs</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">申请GPU资源（可选）</p></td></tr><tr><td style="min-width: 103.33333333333337px;"><p dir="auto"><br class="ProseMirror-trailingBreak"></p></td><td style="min-width: 157px;"><p dir="auto">--gpus-per-node=1 / --gpus-per-task=1</p></td><td style="min-width: 158px;"><p dir="auto">GPUs per Node / GPUs per Task</p></td><td style="min-width: 312.33333333333337px;"><p dir="auto">为每个节点申请指定数量的GPU / </p><p dir="auto">为每个任务申请指定数量的GPU（可选）</p></td></tr></tbody></table></div></div><p dir="auto"><strong>提示</strong>：如果申请 GPU 时 <code class="inline" spellcheck="false">--gpus</code> 系列选项报错（提示不支持），说明你所在的集群没有启用 <code class="inline" spellcheck="false">select/cons_tres</code> 插件。此时可回退使用更通用的底层写法：<code class="inline" spellcheck="false">--gres=gpu:1</code>（申请1块GPU）或 <code class="inline" spellcheck="false">--gres=gpu:型号:数量</code>。</p><h3 dir="auto" class="heading-content">4.1.1 单个任务</h3><p dir="auto"><strong>Long Form</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">#!/bin/bash
+#SBATCH --job-name=my_single_job
+#SBATCH --partition=cu
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=4G
+#SBATCH --output=%x_%j.out
+#SBATCH --error=%x_%j.err
+
+# ---- 以下为实际执行命令 ----
+echo "Job ID: $SLURM_JOB_ID"
+echo "Running on node: $(hostname)"
+
+# 示例：运行单线程程序
+python my_script.py</code></pre></div><p dir="auto"><strong>Short Form</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">#!/bin/bash
+#SBATCH -J my_single_job
+#SBATCH -p compute
+#SBATCH -t 01:00:00
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 1
+#SBATCH --mem=4G
+#SBATCH -o %x_%j.out
+#SBATCH -e %x_%j.err
+
+# ---- 以下为实际执行命令 ----
+echo "Job ID: $SLURM_JOB_ID"
+echo "Running on node: $(hostname)"
+
+python my_script.py</code></pre></div><h3 dir="auto" class="heading-content">4.1.2 数组任务</h3><p dir="auto">作业数组是一种高效的管理机制，适用于处理那些具有相同资源需求的批量作业。</p><p dir="auto"><strong>1. 灵活控制任务数量和并发数</strong></p><ul><li><p dir="auto"><strong>限制并发</strong>：常用 <code class="inline" spellcheck="false">%</code> 限制同时运行的任务数。比如 <code class="inline" spellcheck="false">#SBATCH --array=1-100%10</code>：提交100个任务，但最多同时运行10个，其余排队等待。</p></li><li><p dir="auto"><strong>非连续索引与步长</strong>：如果你只想跑指定的几个任务，可以用逗号：<code class="inline" spellcheck="false">--array=1,3,5,7</code>。如果想按步长跑，可以用冒号：<code class="inline" spellcheck="false">--array=1-10:2</code>（跑1,3,5,7,9）。</p></li></ul><p dir="auto"><strong>2. 数组任务的专属辅助变量</strong><br>除了常用的 <code class="inline" spellcheck="false">$SLURM_ARRAY_TASK_ID</code>，系统还提供：</p><ul><li><p dir="auto"><code class="inline" spellcheck="false">$SLURM_ARRAY_TASK_COUNT</code>：数组的总任务数</p></li><li><p dir="auto"><code class="inline" spellcheck="false">$SLURM_ARRAY_TASK_MIN</code> / <code class="inline" spellcheck="false">MAX</code>：数组的最小/最大索引值</p></li></ul><p dir="auto"><strong>Long Form</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">#!/bin/bash
+#SBATCH --job-name=my_array_job
+#SBATCH --partition=compute
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=4G
+#SBATCH --array=1-100%10
+#SBATCH --output=%x_%A_%a.out
+#SBATCH --error=%x_%A_%a.err
+
+# ---- 以下为实际执行命令 ----
+echo "Array Job ID: $SLURM_ARRAY_JOB_ID"
+echo "Array Task ID: $SLURM_ARRAY_TASK_ID"
+
+# 用 $SLURM_ARRAY_TASK_ID 区分不同子任务
+INPUT_FILE="input_${SLURM_ARRAY_TASK_ID}.txt"
+python my_script.py --input "$INPUT_FILE"</code></pre></div><p dir="auto"><strong>Short Form</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">#!/bin/bash
+#SBATCH -J my_array_job
+#SBATCH -p compute
+#SBATCH -t 01:00:00
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 1
+#SBATCH --mem=4G
+#SBATCH -a 1-100%10
+#SBATCH -o %x_%A_%a.out
+#SBATCH -e %x_%A_%a.err
+
+# ---- 以下为实际执行命令 ----
+echo "Array Job ID: $SLURM_ARRAY_JOB_ID"
+echo "Array Task ID: $SLURM_ARRAY_TASK_ID"
+
+INPUT_FILE="input_${SLURM_ARRAY_TASK_ID}.txt"
+python my_script.py --input "$INPUT_FILE"</code></pre></div><h2 dir="auto" class="heading-content">4.2 <strong>Command</strong></h2><h3 dir="auto" class="heading-content">4.2.1 <strong>Command 编写规范</strong></h3><ul><li><p dir="auto"><strong>资源指令全放顶部</strong> </p><p dir="auto">Slurm 仅解析脚本首个执行命令之前的资源申请行。开始运行代码后，再写资源申请会被当作普通注释忽略，所有配置必须集中在最前。</p></li><li><p dir="auto"><strong>运行核心程序用 srun</strong> </p><p dir="auto">直接运行程序系统只能看到黑盒；加上 <code class="inline" spellcheck="false">srun</code> 后，进程会被注册为“作业步骤”，系统才能精确追踪资源消耗，并在取消作业时干净地杀掉所有子进程。</p></li><li><p dir="auto"><strong>警惕“假成功”陷阱</strong> </p><p dir="auto">Slurm 仅凭脚本最后一条命令的返回值（0为成功）判定作业状态。如果核心程序报错，但你后面加了一句普通的 <code class="inline" spellcheck="false">echo</code> 打印（返回0），系统会误判作业成功。务必确保核心程序的错误码直接传递给系统。</p></li><li><p dir="auto"><strong>确认激活正确的环境</strong> </p><p dir="auto">集群通常同时存在公用环境和个人环境。激活环境必须在运行代码前完成。为防止路径冲突，建议用绝对路径或 hook 方式激活自己的环境，并打印一次环境路径（如 <code class="inline" spellcheck="false">which R</code>）来确认绝对没调错。</p></li></ul><p dir="auto"><br class="ProseMirror-trailingBreak"></p><p dir="auto"><strong>完整的单个任务slurm脚本示例：</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">#!/bin/bash
+#SBATCH -J metadata_csv_merge
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH --mem=30G
+#SBATCH -p cu
+#SBATCH -t 24:00:00
+#SBATCH -o logs/metadata_csv_merge_%j.out
+#SBATCH -e logs/metadata_csv_merge_%j.err
+#SBATCH --exclude=cu01
+
+# 0. 确保日志文件夹存在（防止因目录不存在导致作业失败）
+mkdir -p logs
+
+# 1. 环境准备
+eval "$(/home/yanglun/miniconda3/bin/conda shell.bash hook)"
+conda activate r-env
+
+# 2. 调试日志
+echo "Running on node: $(hostname)"
+echo "Start time: $(date)"
+echo "R environment: $(which R)" 
+
+# 3. 核心计算：使用 srun 启动
+srun Rscript metadata_csv_merge.R
+EXIT_CODE=$?
+
+# 4. 收尾与退出码传递（确保 Slurm 准确捕获作业真实状态）
+echo "End time: $(date), Exit Code: $EXIT_CODE"
+exit $EXIT_CODE</code></pre></div><h3 dir="auto" class="heading-content">4.2.2 <strong>环境变量与数组任务</strong></h3><p dir="auto">当需要批量处理大量相似任务时，数组任务（Job Array）是最佳选择。而在脚本内部，Slurm 提供了丰富的内置环境变量来辅助我们动态生成路径、分配资源。</p><p dir="auto">以下是脚本内部可直接调用的环境变量：</p><div class="tableWrapper table-wrapper"><div class="table-scrollable"><table style="--default-cell-min-width: 25px; min-width: 420px;"><colgroup><col style="width: 395px;"><col></colgroup><tbody><tr><th style="min-width: 395px;"><p dir="auto"><strong>环境变量</strong></p></th><th><p dir="auto"><strong>英文术语解读</strong></p></th></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_JOB_ID</code> / <code class="inline" spellcheck="false">$SLURM_JOBID</code></p></td><td><p dir="auto">作业ID</p></td></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_SUBMIT_DIR</code></p></td><td><p dir="auto">提交作业时用户所在的工作目录</p><p dir="auto">（脚本中<code class="inline" spellcheck="false">cd</code>回提交目录常用）</p></td></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_JOB_NAME</code></p></td><td><p dir="auto">作业名称</p></td></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_NNODES</code></p></td><td><p dir="auto">分配的节点数</p></td></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_NTASKS</code></p></td><td><p dir="auto">分配的任务总数</p></td></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_CPUS_PER_TASK</code></p></td><td><p dir="auto">每个任务的CPU核数</p></td></tr><tr><td style="min-width: 395px;"><p dir="auto"><code class="inline" spellcheck="false">$SLURM_ARRAY_JOB_ID</code> / <code class="inline" spellcheck="false">$SLURM_ARRAY_TASK_ID</code></p></td><td><p dir="auto">数组作业的主ID / 当前子任务索引</p></td></tr></tbody></table></div></div><p dir="auto">以下是示例：</p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">#!/bin/bash
+#SBATCH --job-name=dada2_array
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -c 24
+#SBATCH --array=1-6
+#SBATCH -o logs/%x_%A_%a.out
+
+# 1. 打印所有核心环境变量，用于调试
+echo "作业名: $SLURM_JOB_NAME | 作业ID: $SLURM_JOB_ID (或 $SLURM_JOBID)"
+echo "分配节点: $SLURM_NNODES | 任务总数: $SLURM_NTASKS | 每任务CPU: $SLURM_CPUS_PER_TASK"
+echo "数组主ID: $SLURM_ARRAY_JOB_ID | 当前子任务: $SLURM_ARRAY_TASK_ID"
+echo "提交目录: $SLURM_SUBMIT_DIR"
+
+# 2. 切换到提交作业时的目录，确保相对路径有效
+cd "$SLURM_SUBMIT_DIR"
+
+# 3. 利用数组索引提取当前任务的数据
+study_id=$(sed -n "${SLURM_ARRAY_TASK_ID}p" study_id_add.txt)
+echo "当前处理项目: ${study_id}"
+
+# 4. 动态利用环境变量构建输出目录，避免冲突
+WORK_DIR="results/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}_task${SLURM_ARRAY_TASK_ID}"
+mkdir -p "$WORK_DIR"
+
+# 5. 核心计算（利用 $SLURM_CPUS_PER_TASK 动态分配并行数）
+# 假设 parallel 需要指定并发数
+cat samples.txt | parallel -j ${SLURM_CPUS_PER_TASK} "fastq-dump {}"
+
+# 6. 运行最终脚本（使用 srun 启动，传递真实报错码）
+srun Rscript dada2_analysis.r "$study_id" "$WORK_DIR" || exit $?</code></pre></div><h2 dir="auto" class="heading-content">4.3 Output</h2><p dir="auto">提交作业后生成的 <code class="inline" spellcheck="false">.out</code> 文件，不仅是系统的输出记录，更是排查错误、确认数据质量的唯一凭证。</p><p dir="auto">今天以<code class="inline" spellcheck="false">metadata_csv_merge</code>这个slurm作业为例：</p><p dir="auto"><strong>第一阶段：查环境（看开头）</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">Running on node: cu02
+Start time: Mon Nov 16 23:11:24 CST 2026
+R environment: /home/yanglun/miniconda3/envs/r-env/bin/R</code></pre></div><ul><li><p dir="auto"><strong>节点与时间</strong>：任务跑在 <code class="inline" spellcheck="false">cu02</code> 节点，启动时间一目了然。</p></li><li><p dir="auto"><strong>环境路径</strong>：看到绝对路径是 <code class="inline" spellcheck="false">.../r-env/bin/R</code>，说明<strong>完美调用了你的专属环境，没被公用环境干扰</strong>。</p></li></ul><p dir="auto"><strong>第二阶段：观业务（看中间）</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">================ Merge Report ================
+Execution Time: 2026-11-16 23:11:52.021518
+Total subdirectories checked: 345
+Successfully merged metadata_v2.csv files: 334
+
+[1. Subdirectories missing metadata_v2.csv]
+ - PRJDB12444
+ ...
+ - PRJNA804331
+
+[2. Files missing required columns]
+None. All read files contain the 19 required columns. </code></pre></div><ul><li><p dir="auto"><strong>执行效率</strong>：核心计算不到 30 秒完成。</p></li><li><p dir="auto"><strong>数据对账</strong>：检查 345 个，成功 334 个。</p></li><li><p dir="auto"><strong>容错设计</strong>：缺失的 11 个文件夹，脚本没有直接崩溃，而是跳过并在最后列出名单，这种“容错并报告”是数据处理的黄金标准。</p></li><li><p dir="auto"><strong>质量校验</strong>：确认所有文件均包含要求的 19 列，数据干净。</p></li></ul><p dir="auto"><strong>第三阶段：定成败（判定作业是否成功）</strong></p><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false">Merge complete! Data saved to: /home/yanglun/YSD/.../metadata-v2-merge.csv
+Report saved to: /home/yanglun/YSD/.../merge_report.txt
+End time: Mon Nov 16 23:11:52 CST 2026, Exit Code: 0</code></pre></div><ul><li><p dir="auto"><strong>结果路径</strong>：直接去该路径拿合并好的文件。</p></li><li><p dir="auto"><strong>Exit Code: 0</strong>：最安心的一行。这是判定成功的唯一依据。结合脚本末尾的 <code class="inline" spellcheck="false">exit $EXIT_CODE</code>，证明真实运行成功，没有发生“假成功”。</p></li></ul><h1 dir="auto" class="heading-content">5. 其它</h1><h2 dir="auto" class="heading-content">5.1 帮助文档</h2><p dir="auto">在具体命令后，加上<code class="inline" spellcheck="false">--help</code>即可查看该命令的简要说明。</p><p dir="auto"><div class="image" draggable="true"><img src="attachments/51fcd1d9-f5e4-42a0-aee1-6a3d83efcda6.png" width="1250" height="922" contenteditable="false"></div><br class="ProseMirror-trailingBreak"></p><h2 dir="auto" class="heading-content">5.2 <strong>作业依赖</strong></h2><p dir="auto">核心用法是<code class="inline" spellcheck="false">--dependency=条件:作业ID</code>。最常用的几种条件：</p><div class="tableWrapper table-wrapper"><div class="table-scrollable"><table style="--default-cell-min-width: 25px; min-width: 50px;"><colgroup><col><col></colgroup><tbody><tr><th><p dir="auto"><strong>依赖条件</strong></p></th><th><p dir="auto"><strong>含义</strong></p></th></tr><tr><td><p dir="auto"><code class="inline" spellcheck="false">afterok:JOBID</code></p></td><td><p dir="auto">前置作业成功退出（exit code 0） 后才启动</p></td></tr><tr><td><p dir="auto"><code class="inline" spellcheck="false">afterany:JOBID</code></p></td><td><p dir="auto">前置作业无论成功、失败还是被取消，结束后都启动</p></td></tr><tr><td><p dir="auto"><code class="inline" spellcheck="false">afternotok:JOBID</code></p></td><td><p dir="auto">前置作业失败后才启动（常用于错误处理分支）</p></td></tr></tbody></table></div></div><div class="code-block with-line-numbers" data-language="none"><pre><code spellcheck="false"># 先提交第一个作业
+JOB1=$(sbatch --parsable step1.sh)
+
+# 第二个作业在JOB1成功后才运行
+sbatch --dependency=afterok:${JOB1} step2.sh</code></pre></div><p dir="auto">这个机制可以替代“手动等上一个跑完再提交下一个”的做法，尤其适合多步骤的数据处理流水线。</p><p dir="auto"><br class="ProseMirror-trailingBreak"></p></div></div></article><script type="module">
+          window.status = "ready";
+        </script></body></html>

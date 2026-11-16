@@ -10,6 +10,12 @@
 == 2026
 
 #tufted.blog-entry(
+  date: datetime(year: 2026, month: 11, day: 17),
+  path: "2026-11-17-slurm-guide/",
+  title: "科研利器之 Slurm 集群作业调度",
+)
+
+#tufted.blog-entry(
   date: datetime(year: 2026, month: 11, day: 13),
   path: "2026-11-13-zotero-google-docs/",
   title: "科研利器之 Zotero 在 Google Docs 中的文献引用",
