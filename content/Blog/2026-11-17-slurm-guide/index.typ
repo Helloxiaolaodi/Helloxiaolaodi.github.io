@@ -11,13 +11,13 @@
 
 = 科研利器之 Slurm 集群作业调度
 
-本文介绍 Slurm 集群的日常操作与作业脚本编写：如何查看节点与资源、提交与取消任务、查看作业状态与资源消耗，以及如何编写 Header/Command 脚本、管理内存与多线程、使用数组任务与作业依赖，并解读 Output 日志。
+本文介绍 Slurm 的日常操作与作业脚本编写：如何查看节点与资源、提交与取消任务、查看作业状态与资源消耗，以及如何编写 Header/Command 脚本、管理内存与多线程、使用数组任务与作业依赖，并解读 Output 日志。
 
 #line()
 
 == 一、简介
 
-Slurm（Simple Linux Utility for Resource Management， #link("http://slurm.schedmd.com/")[http://slurm.schedmd.com/] ）是开源的、具有容错性和高度可扩展的 Linux 集群超级计算系统资源管理和作业调度系统。超级计算系统可利用 Slurm 对资源和作业进行管理，以避免相互干扰，提高运行效率。
+Slurm（Simple Linux Utility for Resource Management）是开源、容错、可扩展的集群资源管理与作业调度系统。超级计算系统可利用 Slurm 对资源和作业进行管理，以避免相互干扰，提高运行效率。
 
 用户工具包含 `srun` 运行作业、`scancel` 终止排队中或运行中的作业、`sinfo` 查看系统状态、`squeue` 查看作业状态、`sacct` 查看运行中或结束了的作业及作业步信息等命令。
 
@@ -31,9 +31,9 @@ Slurm（Simple Linux Utility for Resource Management， #link("http://slurm.sche
 == 二、术语
 
 - *Partition*：队列/分区。用于对计算节点、作业并行规模、作业时长、用户等进行分组管理，以合理分配资源
-- *Login Node*：用户登录节点，用于用户登录的节点（*mu01 是登录节点*）
-- *Compute Node*：计算节点，运行作业计算任务的节点，需运行 slurmd 服务（*cu01 至 cu10、gpu01 是计算节点*）
-- *Core*：CPU 核心，单块 CPU 可以具有多个 CPU 核心
+- *Login Node*：用户登录节点（*mu01 是登录节点*）
+- *Compute Node*：计算节点（*cu01 至 cu10、gpu01 是计算节点*）
+- *Core*：CPU 核心，单颗 CPU 通常含多个 CPU 核心
 - *Job*：作业/任务
 
 #figure(
@@ -92,7 +92,7 @@ scontrol show nodes | grep -E 'NodeName=|CPUAlloc=|CPUTot='
 
 `sbatch` 命令：提交后立即返回终端，作业在后台排队。适合长时间、正式的批量计算。
 
-`.sh` 或 `.slurm` 是常用和标准的 Slurm 作业脚本扩展名（注意，`.script` 等文件扩展名在功能上是与 `.sh` 或 `.slurm` 完全等同的，Slurm 并不依赖扩展名来解析或运行你的作业脚本）。
+`.sh` / `.slurm` 是常用扩展名；扩展名不影响运行，Slurm 并不依赖它解析脚本。
 
 ```bash
 # 提交任务
@@ -160,7 +160,7 @@ squeue -u $USER
 
 ==== 3.5.2 任务管理：scontrol
 
-`squeue` 只能看队列摘要，如果你想查看 *某个作业为什么一直排队（PD）、它被分配到了具体哪台节点、工作目录在哪*，就需要用 `scontrol`。
+`squeue` 只给队列概览；若想知道某作业为何一直排队（PD）、被分到哪台节点、工作目录在哪，就用 `scontrol`。
 
 #tablem[
   | 命令 | 作用 |
@@ -199,7 +199,7 @@ sacct -j <jobid> --format=JobID,Submit,Start,End,Elapsed
 sacct -u $USER --starttime=2026-11-01
 ```
 
-`sacct` 查询的是 Slurm 的记账数据库，可以查看已结束作业的退出码、实际耗时、峰值内存、CPU 使用等。
+`sacct` 查询的是 Slurm 的记账数据库。
 
 #figure(
   image("imgs/08-sacct-output.png"),
@@ -211,7 +211,7 @@ sacct -u $USER --starttime=2026-11-01
 
 == 四、Slurm 脚本的编写
 
-从性能和管理角度出发，建议将相关任务合并为一个多步骤的 Slurm 作业。原因在于，Slurm 调度多个步骤所消耗的资源远低于分别管理多个独立作业。
+建议把相关任务合并为一个多步骤作业：调度多步骤的额外开销远低于分别管理多个独立作业。
 
 通常，一个标准的 Slurm 脚本可划分为两个区域：
 
@@ -220,7 +220,7 @@ sacct -u $USER --starttime=2026-11-01
 
 === 4.1 Header 区
 
-`SLURM` 脚本包含带有 `#SBATCH` 的 Header 区，其中，Short Form 和 Long Form 类型任选一种使用。
+Header 区由 `#SBATCH` 行组成，*Short Form* 与 *Long Form* 任选其一。
 
 - *Short Form*：使用单连字符，后跟值，无需等号。例如：`-N 4`
 - *Long Form*：使用双连字符，后跟单词（单词间加连字符），且必须使用等号。例如：`--nodes=4`
@@ -233,24 +233,24 @@ sacct -u $USER --starttime=2026-11-01
   | -N | `--nodes` | Number of Nodes | 申请的节点数量 |
   | -n | `--ntasks` | Number of Tasks | 申请的作业数量 |
   | -c | `--cpus-per-task` | CPUs per Task | 为每个作业分配的 CPU 核心数量 |
-  |  | `--mem` | Memory per Node | 为每个节点申请的内存资源（可选） |
+  | / | `--mem` | Memory per Node | 为每个节点申请的内存资源（可选） |
   | -a | `--array` | Job Array | 提交作业数组，用于批量处理（可选） |
   | -t | `--time` | Time Limit | 作业最长运行时间，超时会终止（可选）；`10-00:00:00` 代表 10 天 0 小时 0 分钟 0 秒 |
   | -o | `--output` | Output File | 指定输出（.out）日志路径 |
   | -e | `--error` | Error File | 指定错误（.err）日志路径 |
-  |  | `--exclude=cu01` | Excluded Node | 排除在某些节点上运行作业 |
-  |  | `--nodelist` | Node List | 指定作业运行在特定的节点（可选） |
-  |  | `--ntasks-per-node` | Tasks per Node | 指定每个节点上运行的作业数（可选） |
-  |  | `--mail-user` | Email Address | 指定接收通知的邮箱地址（可选） |
-  |  | `--mail-type` | Notification Events | 指定接收邮件的时机（如 BEGIN, END, FAIL, ALL）（可选） |
-  |  | `--gpus` | GPUs | 申请 GPU 资源（可选） |
-  |  | `--gpus-per-node=1` / `--gpus-per-task=1` | GPUs per Node / GPUs per Task | 为每个节点申请指定数量的 GPU / 为每个作业申请指定数量的 GPU（可选） |
+  | / | `--exclude` | Excluded Node | 排除在某些节点上运行作业 |
+  | / | `--nodelist` | Node List | 指定作业运行在特定的节点（可选） |
+  | / | `--ntasks-per-node` | Tasks per Node | 指定每个节点上运行的作业数（可选） |
+  | / | `--mail-user` | Email Address | 指定接收通知的邮箱地址（可选） |
+  | / | `--mail-type` | Notification Events | 指定接收邮件的时机（如 BEGIN, END, FAIL, ALL）（可选） |
+  | / | `--gpus` | GPUs | 申请 GPU 资源（可选） |
+  | / | `--gpus-per-node=1` / `--gpus-per-task=1` | GPUs per Node / GPUs per Task | 为每个节点申请指定数量的 GPU / 为每个作业申请指定数量的 GPU（可选） |
 ]
 
 *提示*：
 
-- `--exclude=cu01` 这个命令必须设置在你的 Slurm 脚本中！不在 cu01 上跑任务！
-- 如果申请 GPU 时 `--gpus` 系列选项报错（提示不支持），说明你所在的集群没有启用 `select/cons_tres` 插件。此时可回退使用更通用的底层写法：`--gres=gpu:1`（申请 1 张 GPU）。
+- 务必在脚本中加入 `--exclude=cu01`，避免任务跑到 cu01 上！
+- 若 `--gpus` 报“不支持”，说明集群未启用 `select/cons_tres`，可改用 `--gres=gpu:1`（申请 1 张 GPU）。
 
 ==== 4.1.1 单个任务
 
@@ -269,12 +269,10 @@ sacct -u $USER --starttime=2026-11-01
 #SBATCH --error=%x_%j.err
 #SBATCH --exclude=cu01
 
-# ---- 以下为实际执行命令 ----
 echo "Job ID: $SLURM_JOB_ID"
 echo "Running on node: $(hostname)"
 echo "Job started at $(date)"
 
-# 运行单线程程序
 python my_script.py
 
 echo "Job finished at $(date)"
@@ -295,7 +293,6 @@ echo "Job finished at $(date)"
 #SBATCH -e %x_%j.err
 #SBATCH --exclude=cu01
 
-# ---- 以下为实际执行命令 ----
 echo "Job ID: $SLURM_JOB_ID"
 echo "Running on node: $(hostname)"
 
@@ -309,7 +306,7 @@ python my_script.py
 *1. 灵活控制任务数量和并发数*
 
 - *限制并发*：常用 `%` 限制同时运行的任务数。比如 `#SBATCH --array=1-100%10`：提交 100 个任务，但最多同时运行 10 个，其余排队等待。
-- *非连续索引与步长*：如果你只想跑指定的几个任务，可以用逗号：`--array=1,3,5,7`。如果想按步长跑，可以用冒号：`--array=1-10:2`（跑 1,3,5,7,9）。
+- *非连续索引与步长*：指定个别任务用逗号（`--array=1,3,5,7`）；按步长用冒号（`--array=1-10:2`，即 1,3,5,7,9）。
 
 *2. 数组任务的专属辅助变量*
 
@@ -334,11 +331,9 @@ python my_script.py
 #SBATCH --error=%x_%A_%a.err
 #SBATCH --exclude=cu01
 
-# ---- 以下为实际执行命令 ----
 echo "Array Job ID: $SLURM_ARRAY_JOB_ID"
 echo "Array Task ID: $SLURM_ARRAY_TASK_ID"
 
-# 用 $SLURM_ARRAY_TASK_ID 区分不同子任务
 INPUT_FILE="input_${SLURM_ARRAY_TASK_ID}.txt"
 python my_script.py --input "$INPUT_FILE"
 ```
@@ -359,7 +354,6 @@ python my_script.py --input "$INPUT_FILE"
 #SBATCH -e %x_%A_%a.err
 #SBATCH --exclude=cu01
 
-# ---- 以下为实际执行命令 ----
 echo "Array Job ID: $SLURM_ARRAY_JOB_ID"
 echo "Array Task ID: $SLURM_ARRAY_TASK_ID"
 
@@ -371,20 +365,20 @@ python my_script.py --input "$INPUT_FILE"
 
 ==== 4.2.1 Command 区的编写规范
 
-- *资源指令全放顶部*：Slurm 仅解析脚本首个执行命令之前的资源申请行。开始运行代码后，再写资源申请会被当作普通注释忽略，所有配置必须集中在最前。
-- *运行核心程序用 srun*：直接运行程序系统只能看到黑盒；加上 `srun` 后，进程会被注册为"作业步骤"，系统才能精确追踪资源消耗，并在取消作业时干净地杀掉所有子进程。
-- *警惕"假成功"陷阱*：Slurm 仅凭脚本最后一条命令的返回值（0 为成功）判定作业状态。如果核心程序报错，但你后面加了一句普通的 `echo` 打印（返回 0），系统会误判作业成功。
-- *确认激活正确的环境*：集群通常同时存在公用环境和个人环境。激活环境必须在运行代码前完成。为防止路径冲突，建议用绝对路径或 hook 方式激活自己的环境，并打印一次环境路径（如 `which R`）来确认绝对没调错。
+- *资源指令全放顶部*：Slurm 只解析首个命令前的 `#SBATCH` 行；其后写的会被当成注释忽略，务必集中在开头。
+- *运行核心程序用 srun*：直接运行程序时，系统只能把它当黑盒；加 `srun` 后会注册为“作业步骤”，才能精确追踪资源并在取消时杀净子进程。
+- *警惕“假成功”陷阱*：Slurm 仅凭脚本最后一条命令的返回值（0 为成功）判定作业状态。如果核心程序报错，但你后面加了一句普通的 `echo` 打印（返回 0），系统会误判作业成功。
+- *确认激活正确的环境*：集群常同时有公用/个人环境，务必在运行代码前激活；建议用绝对路径或 hook 激活并打印路径（如 `which R`）确认没调错。
 - *理清内存申请与多线程程序的联动*：
   - *内存怎么算*：`--mem=30G` 指的是每个节点的总内存；而 `--mem-per-cpu=4G` 指的是每个 CPU 核心分配 4G（若申请 16 核，则单节点总内存为 64G）。在单节点多核任务中，如果用 `-c 24` 且 `--mem=30G`，平均每核只有 1.25G，内存密集型程序极易 OOM（内存溢出）崩溃。
-  - *多线程怎么开*：你申请了 `-c 16`（16 个核），并不代表你的程序（如 OpenMP、R 的 `data.table`）会自动跑满 16 线程。必须在 Command 区手动导出环境变量告诉程序可用核数：
+  - *多线程怎么开*：申请 `-c 16` 并不代表程序（OpenMP、R `data.table` 等）会自动跑满 16 线程。必须在 Command 区手动导出环境变量告诉程序可用核数：
 
     ```bash
     export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
     ```
 
-    这能确保程序申请多少核就用多少核，避免"占着资源不干活"的浪费。
-- *日志文件统一归置*：为避免污染工作目录，建议将 `.out` 和 `.err` 日志统一放到特定文件夹，并在 Command 区确保目录存在。推荐两种规范，Slurm 日志文件建议统一放到 `slurm_logs` 文件夹或 `logs` 文件夹：
+    这样核数才会用满，避免占资源不出力。
+- *日志文件统一归置*：建议把 `.out` / `.err` 集中到 `slurm_logs` 或 `logs` 目录，并在 Command 区 `mkdir -p` 确保存在。两种常见规范：
 
 #tablem[
   | 方式 | 日志规范 |
@@ -470,7 +464,7 @@ echo "End time: $(date), Exit Code: $EXIT_CODE"
 exit $EXIT_CODE
 ```
 
-注：服务器上调用 Conda 环境有多种方式：公用环境、自己或他人环境。
+注：调用 Conda 环境分公用环境、自己/他人环境两类：
 
 #tablem[
   | 调用方式 | 调用命令 |
@@ -481,9 +475,7 @@ exit $EXIT_CODE
 
 ==== 4.2.3 环境变量与数组任务
 
-当需要批量处理大量相似任务时，数组任务（Job Array）是最佳选择。而在脚本内部，Slurm 提供了丰富的内置环境变量来辅助我们动态生成路径、分配资源。
-
-以下是脚本内部可直接调用的环境变量：
+数组任务（Job Array）适合成批处理相似任务；脚本中还可调用内置环境变量动态生成路径、分配资源。以下是脚本内部可直接调用的环境变量：
 
 #tablem[
   | 环境变量 | 英文术语解读 |
@@ -498,8 +490,6 @@ exit $EXIT_CODE
 ]
 
 ==== 4.2.4 数组任务 Slurm 脚本示例
-
-以下是示例：
 
 ```bash
 #!/bin/bash
@@ -537,9 +527,9 @@ srun Rscript dada2_analysis.r "$study_id" "$WORK_DIR" || exit $?
 
 === 4.3 Output
 
-提交作业后生成的 `.out` 文件，不仅是系统的输出记录，更是排查错误、确认数据质量的唯一凭证。
+提交作业后生成的 `.out` 文件，不仅是系统的输出记录，更是重要依据。
 
-今天以 `metadata_csv_merge` 这个 Slurm 作业为例：
+以 `metadata_csv_merge` 作业为例：
 
 ==== 4.3.1 查环境（看开头）
 
@@ -550,7 +540,7 @@ R environment: /home/yanglun/miniconda3/envs/r-env/bin/R
 ```
 
 - *节点与时间*：任务跑在 `cu02` 节点，启动时间一目了然。
-- *环境路径*：看到绝对路径是 `.../r-env/bin/R`，说明*完美调用了你的专属环境，没被公用环境干扰*。
+- *环境路径*：看到绝对路径是 `.../r-env/bin/R`，说明调用的是你的专属环境，未被公用环境干扰。
 
 ==== 4.3.2 观业务（看中间）
 
@@ -571,7 +561,7 @@ None. All read files contain the 19 required columns.
 
 - *执行效率*：核心计算不到 30 秒完成。
 - *数据对账*：检查 345 个，成功 334 个。
-  - *容错设计*：缺失的 11 个文件夹，脚本没有直接崩溃，而是跳过并在最后列出名单，这种"容错并报告"是数据处理的黄金标准。
+- *容错设计*：缺失的 11 个文件夹，脚本没有直接崩溃，而是跳过并在最后列出名单，这种“容错并报告”是较稳妥的做法。
 - *质量校验*：确认所有文件均包含要求的 19 列，数据干净。
 
 ==== 4.3.3 定成败（看末尾）
@@ -583,7 +573,7 @@ End time: Mon Nov 16 23:11:52 CST 2026, Exit Code: 0
 ```
 
 - *结果路径*：直接去该路径拿合并好的文件。
-- *Exit Code: 0*：最安心的一行。这是判定成功的唯一依据。结合脚本末尾的 `exit $EXIT_CODE`，证明真实运行成功，没有发生"假成功"。
+- *Exit Code: 0*：是判定成功的唯一依据；配合脚本末尾的 `exit $EXIT_CODE`，说明作业确实成功，而非“假成功”。
 
 #line()
 
@@ -617,12 +607,12 @@ JOB1=$(sbatch --parsable step1.sh)
 sbatch --dependency=afterok:${JOB1} step2.sh
 ```
 
-这个机制可以替代"手动等上一个跑完再提交下一个"的做法，尤其适合多步骤的数据处理流水线。
+这个机制可以替代“手动等上一个跑完再提交下一个”的做法，尤其适合多步骤的数据处理流水线。
 
 === 5.3 交互式作业
 
-- *`srun`（交互式，不常用）*：在登录节点直接运行 `srun` 会阻塞终端，直到任务执行完毕。千万不要在登录节点直接跑重型计算！
-- *`salloc`（实时分配，不常用）*：阻塞终端，直到申请到资源并在计算节点上获得一个交互式 shell。适合需要申请特定资源后，自己手动分步执行 `srun` 命令的调试场景。
+- *`srun`（交互式，不常用）*：千万不要在登录节点直接跑重型计算！
+- *`salloc`（实时分配，不常用）*：阻塞终端，直到申请到资源并在计算节点上获得一个交互式 shell。适合先申请资源、再手动分步调试的场景。
 
 #line()
 
