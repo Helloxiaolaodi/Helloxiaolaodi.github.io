@@ -1,18 +1,5 @@
-// 原第 1 行 #import "../index.typ" 指向的模板文件不存在，此处将 template / line 内联定义。
-// 若项目里另存了模板文件，可改回 #import "template.typ": template, line 并删除下方两行定义。
+#import "../index.typ": template, tufted
 #import "@preview/tablem:0.3.0": *
-
-// #line()：全文中的分隔线（细横线）
-#let line() = rect(width: 100%, height: 0.7pt, stroke: gray.lighten(50%))
-
-// template：文章模板（设置文档元数据与基础排版）
-#let template(title: "", description: "", date: none, lang: "zh", body) = {
-  set document(title: title, description: description)
-  set text(lang: lang, size: 10.5pt)
-  set par(justify: true, leading: 0.65em)
-  set heading(numbering: none)
-  body
-}
 
 // 如需生成 RSS feed，必须填写 title、description 和 date 元数据
 #show: template.with(
