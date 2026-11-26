@@ -10,6 +10,12 @@
 == 2026
 
 #tufted.blog-entry(
+  date: datetime(year: 2026, month: 11, day: 26),
+  path: "2026-11-26-qiime2-16s-amplicon/",
+  title: "16S rRNA 扩增子生信分析全流程：以 QIIME 2 2024.2 为主线",
+)
+
+#tufted.blog-entry(
   date: datetime(year: 2026, month: 11, day: 17),
   path: "2026-11-17-slurm-guide/",
   title: "科研利器之 Slurm 集群作业调度",
