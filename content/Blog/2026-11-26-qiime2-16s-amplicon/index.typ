@@ -17,22 +17,22 @@
 
 #figure(
   image("imgs/00-pipeline-overview.png"),
-  caption: [16S 扩增子整体分析流程总览：原始 fq.gz → QC → 去引物（Cutadapt，按需）→ DADA2 去噪（内建拼接 + 去嵌合体）得 ASV 表与代表序列 → \[Greengenes2 99% closed-reference mapping 得 OTU 表，跨队列主线\] → 物种注释 → 建树 → Alpha/Beta 多样性与 PERMANOVA → 排序（PCoA/PCA/NMDS/UPGMA/RDA/CCA）→ 差异丰度（ANCOM-BC/LEfSe/MaAsLin3）→ 网络与功能预测。据参考资料与 BMKCloud 分析框架整理],
+  caption: [16S 扩增子整体分析流程总览],
 )
 
 #figure(
   image("imgs/amplicon-workflow-xiaoqizheng.png"),
-  caption: [扩增子测序数据分析流程（黄框 = 操作方法，绿块 = 文件 / 数据）：原始序列 → 拆样 → 去噪得 ASV → 特征表 + 代表序列 → 分支到物种分类 / Alpha·Beta 多样性 / 建树 / 差异丰度。来源：xiaoqizheng《QIIME2 笔记》#link("https://xiaoqizheng.github.io/biological_data_analysis/qiime2.html")[链接]],
+  caption: [扩增子测序数据分析流程　#link("https://xiaoqizheng.github.io/biological_data_analysis/qiime2.html")[https://xiaoqizheng.github.io/biological_data_analysis/qiime2.html]],
 )
 
 #figure(
   image("imgs/qiime2-principle-fig1.png"),
-  caption: [附图1 · QIIME 2 原理图：展示 QIIME 2 如何用「带类型的 Artifact（.qza）与 Visualizations（.qzv）」串起分析，并把每一步的结果与来源记录成可追溯的 provenance 图，从而保证可重复。来源：微信公众号《QIIME 2：可重复、交互和扩展的微生物组数据分析流程》#link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[链接]],
+  caption: [QIIME 2 架构与原理　#link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA]],
 )
 
 #figure(
   image("imgs/qiime2-provenance-fig2.png"),
-  caption: [图2 · 迭代记录数据来源确保分析可重复：以「生成一张交互式物种组成柱状图」为例，展示 QIIME 2 记录从原始数据到最终图表每一步的数据来源（provenance graph）。来源：同上 #link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[链接]],
+  caption: [迭代记录数据来源确保分析可重复　#link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA]],
 )
 
 #line()
