@@ -3,7 +3,7 @@
 
 // 如需生成 RSS feed，必须填写 title、description 和 date 元数据
 #show: template.with(
-  title: "16S rRNA 扩增子生信分析全流程：以 QIIME 2 2024.2 为主线",
+  title: "16S rRNA 扩增子生信分析全流程（QIIME 2 2024.2）",
   description: "面向硕士研究生的 16S 扩增子分析教程：从数据质控、序列拼接、去除嵌合体、ASV/OTU 与物种注释，到 Alpha/Beta 多样性、系统进化树、PCoA/PCA/NMDS/UPGMA、组间差异与 RDA/CCA，以 QIIME 2 2024.2 串起完整流程，并给出 R（vegan）端复现代码。",
   date: datetime(year: 2026, month: 11, day: 26),
   lang: "zh",
@@ -11,9 +11,9 @@
 
 = 16S rRNA 扩增子生信分析全流程（QIIME 2 2024.2）
 
-本文写给刚进实验室、准备上手微生物组数据的硕士研究生。它把「拿到下机数据之后该做什么、每一步用什么命令、结果怎么读」按顺序讲清楚，用 *QIIME 2 2024.2* 作为主线，把数据质控、拼接、去嵌合体、ASV/OTU 构建、物种注释、Alpha/Beta 多样性、进化树、排序分析（PCoA/PCA/NMDS/UPGMA）、组间差异与 RDA/CCA 串成一条可复现的流水线。
+以 *QIIME 2 2024.2* 为主线，串起「质控 → 拼接 → 去嵌合体 → ASV/OTU 与注释 → Alpha/Beta 多样性 → 进化树 → 排序（PCoA/PCA/NMDS/UPGMA）→ 组间差异 → RDA/CCA → 网络分析」的可复现流程，并给出 R（vegan / SpiecEasi）端复现代码。
 
-需要先建立一个观念：*QIIME 2 负责上游「把原始 reads 变成干净的特征表、物种注释、进化树和核心多样性指标」，而下游一批统计与可视化（PCA、NMDS、RDA/CCA、Rank-Abundance、UPGMA、LEfSe 等）通常交给 R 生态（vegan、ggplot2、ggtree）或独立工具完成*。本文会明确标注每一步属于哪一侧，避免你在 QIIME 2 里苦苦寻找一个它本来就不提供的命令。
+分工原则：*QIIME 2 负责上游——把原始 reads 变成干净的特征表、物种注释、进化树和核心多样性指标；PCA、NMDS、RDA/CCA、Rank-Abundance、UPGMA、LEfSe、网络分析等下游统计与可视化，交给 R 生态或独立工具*。每一步都会标注归属，避免在 QIIME 2 里找一个它本就不提供的命令。
 
 #figure(
   image("imgs/00-pipeline-overview.png"),
@@ -64,6 +64,16 @@ qiime tools import \
   --input-format PairedEndFastqManifestPhred33V2
 ```
 
+单端数据则用三列 manifest（`SampleID,absolute-filepath,direction`）并按单端导入：
+
+```bash
+qiime tools import \
+  --type 'SampleData[SequencesWithQuality]' \
+  --input-path manifest.csv \
+  --output-path demux.qza \
+  --input-format SingleEndFastqManifestPhred33V2
+```
+
 === 0.3 术语与基本量：先把话说清楚
 
 后面反复出现的几个概念，先统一口径，免得边学边猜：
@@ -106,6 +116,7 @@ qiime tools import \
   | 组间差异 | QIIME 2 + R/LEfSe | `composition ancom`、LEfSe | 差异特征、标志物种 |
   | RDA / CCA | R（vegan） | `rda`、`cca`、`decorana` | 约束排序图 |
   | Rank-Abundance | R | `ggplot2`、`radfit` | 等级丰度曲线 |
+  | 网络分析 | R（SpiecEasi）/ Python | `spiec.easi`、`SparCC` | 共发生网络、关键物种 |
 ]
 
 记住这条主线：*导入 → 质控去噪（拼接 + 去嵌合体）→ 特征表 → 物种注释 → 进化树 → 多样性/排序 → 差异/关联*。下面逐节展开。
@@ -172,6 +183,28 @@ qiime cutadapt trim-paired \
 === 1.4 质控的「停止规则」
 
 质控没有绝对的合格线，但有一个实用的*停止规则*：跑完去噪后看 denoising-stats 里各样本的逐级保留比例。若多数样本从 input 到 non-chimeric 的*保留率低于约 20%*，通常意味着截断 / 去引物参数设错了（截到质量陡降点之后，或引物没去干净），应回到 `demux.qzv` 重新设 `--p-trunc-len`，而不是硬着头皮往下做。数据质量差到这个程度时，下游所有多样性结论都不可信。
+
+=== 1.5 读段级去宿主与替代质控（可选）
+
+宿主相关样本（肠道、口腔、组织、根际）建议在去噪前先去掉「读段级宿主污染」：`taxa filter-table`（4.3 节）只能去掉已注释成线粒体 / 叶绿体的特征，而 KneadData / Bowtie2 / BWA 能在比对阶段直接剔除宿主 reads，更彻底。
+
+```bash
+# fastp 一步质控（去接头 + 滑窗质量剪切 + 过滤）
+fastp -i R1.fq.gz -I R2.fq.gz -o clean_R1.fq.gz -O clean_R2.fq.gz \
+  -q 20 -u 30 -n 5 -l 50 --detect_adapter_for_pe -w 16 -h fastp.html
+
+# 建宿主索引后去宿主（以人 GRCh38 为例）
+bowtie2-build GRCh38.fa human_db
+kneaddata -i clean_R1.fq.gz -i clean_R2.fq.gz -db human_db \
+  -o kneaddata_out --threads 16 --remove-intermediate
+
+# 或直接用 BWA-MEM 去宿主，保留未比对 reads
+bwa index GRCh38.fa
+bwa mem -t 16 GRCh38.fa clean_R1.fq.gz clean_R2.fq.gz \
+  | samtools view -bS -f 12 -F 256 - > nonhost.bam
+```
+
+FastQC 做单样本质量画像、MultiQC 汇总整批报告；它们与 `demux summarize` 的碱基质量图互补，多样本批次尤其值得先跑一遍 MultiQC 看整体质量是否一致。
 
 #line()
 
@@ -248,6 +281,20 @@ seqtab.nochim <- removeBimeraDenovo(seqtab, method = "consensus", multithread = 
 ```
 
 `truncLen=c(240,160)` 与 `--p-trunc-len-f/-r` 完全对应；`maxEE=2` 即 `--p-max-ee`；`removeBimeraDenovo(method="consensus")` 即 DADA2 默认的去嵌合体策略。两套写法二选一即可，结论应一致。
+
+实际项目常把两者拼起来：先用 QIIME 2 导入并 `demux summarize` 定参数，再切到 R 的 DADA2 环境跑，产出 `ASVs_counts.tsv` 与 `ASVs.fa`（供第 4 节的注释与聚类复用）。一个可用的作业骨架：
+
+```bash
+conda activate qiime2-2024.2
+qiime tools import --type 'SampleData[SequencesWithQuality]' \
+  --input-path manifest.csv --output-path demux.qza \
+  --input-format SingleEndFastqManifestPhred33V2
+qiime demux summarize --i-data demux.qza --o-visualization demux.qzv
+conda deactivate
+module load R/4.1.3
+source /path/to/miniconda3/etc/profile.d/conda.sh && conda activate micro
+Rscript dada2_YL.r "${file_path}" trim
+```
 
 #line()
 
@@ -327,31 +374,33 @@ qiime vsearch cluster-features-de-novo \
   --o-clustered-sequences rep-seqs-dn-97.qza
 ```
 
-此外还有去冗余与闭合参考聚类，用于把序列对齐到已知参考库：
+此外还有闭合参考（closed-reference）聚类，用于把序列对齐到固定的已知参考库、实现跨研究可比。实际项目中若上游是 R 版 DADA2 产出的 `ASVs_counts.tsv` 与 `ASVs.fa`，完整链路如下：
 
 ```bash
-# 先做序列去冗余（dereplicate），得到唯一的代表序列
-qiime vsearch dereplicate-sequences \
-  --i-sequences rep-seqs.qza \
-  --o-dereplicated-table table-derep.qza \
-  --o-dereplicated-sequences seqs-derep.qza
+# 1) TSV 特征表 → HDF5 BIOM，并把序列 / 表导入 QIIME 2
+biom convert -i ASVs_counts.tsv -o ASVs_counts.biom --table-type="OTU table" --to-hdf5
+qiime tools import --input-path ASVs.fa --output-path rep-seqs.qza --type 'FeatureData[Sequence]'
+qiime tools import --input-path ASVs_counts.biom --type 'FeatureTable[Frequency]' \
+  --input-format BIOMV210Format --output-path table.qza
 
-# 闭合参考（closed-reference）：只保留能比对到参考库的序列
+# 2) 闭合参考聚类：比对到 99% 相似度的全长参考库
 qiime vsearch cluster-features-closed-reference \
-  --i-table table-derep.qza \
-  --i-sequences seqs-derep.qza \
-  --i-reference-sequences silva-138-99-seqs.qza \
-  --p-perc-identity 0.85 \
-  --o-clustered-table table-cr.qza \
-  --o-clustered-sequences seqs-cr.qza \
-  --o-unmatched-sequences unmatched.qza
+  --i-sequences rep-seqs.qza --i-table table.qza \
+  --i-reference-sequences 2024.09.backbone.full-length.fna.qza \
+  --p-perc-identity 0.99 --p-threads 12 --p-strand both \
+  --o-clustered-table clustered-table.qza \
+  --o-clustered-sequences clustered-sequences.qza \
+  --o-unmatched-sequences unmatched-sequences.qza
+
+# 3) 导出聚类后的特征表
+qiime tools export --input-path clustered-table.qza --output-path extracted-feature-table
 ```
 
 - *de novo*：不依赖参考库，按数据自身相似度聚类（上面的 97% / 99%）。
-- *closed-reference*：只保留能比对到参考库的序列，跨研究可比较，但会丢掉参考库没有的类群（`--p-perc-identity` 常用 0.85–0.97）。
+- *closed-reference*：只保留能比对到参考库的序列，跨研究可比较，但会丢掉参考库没有的类群；`--p-perc-identity` 按参考库精度取 0.85–0.99，`--p-strand both` 同时比对正反链。
 - *open-reference*：先闭合参考、再对剩下的 de novo，兼顾两者，但耗时。
 
-注意：这些 vsearch 聚类命令要求 ASV 序列已去冗余、且已去嵌合体，否则会把错误序列也聚进去。
+去冗余（`dereplicate-sequences`）是 de novo 聚类的常见前置步骤，可先合并重复序列再加速。所有 vsearch 聚类都应在去嵌合体之后做，否则会把错误序列也聚进去。
 
 === 4.2 特征表统计
 
@@ -379,6 +428,7 @@ qiime feature-table tabulate-seqs \
   | :--- | :--- | :--- |
   | SILVA 138 | 细菌 / 古菌 16S 首选 | 覆盖广、更新及时，2024.2 官方提供配套序列与分类 |
   | Greengenes | 细菌 / 古菌（经典） | 老牌、肠道研究常用；新版为 Greengenes2 |
+  | GTDB | 细菌 / 古菌（现代分类） | 基于基因组系统发育的新框架，分类更贴近现代标准 |
   | UNITE | 真菌 ITS | 真菌鉴定标准库 |
   | NCBI / RDP | 补充 | 按需使用 |
 ]
@@ -485,7 +535,7 @@ qiime taxa barplot \
   --o-visualization taxa-bar-plots.qzv
 ```
 
-在 view.qiime2.org 打开 `taxa-bar-plots.qzv`，可切换分类水平、按分组排序、按某个门降序排列，并导出 SVG 矢量图与 CSV 数据。*正式出图建议导出 CSV 后用 R/ggplot2 重绘*，配色、图例、排序更可控（见第 15 节的设计说明）。
+在 view.qiime2.org 打开 `taxa-bar-plots.qzv`，可切换分类水平、按分组排序、按某个门降序排列，并导出 SVG 矢量图与 CSV 数据。*正式出图建议导出 CSV 后用 R/ggplot2 重绘*，配色、图例、排序更可控（见第 16 节的设计说明）。
 
 热图适合展示「高丰度类群 × 样本」的分布格局，Krona 圈图则适合交互式、多层级的整体浏览。这两者通常不在 QIIME 2 内一次成图，用导出的相对丰度表在 R 中绘制（`pheatmap` / `ComplexHeatmap`），或使用公司云平台相应模块。
 
@@ -847,6 +897,30 @@ plot_res.py otu.res lefse.png
 
 *务必做多重检验校正（FDR/BH），并如实报告 P 值、Q 值与效应量*；没有统计学意义的结果，不要包装成结论。
 
+=== 12.3 其他差异丰度方法（MaAsLin3 / LinDA / metagenomeSeq）
+
+ANCOM-BC 之外，主流还有几种，假设不同、可互为校验：
+
+#tablem[
+  | 方法 | 原理 | 适用 |
+  | :--- | :--- | :--- |
+  | ANCOM-BC2 | 偏差校正，直接估计绝对丰度级倍数变化 | 组成型、控制假阳性 |
+  | MaAsLin3 | GLM + 固定 / 随机效应 | 多协变量、纵向 / 多中心 |
+  | LinDA | log-ratio 线性模型 | 速度快、FDR 控制好 |
+  | metagenomeSeq | 零膨胀高斯（ZIG） | 零值多的稀疏数据 |
+]
+
+```r
+library(ANCOMBC)
+ancombc2(data = physeq, fix_formula = "Group + BMI + Age",
+         p_adj_method = "BH", group = "Group")
+library(maaslin3)
+maaslin3(input_data = feat, input_metadata = meta,
+         output = "maaslin3_out", formula = "~ Group + age + BMI")
+```
+
+若要做「标志物 + 诊断模型」，可接 `caret`（交叉验证训练）、`Boruta`（随机森林 shadow features 选特征）、`pROC`（ROC / AUC）；样本量小时务必用分层交叉验证并做外部验证，避免过拟合。
+
 #line()
 
 == 13. RDA / CCA 分析
@@ -924,24 +998,125 @@ ordiellipse(nmds, groups = meta$Group, kind = "se", conf = 0.95)
 
 #line()
 
-== 15. 从结果到论文：出图、统计与常见坑
+== 15. 微生物共发生网络分析（SPCC / SparCC / SPIEC-EASI）
+
+共发生网络（co-occurrence network）把每个类群（属 / OTU / ASV）当成节点，把「两个类群在不同样本中丰度是否协同变化」当成边。正相关 = 共发生（可能互利或同生态位），负相关 = 互斥（竞争 / 拮抗）。它把分析从「谁在」推进到「谁和谁相关」。
+
+=== 15.1 为什么不能用 Pearson：组成型数据
+
+16S 丰度是组成型（compositional）数据：各特征相对丰度之和恒为 1，一个类群升高会「挤压」其他类群的相对值，直接算 Pearson 相关会得到大量假相关。因此要用专门处理组成型数据的稀疏相关 / 偏相关方法：
+
+#tablem[
+  | 方法 | 原理 | 实现 | 备注 |
+  | :--- | :--- | :--- | :--- |
+  | SPCC / SparCC | 稀疏相关，假设多数类群间无关联并迭代估计 | Python `SparCC.py` | 经典、直观 |
+  | SPIEC-EASI（MB） | 稀疏偏相关：邻域选择 + 稳定性选择 | R `SpiecEasi::spiec.easi(method="mb")` | 推荐、稳健 |
+  | SPIEC-EASI（glasso） | 图 lasso 稀疏逆协方差 | 同上 `method="glasso"` | 备选 |
+  | CCLasso / CoNet | 组成型相关 / 集成多指标 | R / Cytoscape 插件 | 补充 |
+]
+
+SPCC（稀疏偏相关）、SparCC（Sparse Correlations for Compositional data）与 SPIEC-EASI 本质上都在估计「去掉其他类群影响后的稀疏相关 / 偏相关」，只是算法不同。选一个主流方法即可，不必全做。
+
+=== 15.2 标准流程
+
+1. *选层级*：用属水平相对丰度表（`taxa collapse --p-level 6` + `relative-frequency`）；节点过多时先按丰度 / 出现率过滤。
+2. *过滤*：去掉在不到 20%–30% 样本中出现、或平均相对丰度极低（如 ＜0.01%）的类群，减少噪声边。
+3. *变换与相关*：CLR 变换后估计稀疏相关 / 偏相关（SparCC 或 SPIEC-EASI）。
+4. *阈值*：保留 |r| ≥ 0.6（或 0.7）且 FDR 校正后 P ＜ 0.05 的边。
+5. *建网与出图*：转成图对象，用 Gephi / Cytoscape 布局、着色、导出。
+6. *拓扑与关键物种*：计算度、模块度等，找 Hub 与模块连接者。
+
+样本量决定稳健性：*一般建议 ≥ 20–30 个样本*，越多越可靠；样本太少时大量边只是噪声。
+
+=== 15.3 R 实现（SpiecEasi + igraph）
+
+```r
+library(SpiecEasi); library(igraph); library(Matrix)
+# dat：行=样本，列=属；先做出现率过滤
+X  <- as.matrix(dat[, colMeans(dat > 0) > 0.2])      # 出现率 > 20%
+se <- spiec.easi(X, method = "mb", lambda.min.ratio = 1e-2,
+                 nlambda = 20, sel.criterion = "stars",
+                 pulsar.params = list(rep.num = 50, ncores = 4))
+getStability(se)                 # 稳定性选择越接近阈值 0.05 越好
+adj <- getRefit(se)              # 稀疏邻接矩阵
+ig  <- adj2igraph(adj)           # 转 igraph，正 / 负边可按符号着色
+plot(ig, vertex.size = 3, vertex.label = NA, layout = layout_with_fr)
+```
+
+SparCC 的 Python 路线（脚本参数以官方为准）：
+
+```bash
+# otu_table：行=类群，列=样本
+python SparCC.py otu_table.txt -i 10 -c sparcc_corr.txt -a sparcc_pvals.txt -x 100
+```
+
+再用相关与 P 值阈值筛边，导入 igraph / Gephi。
+
+=== 15.4 拓扑指标与关键物种（Zi–Pi）
+
+常用拓扑指标（Gephi / igraph / Cytoscape 均可计算）：
+
+#tablem[
+  | 指标 | 含义 |
+  | :--- | :--- |
+  | 度 degree | 节点连边数，越高越中心 |
+  | 聚类系数 clustering coefficient | 邻居之间也相连的程度 |
+  | 接近中心性 closeness | 到其他节点的平均距离，越小越中心 |
+  | 介数中心性 betweenness | 位于多少最短路径上，越高越关键 |
+  | 模块度 modularity | 网络分模块的清晰程度 |
+  | 直径 / 平均路径长度 | 网络大小与紧密程度 |
+  | 密度 density | 实际边数 / 可能边数 |
+]
+
+*关键物种用 Zi–Pi 图判定*。划分模块后，对每个节点计算模块内连接度 Zi 与模块间连接度 Pi：
+
+```text
+Zi = (Ki - mean(K)) / sd(K)
+Pi = 1 - Σ (Kis / Ki)²
+```
+
+- *模块枢纽 module hubs*：Zi＞2.5、Pi＜0.62
+- *连接者 connectors*：Zi＜2.5、Pi＞0.62
+- *网络枢纽 network hubs*：Zi＞2.5、Pi＞0.62
+- *边缘节点 peripherals*：Zi＜2.5、Pi＜0.62
+
+Zi / Pi 都高（或单方面很高）的节点通常被视为「关键物种（keystone taxa）」，是后续实验验证的重点候选。
+
+=== 15.5 与随机网络比较
+
+把实测网络的*平均聚类系数、平均路径长度、模块度*与同规模 Erdős–Rényi 随机网络比较：
+
+- 小世界性：聚类系数显著高于随机、路径长度相近，说明网络具小世界结构；
+- 模块度显著高于随机，说明群落有清晰模块划分。
+
+可用 MENA（http://ieg4.rccc.ou.edu/mena/）、`igraph` 或置换检验完成。*换不同阈值 / 相关方法重跑，结论稳定才可信*。
+
+=== 15.6 解读底线
+
+- *相关 ≠ 因果*：网络边只是统计关联，Hub 只是假设，需培养 / 实验验证。
+- 组成型、阈值、样本量都会改变网络结构；方法部分要写清「层级、过滤、方法、阈值、FDR」。
+- 正负边分开解读：负边可能是竞争，也可能是组成效应造成的假象。
+
+#line()
+
+== 16. 从结果到论文：出图、统计与常见坑
 
 做到这里，你已经有了一套可复现的结果。要让它们变成「能发表的图」，还要过几道关。
 
-=== 15.1 出图与配色
+=== 16.1 出图与配色
 
 - *矢量优先*：论文图用 SVG/PDF，别用截图；QIIME 2 的 qzv 可导出 SVG，R 用 `ggsave(..., device = "svg")`。
 - *克制配色*：分组颜色选一套对色盲友好、区分度高的调色板；避免彩虹色堆叠柱状图。
 - *对齐与信息密度*：坐标轴统一字体字号，图例、标签对齐；一张图只讲一件事，把 P 值、R²、Stress 等关键统计量直接标在图上或图注里。
 - *R 端重绘*：堆叠柱状图、PCoA、Alpha 箱线图，导出 CSV 后用 ggplot2 重绘，能完全掌控样式。
 
-=== 15.2 统计报告的底线
+=== 16.2 统计报告的底线
 
 - 组间差异*必须做多重检验校正*，报告 P 值、Q 值、效应量。
 - Alpha 用 Kruskal–Wallis（多组）或 Wilcoxon（两组）；Beta 用 PERMANOVA（报 R²、P），并用 PERMDISP 检查离散度。
 - 小样本研究的结论要克制，写成「提示……，仍需进一步验证」，不要绝对化。
 
-=== 15.3 常见坑清单
+=== 16.3 常见坑清单
 
 #tablem[
   | 坑 | 后果 | 对策 |
@@ -957,29 +1132,17 @@ ordiellipse(nmds, groups = meta$Group, kind = "se", conf = 0.95)
   | 中文 / 空格路径 | 部分工具报错 | 全程用英文无空格路径 |
 ]
 
-=== 15.4 延伸：功能预测与网络分析
+=== 16.4 延伸：功能预测
 
-拿到物种组成后，常被追问「这些菌在干什么」。三类延伸：
+拿到物种组成后，常被追问「这些菌在干什么」。三类功能预测：
 
 - *PICRUSt2 功能预测*：基于 16S 的进化关系把 ASV 映射到 KEGG 通路。QIIME 2 里用 `q2-picrust2`，关键参数 `--p-max-nsti 2`（NSTI > 2 的 ASV 预测不可靠，会被剔除）；建议用 Greengenes 注释，便于与 PICRUSt 参考树对齐。
+- *Tax4Fun2*：按 16S 与参考基因组的相似度直接映射 KEGG 功能，适合环境样本、可自建参考集，可与 PICRUSt2 互为校验。
+- *FAPROTAX 生态功能*：用「分类单元→功能」经验映射表，把 16S 物种表翻译成碳 / 氮 / 硫循环、发酵、光养等功能；只有 16S 又关心元素循环时最常用（`collapse_table.py`）。
 - *BugBase 表型预测*：输出革兰氏阴阳性、好氧 / 厌氧、生物膜形成、致病性等表型比例。
 - *FUNGuild 真菌功能*：把 ITS 物种映射到 *病理营养型（pathotroph）、共生营养型（symbiotroph）、腐生营养型（saprotroph）* 三大营养型及其细分 guild。
 
-*共发生网络分析*：用 Spearman 相关（常见阈值 |r|＞0.6、P＜0.05）构建「菌–菌」关联网络，再用 Gephi / Cytoscape 计算拓扑指标找核心 Hub 菌群：
-
-#tablem[
-  | 指标 | 含义 |
-  | :--- | :--- |
-  | 度 degree | 一个节点连了多少条边，越高越中心 |
-  | 聚类系数 clustering coefficient | 邻居之间也相连的程度 |
-  | 接近中心性 closeness | 到其他节点的平均距离，越小越中心 |
-  | 介数中心性 betweenness | 位于多少条最短路径上，越高越关键 |
-  | 模块度 modularity | 网络分模块的清晰程度 |
-  | 直径 diameter / 平均路径长度 | 网络大小与紧密程度 |
-  | 密度 density | 实际边数 / 可能边数 |
-]
-
-这些属于「从物种描述走向机制解释」的加分项，但要牢记*相关性 ≠ 因果*：网络 Hub 只是假设，仍需实验验证。
+这些是从「物种描述」走向「功能推断」的加分项，但预测结果仍需实验验证；网络分析见第 15 节。若问题变成「群落像谁、来自谁」，用来源追踪：`SourceTracker2`（贝叶斯混合 + Gibbs）或 `FEAST`（EM 混合模型）估计 source→sink 的贡献比例。
 
 #line()
 
@@ -1087,6 +1250,83 @@ biom convert -i feature-table.biom -o table-with-taxonomy.tsv \
 - *下载慢或断*：国内可换镜像，或从维护者备份站（如 nmdc.cn、Yongxin Liu 的 GitHub 备份清单）取数据库与分类器。
 - *qzv 打不开*：确认是拖到 view.qiime2.org 查看，而不是双击；离线环境用 view.qiime2.cn 或本地部署。
 
+=== 附录 E. 从 SRA 批量下载数据（Slurm 并行）
+
+公共数据常需按研究号批量下载 SRA。下面是一个 Slurm 数组作业的思路，与前面的 DADA2 分析脚本衔接：
+
+```bash
+# 1) 由研究号取全部 run（S、D、E 开头的 SRR/DRR/ERR）
+curl -s "https://trace.ncbi.nlm.nih.gov/Traces/sra-db-be/runinfo?acc=${study_id}" \
+  | awk -F ',' 'NR>1 {print $1}' | grep -E '^[SDE]RR' | tr -d '\r' > sample.txt
+
+# 2) 下载并拆分为 FASTQ
+prefetch --option-file sample.txt --output-directory sra
+fastq-dump --split-3 --threads 4 sra/${run_id}/${run_id}.sra --outdir rawdata
+
+# 3) 生成 manifest（SampleID,absolute-filepath,direction）
+printf 'SampleID,absolute-filepath,direction\n' > manifest.csv
+for fq in rawdata/*.fastq; do
+  sid=$(basename "$fq" .fastq); [[ "$sid" == *_2 ]] && continue
+  printf '%s,%s,forward\n' "${sid%_1}" "$(realpath "$fq")" >> manifest.csv
+done
+```
+
+- 用 `#SBATCH -a 1-N` 数组作业，一个任务处理一个研究号：`sed -n "${SLURM_ARRAY_TASK_ID}p" study_list.txt` 取当前号。
+- `prefetch` 失败可重试；`fastq-dump --split-3` 把双端拆成 `_1` / `_2`，单端只有一个文件。
+- 生成 manifest 后用 `comm` 比对「应有」与「已下」列表，统计缺失样本。
+- 之后进入第 2 节导入与去噪；大批量运行时让 `--p-n-threads` 与 Slurm 的 `-c` 对齐。
+
+#line()
+
+=== 附录 F. 16S 相关生信工具原理速查
+
+从「数据获取」到「差异 / 来源追踪」，16S 流程会碰到的工具及选型如下（原理要点整理自作者《科研利器之生信工具的原理合集》）：
+
+#tablem[
+  | 工具 | 任务 | 核心原理 | 何时优先用 |
+  | :--- | :--- | :--- | :--- |
+  | SRA-Toolkit | 公共数据下载 | 解析 SRA 容器转 FASTQ | 复现公开研究 |
+  | fastp / FastQC / MultiQC | 质控 / 画像 / 汇总 | 滑窗剪切 + base 级统计 | 常规预处理、批量报告 |
+  | KneadData / Bowtie2 / BWA | 读段级去宿主 | FM-index 比对剔除宿主 reads | 宿主相关样本 |
+  | QIIME 2 | 全流程平台 | artifact 类型系统 + 插件 | 规范化、可追踪流程 |
+  | DADA2 | ASV 推断 | 显式错误模型 | 高分辨率 ASV |
+  | Deblur | 轻量去噪 | 固定误差剖面 | 批量标准化 |
+  | VSEARCH / mothur | OTU / 传统 SOP | 聚类 + 比对 | 兼容旧式 OTU |
+  | SILVA / GTDB / Greengenes2 | 参考库 | 分类 / 系统发育框架 | 物种注释 |
+  | FAPROTAX | 生态功能 | taxa→function 映射 | 元素循环推断 |
+  | PICRUSt2 / Tax4Fun2 | KEGG 功能 | 祖先状态重建 / 参考基因组映射 | 无 shotgun 的功能假设 |
+  | BugBase / METAGENassist | 表型 | taxa→表型映射、表型-环境耦合 | 表型画像 |
+  | vegan | 群落统计 | 距离矩阵与置换检验 | alpha / beta、排序 |
+  | ANCOM-BC2 / MaAsLin3 / LinDA / metagenomeSeq | 差异丰度 | 偏差校正 / GLM / log-ratio / ZIG | 组成型差异分析 |
+  | SourceTracker2 / FEAST | 来源追踪 | 贝叶斯混合 / EM | source→sink 贡献 |
+  | caret / Boruta / pROC | 机器学习 | 交叉验证 / shadow features / ROC | 标志物 + 诊断模型 |
+]
+
+几个最常用的底层命令（与正文命令互补）：
+
+```bash
+# 读段级去宿主（KneadData 封装 trimming + host removal）
+kneaddata -i R1.fq.gz -i R2.fq.gz -db host_db -o kneaddata_out --threads 16
+
+# VSEARCH 独立去嵌合体 / 97% OTU 聚类
+vsearch --uchime_denovo rep_seqs.fasta --nonchimeras rep_seqs.nochim.fasta
+vsearch --cluster_size rep_seqs.nochim.fasta --id 0.97 \
+  --centroids otu97.fasta --uc otu97.uc --threads 16
+
+# FAPROTAX（OTU 表含 taxonomy 列）
+python collapse_table.py -i otu_table.txt -o func.tsv -g FAPROTAX.txt -c "#" -d ";" -v
+```
+
+```r
+# 差异丰度与来源追踪（R 端示意）
+library(ANCOMBC);  ancombc2(data = physeq, fix_formula = "Group", p_adj_method = "BH")
+library(maaslin3); maaslin3(input_data = feat, input_metadata = meta,
+                            output = "maaslin3_out", formula = "~ Group + age")
+# SourceTracker2 命令行：sourcetracker2 gibbs -i otu.biom -m meta.tsv -o st2_out
+```
+
+选型原则：*先用 QIIME 2 把上游标准化，再用 DADA2（ASV）或 VSEARCH（OTU）二选一；功能预测用 PICRUSt2（肠道）或 FAPROTAX / Tax4Fun2（环境）；差异分析优先组成型方法（ANCOM-BC2 / LinDA），模型类结论务必交叉验证*。
+
 #line()
 
 == 参考与延伸阅读
@@ -1150,6 +1390,14 @@ biom convert -i feature-table.biom -o table-with-taxonomy.tsv \
 
 - 刘永鑫等《使用 QIIME 2 分析微生物组 16S rRNA 基因扩增子测序数据》（Bio-protocol；本地 DOCX）——测试数据（Huang et al. 2019 拟南芥根际，GSA CRA002352，3 组 × 6 = 18 样本）、去噪耗时、ANCOM 示例出自此。
 - 北京百迈客《微生物多样性分析方法 v2.6》（本地 PDF）——公司预处理参数、分类器阈值、LEfSe / Metastats、RDA / CCA 选型、网络指标、PICRUSt2 / BugBase / FUNGuild、三代测序 CCS / lima 参数出自此。
+- 作者《科研利器之生信工具的原理合集》（本地 Markdown）——附录 F 的工具原理、命令与选型整理自此。
+- 作者 DADA2 / closed-reference Slurm 脚本（dada2_download_YL.sh、dada2_analysis_YL.sh、closed_reference_YL.sh）——附录 E 与 4.1 节的真实并行链路、去噪 / 闭合参考参数来源。
+
+=== 网络分析与进阶方法
+
+- SpiecEasi（SPIEC-EASI / SPCC 的 R 实现）：#link("https://github.com/zdk123/SpiecEasi")[github.com/zdk123/SpiecEasi]
+- SparCC（基于 Aitchison 的组成型相关）：#link("https://bitbucket.org/yonatanf/sparcc")[bitbucket.org/yonatanf/sparcc]
+- MENA（分子生态网络分析平台）：#link("http://ieg4.rccc.ou.edu/mena/")[ieg4.rccc.ou.edu/mena]
 - QIIME 2 中文手册（Yongxin Liu）：#link("https://github.com/YongxinLiu/QIIME2ChineseManual")[github.com/YongxinLiu/QIIME2ChineseManual]
 - 讲义 `diversity_analysis.md`（QIIME 2 概览与 2020.11 / 2021.2 完整流程命令）。
 

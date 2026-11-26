@@ -12,7 +12,7 @@
 #tufted.blog-entry(
   date: datetime(year: 2026, month: 11, day: 26),
   path: "2026-11-26-qiime2-16s-amplicon/",
-  title: "16S rRNA 扩增子生信分析全流程：以 QIIME 2 2024.2 为主线",
+  title: "16S rRNA 扩增子生信分析全流程（QIIME 2 2024.2）",
 )
 
 #tufted.blog-entry(
