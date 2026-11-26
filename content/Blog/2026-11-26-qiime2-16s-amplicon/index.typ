@@ -15,23 +15,25 @@
 
 分工原则：*QIIME 2 负责上游——把原始 reads 变成干净的特征表、物种注释、进化树和核心多样性指标；PCA、NMDS、RDA/CCA、Rank-Abundance、UPGMA、LEfSe、网络分析等下游统计与可视化，交给 R 生态或独立工具*。每一步都会标注归属，避免在 QIIME 2 里找一个它本就不提供的命令。
 
-// 流程总览图（占位：原图 imgs/00-pipeline-overview.png 尚未提供；补图后可替换下方文字示意）
-#align(center)[
-  #box(stroke: gray, inset: 8pt)[
-    #set text(size: 9pt)
-    ```
- 原始 fq.gz → QC（demux summarize / fastp / 去宿主）→ 去引物（Cutadapt，按需）
-            → DADA2 去噪（内建拼接+去嵌合体）→ ASV 表 + 代表序列
-            → [Greengenes2 99% closed-reference mapping → OTU 表（跨队列主线）]
-            → 物种注释（GG2 backbone tax / SILVA 分类器）
-            → 建树（GG2 参考树 或 de novo FastTree）
-            → 多样性（Alpha/Beta/PERMANOVA）→ 排序（PCoA/PCA/NMDS/UPGMA/RDA/CCA）
-            → 差异丰度（ANCOM/ANCOM-BC/LEfSe/MaAsLin3）→ 网络与功能预测
-    ```
-    #text(size: 8.5pt, fill: gray)[16S 扩增子整体分析流程总览：从测序数据质控，到特征表生成与物种注释，
-    再到多样性、排序、差异与环境因子关联分析（据参考资料与 BMKCloud 分析框架整理）]
-  ]
-]
+#figure(
+  image("imgs/00-pipeline-overview.png"),
+  caption: [16S 扩增子整体分析流程总览：原始 fq.gz → QC → 去引物（Cutadapt，按需）→ DADA2 去噪（内建拼接 + 去嵌合体）得 ASV 表与代表序列 → \[Greengenes2 99% closed-reference mapping 得 OTU 表，跨队列主线\] → 物种注释 → 建树 → Alpha/Beta 多样性与 PERMANOVA → 排序（PCoA/PCA/NMDS/UPGMA/RDA/CCA）→ 差异丰度（ANCOM-BC/LEfSe/MaAsLin3）→ 网络与功能预测。据参考资料与 BMKCloud 分析框架整理],
+)
+
+#figure(
+  image("imgs/amplicon-workflow-xiaoqizheng.png"),
+  caption: [扩增子测序数据分析流程（黄框 = 操作方法，绿块 = 文件 / 数据）：原始序列 → 拆样 → 去噪得 ASV → 特征表 + 代表序列 → 分支到物种分类 / Alpha·Beta 多样性 / 建树 / 差异丰度。来源：xiaoqizheng《QIIME2 笔记》#link("https://xiaoqizheng.github.io/biological_data_analysis/qiime2.html")[链接]],
+)
+
+#figure(
+  image("imgs/qiime2-principle-fig1.png"),
+  caption: [附图1 · QIIME 2 原理图：展示 QIIME 2 如何用「带类型的 Artifact（.qza）与 Visualizations（.qzv）」串起分析，并把每一步的结果与来源记录成可追溯的 provenance 图，从而保证可重复。来源：微信公众号《QIIME 2：可重复、交互和扩展的微生物组数据分析流程》#link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[链接]],
+)
+
+#figure(
+  image("imgs/qiime2-provenance-fig2.png"),
+  caption: [图2 · 迭代记录数据来源确保分析可重复：以「生成一张交互式物种组成柱状图」为例，展示 QIIME 2 记录从原始数据到最终图表每一步的数据来源（provenance graph）。来源：同上 #link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[链接]],
+)
 
 #line()
 
@@ -107,6 +109,14 @@ qiime tools import \
   | Q20 / Q30 | 碱基质量 ≥ 20 / ≥ 30 的碱基占比；Q20≈错误率 1%，Q30≈0.1% | Q20>90%、Q30>80% 通常算质量合格 |
   | Good's 覆盖度 | 样本覆盖度估计 C = 1 − F₁/N（F₁ = 只出现一次的特征数，N = 总计数）；不是「已发现种数 / 真实种数」 | 越接近 1，说明「测得越全」 |
   | ASV / OTU | 特征（feature）的两种单位 | 现代去噪用 ASV，经典聚类用 OTU（见第 4 节） |
+  | Bray–Curtis | 定量 β 距离：对丰度求差再归一，0=完全相同、1=完全不重叠 | 生态学最常用的群落相异度，对丰度敏感（见 7.1） |
+  | UniFrac（加权 / 非加权） | 结合进化树的 β 距离；加权计入丰度、非加权只看有无 | 用系统发育关系比较群落，需先建树（见 6.0、7.1） |
+  | Faith PD | Faith 系统发育多样性：样本内类群在树上覆盖的分支长度之和 | 强调「遗传多样性」而非仅物种数（见 6.1） |
+  | Chao1 | 依低丰度（singleton/doubleton）估计的物种丰富度 | 校正「测少了」的丰富度，深度低时更重要 |
+  | PERMANOVA（R² / pseudo-F） | 基于距离矩阵的多元方差分析；R²=某因子解释的方差比例，P 由置换得到 | β 组间差异的标准检验（见 7.2） |
+  | 稀释曲线 rarefaction | 抽到不同深度时的多样性曲线；走平说明深度足够 | 判断测序深度、选抽平深度（见 6.2） |
+  | NSTI | PICRUSt2 中序列放置到参考树的偏离指数，越大越不可靠（默认阈值 2） | 判断功能预测是否可信（见 16.4） |
+  | SparCC / SPIEC-EASI | 组成型网络方法：SparCC=稀疏相关，SPIEC-EASI=稀疏偏相关 | 共发生网络不能用普通 Pearson（见 15） |
 ]
 
 *ASV 与 OTU 要分清四种口径，别混用*：
@@ -154,7 +164,7 @@ qiime tools import \
 
 注意 `vegan::rda()` *无约束时做的就是 PCA*（对 Hellinger 后的矩阵），带约束公式时才是 RDA——二者共享底层算法，但统计含义不同，表里把 PCA 单独写成 `prcomp` 以免混淆。
 
-这条教程的主线是：*导入 → Cutadapt 去引物（按需）→ DADA2 去噪（内置拼接与去嵌合体）→ ASV 特征表 → [Greengenes2 99% closed-reference → OTU 表] → 物种注释 → 进化树 → 多样性/排序 → 差异/关联*。方括号一段是本文的跨研究主线，下游以 OTU 表为主、ASV 表作为支线保留。关键文件名建议固定下来（全流程反复引用）：
+这条教程的主线是：*导入 → Cutadapt 去引物（按需）→ DADA2 去噪（内置拼接与去嵌合体）→ ASV 特征表 → \[Greengenes2 99% closed-reference → OTU 表\] → 物种注释 → 进化树 → 多样性/排序 → 差异/关联*。方括号一段是本文的跨研究主线，下游以 OTU 表为主、ASV 表作为支线保留。关键文件名建议固定下来（全流程反复引用）：
 
 #tablem[
   | 文件 | 含义 | 主要下游用途 |
@@ -180,6 +190,80 @@ qiime tools import \
 - 建议每个队列留存：原始 manifest、原始论文、整理后 metadata、整理脚本，以及 accession / 下载日期 / MD5 / 软件与数据库版本。
 
 metadata 写好后先自检：用 `qiime metadata tabulate --m-input-file metadata.tsv --o-visualization metadata.qzv` 在 view 里过一眼，确认样本 ID 无重复、分组列无意外取值（`qiime metadata tabulate` 能直接暴露「列被当成数字」「多余空白」这类低级错误）。
+
+=== 0.6 三类核心文件解读：FeatureTable（BIOM）、Metadata、Taxonomy
+
+真正在流程里流转的是三张表：*特征表*（谁在、各多少）、*元数据*（样本怎么分组）、*物种注释*（每个特征是谁）。它们格式与行列方向各不相同，弄反一次，后面所有命令和 R 代码都会*静默*算错。先一次看清「文件类型 / 行 = 什么 / 列 = 什么 / 值 = 什么」：
+
+#tablem[
+  | 文件 | 常见类型 | 行 | 列 | 单元格的值 | 用途 |
+  | :--- | :--- | :--- | :--- | :--- | :--- |
+  | 特征表 | `.qza`（`FeatureTable[Frequency]`）；导出 `.biom` / `.tsv` | feature（ASV 或 OTU 的 ID） | 样本 `sample-id` | 该特征在该样本的 reads *计数*（整数） | 组成、Alpha/Beta、差异丰度、网络的定量输入 |
+  | 元数据 | 纯文本 `.tsv`（首列 `#SampleID` 或 `sample-id`） | 样本 | 变量（Group、Age、Batch…） | 该样本该变量的取值（分类或数值） | 分组比较、PERMANOVA/ANCOM 公式、排序着色 |
+  | 物种注释 | `.qza`（`FeatureData[Taxonomy]`）；导出 `taxonomy.tsv` | feature | Feature ID / Taxon /（Confidence） | 该 feature 的分类谱系 `k__…;p__…;g__…` 与置信度 | `taxa collapse`、`taxa barplot` |
+]
+
+*三者必须共用同一套特征 ID 与同一套 sample-id*。closed-reference 之后，`table-gg2-cr99.qza` 的特征 ID 已变成 Greengenes2 参考序列 ID，只能用同 ID 空间的 `taxonomy-gg2.qza` 注释它，*不能*拿 ASV 的 taxonomy 去 collapse（见 4.5）。
+
+*① 特征表（FeatureTable / BIOM）：一张「特征 × 样本」计数矩阵。* BIOM（Biological Observation Matrix）是存放这张矩阵的标准格式，QIIME 2 用 `.qza` 打包（内部即 BIOM）。导出成 TSV 后大致长这样。*注意首列的长相连两个阶段*——collapse 之前是真实的特征 ID（哈希 / 序列 ID），只有 `taxa collapse` 合并之后才会变成拼接的分类名：
+
+```text
+# 原始特征表（collapse 之前；#OTU ID 列是真实的 feature ID）
+# Constructed from biom file
+#OTU ID	S1	S2	S3
+b5f0b7e7a37b6094…	120	0	45
+4b0e4a3b01c1d2e3…	30	88	12
+7a9c2d5f8e1b3a6c…	0	5	3
+```
+
+```text
+# 属水平合并后的表（collapse --p-level 6 之后；首列变成拼接的分类名）
+# Constructed from biom file
+#OTU ID	S1	S2	S3
+d__Bacteria;p__Firmicutes;c__Clostridia;…;g__Prevotella	120	3	45
+d__Bacteria;p__Bacteroidetes;c__Bacteroidia;…;g__Bacteroides	30	88	12
+d__Bacteria;p__Proteobacteria;c__Gammaproteobacteria;…;g__Escherichia	0	5	3
+```
+
+- *行 = 特征*（首列是特征 ID），*列 = 样本*，值 = reads 计数。
+- 方向陷阱：BIOM 导出的 TSV 是「行=特征、列=样本」，而 vegan 要「行=样本、列=特征」，进 R 前必须 `t()` 转置（附录 C 的 `read_biom_tsv()` 已处理）。
+- 首行 `# Constructed from biom file` 是注释行，R 读取需 `skip = 1` 或 `comment.char = "#"`。
+- 常用操作：
+
+```bash
+qiime feature-table summarize \
+  --i-table table-clean.qza --o-visualization table-clean.qzv   # 每样本深度与特征数分布
+qiime tools export --input-path table-clean.qza --output-path export/table   # → feature-table.biom
+biom convert -i export/table/feature-table.biom -o export/table/feature-table.tsv --to-tsv
+```
+
+*② 元数据（Metadata / mapping）：样本的「注释表」。*
+
+```text
+#SampleID	Group	Age	Batch
+S1	control	23	1
+S2	disease	31	1
+S3	control	27	2
+```
+
+- *行 = 样本*，*列 = 变量*；首列 `#SampleID`（或 `sample-id`）必须唯一、与特征表的列名严格一致。
+- 分类变量*不要用数字编码*（`1/2` 会被当连续变量）；缺失值保留 `NA`，不要主观补值。
+- 校验：`qiime metadata tabulate --m-input-file metadata.tsv --o-visualization metadata.qzv`，能在 view 里直接看出重复 ID、被误当数字的列、多余空白。
+- 它是 PERMANOVA 的 `strata`、ANCOM 的公式、`beta-group-significance` 的 `--m-metadata-column`、R 里排序着色与 `adonis` 的分组来源（见 0.5）。
+
+*③ 物种注释（Taxonomy）：feature → 分类谱系。*
+
+```text
+Feature ID	Taxon	Confidence
+b5f0b7e7a37b6094…	d__Bacteria;p__Firmicutes;c__Clostridia;…;g__Prevotella	0.99
+4b0e4a3b01c1d2e3…	d__Bacteria;p__Bacteroidetes;c__Bacteroidia;…;g__Bacteroides	0.98
+```
+
+- *行 = feature*，给出该 feature 的七级谱系 `d__/p__/c__/o__/f__/g__/s__`；`Confidence` 列仅朴素贝叶斯 `classify-sklearn` 会输出（其含义见 4.5）。
+- 谱系前缀的版本差异：Greengenes2 与 SILVA 138.1 的第一级是 `d__`（domain）；旧库（Greengenes 13_8、旧版 SILVA）则写成 `k__`（kingdom）——见到 `k__` 起头的谱系即可断定注释来自旧版本库。
+- 用途：`qiime taxa collapse --p-level N` 把特征合并到门（2）/属（6）等层级；`qiime taxa barplot` 画堆叠柱状图（见第 5 节）。合并后特征 ID 变成拼接的分类名，别再当 ASV ID 用。
+
+一句话记：*特征表说「有多少」、元数据说「怎么分组」、物种注释说「是谁」*；三者 ID 对齐，流程才不出错。
 
 下面逐节展开。
 
@@ -725,6 +809,24 @@ qiime taxa barplot \
 
 Alpha 多样性描述*单个样本内部*的物种丰富度与均匀度。它回答「这个样本里有多少种、分布是否均衡」，不回答「两个样本像不像」——后者是第 7 节的 Beta 多样性。
 
+先把 `q2-diversity` 的动作对号入座（下列动作名与指标名均可在本机 `qiime diversity <动作> --help` 核对）：
+
+#tablem[
+  | 动作 | 作用 | 典型输入 → 输出 |
+  | :--- | :--- | :--- |
+  | `core-metrics-phylogenetic` | 一次算 Faith PD / observed_features / Shannon / evenness + 四种 β 距离 + 对应 PCoA | 表 + 有根树 + 抽平深度 + metadata |
+  | `core-metrics` | 同上，但不含系统发育指标（无 Faith PD / UniFrac） | 表 + 抽平深度 + metadata |
+  | `alpha` / `alpha-phylogenetic` | 计算单个 α 指标（`--p-metric`） | 表（+ 树）→ 向量 |
+  | `beta` / `beta-phylogenetic` | 两两样本 β 距离（指定 metric） | 表（+ 树）→ 距离矩阵 |
+  | `alpha-group-significance` | 按分组比较 α（Kruskal–Wallis，可两两） | α 向量 + 分类变量 |
+  | `beta-group-significance` | 置换检验 β 组间差异（`--p-method permanova/anosim/permdisp`） | 距离矩阵 + 分类变量 |
+  | `alpha-rarefaction` | 稀释曲线（多深度 α 曲线） | 表 + 最大深度 + metadata |
+  | `pcoa` / `pcoa-biplot` | 主坐标分析（含特征双序图） | 距离矩阵 → PCoA 结果 |
+  | `mantel` / `procrustes-analysis` | 两距离矩阵 / 两排序的一致性检验 | 距离矩阵(×2) / PCoA(×2) |
+]
+
+常用指标名（`--p-metric`）：α = `shannon`、`simpson`、`chao1`、`observed_features`、`faith_pd`、`pielou_e`、`goods_coverage`；β = `braycurtis`、`jaccard`、`unweighted_unifrac`、`weighted_unifrac`（`beta` 还支持 `aitchison`、`jensenshannon`、`euclidean` 等）。`core-metrics-phylogenetic` 的必填输入是 `--i-table`（`FeatureTable[Frequency]`）、`--i-phylogeny`（`Phylogeny[Rooted]`）、`--p-sampling-depth`、`--m-metadata-file`。
+
 === 6.0 建树（Alpha / Beta 的前置）
 
 *Faith PD、UniFrac 都依赖进化树，所以它必须在跑 6.1 与第 7 节之前建好*。把建树放在本节开头，目录顺序与实际执行顺序就一致了，不用再「跳到第 8 节建完树再回来」。
@@ -772,7 +874,7 @@ wget https://ftp.microbio.me/greengenes_release/2024.09/2024.09.phylogeny.md5.nw
   | Simpson | `simpson` | 偏向优势类群的多样性 | 需确认软件定义方向 |
   | Chao1 | `chao1` | 估计的真实丰富度（含未测到的） | 越大潜在种类越多 |
   | Faith PD | `faith_pd` | 基于进化树的多样性 | 越大进化多样性越高 |
-  | Pielou 均匀度 | `pielou_evenness` | 均匀度 | 越接近 1 越均匀 |
+  | Pielou 均匀度 | `pielou_e`（命令用名；core-metrics 输出列名为 `evenness`） | 均匀度 | 越接近 1 越均匀 |
   | Goods 覆盖度 | `goods_coverage` | 测序覆盖度 | 越接近 1 覆盖越全 |
 ]
 
@@ -1160,8 +1262,8 @@ lefse_plot_res.py otu.res lefse.png                          # 结果条形图
 
 参数归属（从 SegataLab/lefse 源码核对，*容易装成旧版时混淆*）：
 
-- `-c`（class 列号，整数从 1 起）、`-s`（subclass）、`-u`（subject）、`-f c|r`（features 按行 r / 按列 c 布局，*默认 r*）、`-o`（归一化数值，默认 1e6）——这些**全属于 `lefse_format_input.py`**。
-- `lefse_run.py` 的 `-l`（LDA 阈值）*默认 2.0*，`-l 4.0` 是惯例的显式收紧；它自己的 `-f` 是 bootstrap 子采样比例（默认 0.67），**别**把格式化那步的 `-f r` 放到 run 步——传进去会被静默当成 0.67 而不报错。
+- `-c`（class 列号，整数从 1 起）、`-s`（subclass）、`-u`（subject）、`-f c|r`（features 按行 r / 按列 c 布局，*默认 r*）、`-o`（归一化数值，默认 1e6）——这些*全属于 `lefse_format_input.py`*。
+- `lefse_run.py` 的 `-l`（LDA 阈值）*默认 2.0*，`-l 4.0` 是惯例的显式收紧；它自己的 `-f` 是 bootstrap 子采样比例（默认 0.67），*别*把格式化那步的 `-f r` 放到 run 步——传进去会被静默当成 0.67 而不报错。
 - 旧版教程里的 `run_lefse.py` / `plot_res.py`（无前缀命令名）与新版并不通用，import 报 `command not found` 时先看装的是哪个版本。
 
 跑之前先用 QIIME 把特征表/注释导出成 LEfSe 可读的纯文本表，并确认分组列的位置。
@@ -1332,6 +1434,8 @@ ordiellipse(nmds, groups = meta$Group, kind = "se", conf = 0.95)
   | SPIEC-EASI（MB） | 稀疏*偏相关*：邻域选择 + 稳定性选择 | R `SpiecEasi::spiec.easi(method="mb")` | 推荐、稳健 |
   | SPIEC-EASI（glasso） | 图 lasso 稀疏逆协方差（偏相关） | 同上 `method="glasso"` | 备选 |
   | CCLasso / CoNet | 组成型相关 / 集成多指标 | R / Cytoscape 插件 | 补充 |
+  | 普通 Pearson / Spearman | 直接算相关，*不校正组成性* | 任意 | 仅作快速探索，正式分析别用 |
+  | WGCNA（加权相关网络） | 加权相关 + 软阈值，善于划分模块 | R `WGCNA` / `microeco` | 侧重模块，不强调稀疏性 |
 ]
 
 *别把 SparCC 与 SPIEC-EASI 混为一谈*：SparCC 估计的是「组成型稀疏*相关*」（correlation）；SPIEC-EASI 估计的是「稀疏*偏相关* / 逆协方差」（conditional dependence——边表示*控制其他节点之后*仍存在的关联），二者对同一条边的生态含义不同。另外，「SPCC」并不是 SparCC 的别名，写方法时直接写 SparCC 或 SPIEC-EASI，别用含糊缩写。选一个主流方法即可，不必全做。
@@ -1363,7 +1467,7 @@ ig  <- adj2igraph(adj)           # 转 igraph，正 / 负边可按符号着色
 plot(ig, vertex.size = 3, vertex.label = NA, layout = layout_with_fr)
 ```
 
-SparCC 的 Python 路线（*注意参数语义与常见误写*）：`SparCC.py` 的 `-i/--iterations` 是剔除高相关对的迭代次数（默认 10）、`-x/--xiter` 同为迭代数——**它们都与 P 值无关**；`-a/--algo` 是选关联算法（SparCC / pearson / spearman / kendall），别把输出文件名传给它。P 值必须独立走 bootstrap 两步：
+SparCC 的 Python 路线（*注意参数语义与常见误写*）：`SparCC.py` 的 `-i/--iterations` 是剔除高相关对的迭代次数（默认 10）、`-x/--xiter` 同为迭代数——*它们都与 P 值无关*；`-a/--algo` 是选关联算法（SparCC / pearson / spearman / kendall），别把输出文件名传给它。P 值必须独立走 bootstrap 两步：
 
 ```bash
 # otu_table：行=类群（特征），列=样本；输入计数表，SparCC 内部做 CLR
@@ -1382,6 +1486,8 @@ fastspar -c otu_table_counts.tsv -o fastspar_out -i 30   # 配合 fastspar_boots
 ```
 
 再用相关与 P 值阈值筛边，导入 igraph / Gephi。
+
+*更省事的封装：R 包 `microeco`。* 若不想自己拼 SpiecEasi + igraph，可用 `microeco::trans_network` 一条链完成建网、模块、拓扑与导出：`cor_method` 可选 `spearman` / `pearson` / `sparcc` / `bray`，或 `use_WGCNA_pearson_spearman = TRUE` 走 WGCNA 加权网络（善分模块）；先用 `filter_thres` 去掉低丰度（如 0.001），`COR_cut` 设相关系数阈值（如 0.6）、`COR_p_thres` 设 P / FDR（如 0.01），`COR_optimization = TRUE` 可据随机矩阵理论自动定阈值。建网后 `$cal_module(method = "cluster_fast_greedy")` 分模块、`$cal_network_attr()` 出拓扑（模块度 Modularity＞0.4 通常认为模块结构显著）、`$get_node_table(node_roles = TRUE)` 出 Zi–Pi 角色、`$save_network("network.gexf")` 导 Gephi。方法与 15.2 一致，只是把繁琐步骤封装了——*相关 ≠ 因果*这条底线不变。
 
 === 15.4 拓扑指标与关键物种（Zi–Pi）
 
@@ -1493,6 +1599,24 @@ ggplot(long, aes(SampleID, Abundance, fill = Genus)) +
 - *FAPROTAX 生态功能*：用「分类单元→功能」经验映射表，把 16S 物种表翻译成碳 / 氮 / 硫循环、发酵、光养等功能；只有 16S 又关心元素循环时最常用（`collapse_table.py`）。
 - *BugBase 表型预测*：输出革兰氏阴阳性、好氧 / 厌氧、生物膜形成、致病性等表型比例。
 - *FUNGuild 真菌功能*：把 ITS 物种映射到 *病理营养型（pathotroph）、共生营养型（symbiotroph）、腐生营养型（saprotroph）* 三大营养型及其细分 guild。
+
+PICRUSt2 在 QIIME 2 里的一条龙命令（先装插件 `conda install q2-picrust2 -c conda-forge -c bioconda -c picrust`）：
+
+```bash
+qiime picrust2 full-pipeline \
+  --i-table table-asv.qza \
+  --i-seq rep-seqs-asv.qza \
+  --output-dir q2-picrust2_output \
+  --p-placement-tool sepp \
+  --p-threads 8 \
+  --p-hsp-method pic \
+  --p-max-nsti 2 \
+  --verbose
+```
+
+输出三类预测（`.qza`，行 = 功能、列 = 样本）：`ec_metagenome.qza`（EC 酶）、`ko_metagenome.qza`（KEGG KO）、`pathway_abundance.qza`（MetaCyc 通路）；`qiime tools export --input-path q2-picrust2_output/pathway_abundance.qza --output-path export/pathway` 后可进 R 做差异 / 排序。`--p-max-nsti` 默认即 2：weighted NSTI 大于 2 表示该序列放置到参考树太远、预测不可靠，应剔除或标注。
+
+*shotgun 宏基因组是「测量」而非「预测」*：真要回答功能问题，别用 16S 猜——直接做 shotgun 测序，用 *MetaPhlAn4*（clade-specific 标记基因做物种 / 菌株定量，每样本输出 `_profile.txt`，`merge_metaphlan_tables.py` 合并成丰度表）与 *HUMAnN*（通路 / 基因家族功能定量）。它们输入 trimmed fastq、直接测得而非推断，代价是成本与数据量远高于 16S——这正是「预测 vs 测量」的分水岭。
 
 这些是从「物种描述」走向「功能推断」的加分项，但预测结果仍需实验验证；网络分析见第 15 节。若问题变成「群落像谁、来自谁」，用来源追踪：`SourceTracker2`（贝叶斯混合 + Gibbs）或 `FEAST`（EM 混合模型）估计 source→sink 的贡献比例。*前提*：必须先有明确的 source / sink 采样设计（例如同个体的口腔→肠道配对），否则来源追踪无法解释；预测出的来源比例是*模型估计*，不是直接观测到的微生物转移事件，Unknown 比例也不可当作可忽略的噪声。
 
@@ -1786,6 +1910,7 @@ library(maaslin3); maaslin3(input_data = feat, input_metadata = meta,
 - LinDA：Zhou, He, Chen & Zhang 2022, *Genome Biology* 23:95（doi:10.1186/s13059-022-02655-5，注意刊名是 Genome Biology，不是 Microbiome）；MaAsLin2/3：Huttenhower 组（MaAsLin3 见 Nickols et al., *Nat Methods* 2026）
 - LEfSe：Segata et al. 2011, *Genome Biology* 12:R60；Metastats：White et al. 2009
 - PICRUSt2：Douglas et al. 2020, *Nat Biotechnol*；Tax4Fun2：Wemheuer et al. 2020；FAPROTAX：Louca et al. 2016, *Glob Ecol Biogeogr*
+- MetaPhlAn4：Blanco-Míguez et al. 2023, *Nat Biotechnol*；HUMAnN：Beghini et al. 2021, *Nat Methods*（shotgun 宏基因组的物种 / 功能「测量」，非 16S 预测）
 - SparCC：Friedman & Alm 2012, *PLoS Comput Biol*；SPIEC-EASI：Kurtz et al. 2015, *PLoS Comput Biol*
 - Zi–Pi 节点角色：Guimerà & Amaral 2005, *Nature* / Olesen et al. 2007, *PNAS*
 - 排序选型（DCA/RDA/CCA）：Lepš & Šmilauer《Multivariate Analysis of Ecological Data》；vegan：Oksanen et al.（CRAN vegan 文档）
@@ -1798,6 +1923,8 @@ library(maaslin3); maaslin3(input_data = feat, input_metadata = meta,
 - 「Moving Pictures」教程（2‑4 与 2‑3 两版）：#link("https://forum.qiime2.org/t/qiime-2-4-moving-pictures-2018-11/7598")[forum/7598]、#link("https://forum.qiime2.org/t/qiime-2-3-2018-11/7599")[forum/7599]
 - 经验驱动指南（中文镜像）：#link("https://geekdaxue.co/read/QIIME2-doc-zh/2-Tutorial-03-Experienced-Driver-Guide-Experience.md")[geekdaxue QIIME2-doc-zh]
 - 宿主微生物组 QIIME 2 实验流程：#link("https://protocols.hostmicrobe.org/microbio/qiime2")[protocols.hostmicrobe.org]
+- 宿主微生物组宏基因组流程（MetaPhlAn4 / HUMAnN / Sunbeam / Sourmash 等）：#link("https://protocols.hostmicrobe.org/microbio")[protocols.hostmicrobe.org/microbio]
+- QIIME 2 原理与可追溯性（本文配图「附图1 原理图」与「图2 provenance」出处）：#link("https://mp.weixin.qq.com/s/gz2G4RQ3IBF21AYrPRQdIA")[微信 · QIIME 2 中文导读]
 - DADA2 官方教程（R 端参数来源）：#link("https://benjjneb.github.io/dada2/tutorial.html")[benjjneb.github.io/dada2]
 
 === 勤勤山 16S 系列（逐篇对应本文各节）
