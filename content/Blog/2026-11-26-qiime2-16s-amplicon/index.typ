@@ -26,8 +26,6 @@
 
 本教程以 *QIIME 2 2024.2* 为分析环境，采用 *DADA2 去噪*推断 ASV（扩增子序列变体）；在需要跨研究统一特征空间的主线中，进一步把 ASV 通过 *Greengenes2 backbone 做 99% closed-reference mapping*，得到参考库定义的 OTU 特征表。群落组成、Alpha/Beta 多样性及基于分类单元的比较分析，以该 OTU 表为主要输入；ASV 表与未匹配序列则保留用于序列层面质控、参考库覆盖度评估和 PICRUSt2 等功能预测。
 
-要特别说明：*双端数据的 `dada2 denoise-paired` 内部已经完成质量过滤、去噪、拼接与去嵌合体*，不要把「拼接」「去嵌合体」再当成 DADA2 之后必须单独执行的主步骤；只有走 vsearch / Deblur 的 OTU 路线时，才需要显式拼接与去嵌合体。
-
 分工原则：*QIIME 2 负责上游——把原始 reads 变成干净的特征表、物种注释、进化树和核心多样性指标；PCA、NMDS、RDA/CCA、Rank-Abundance、UPGMA、LEfSe、网络分析等下游统计与可视化，交给 R 生态或独立工具*。每一步都会标注归属，避免在 QIIME 2 里找一个它本就不提供的命令。
 
 // 流程总览图（占位：原图 imgs/00-pipeline-overview.png 尚未提供；补图后可替换下方文字示意）
@@ -986,6 +984,7 @@ qiime phylogeny midpoint-root \
   --i-tree iqtree-unrooted.qza \
   --o-rooted-tree iqtree-tree.qza
 # 更省事：直接用同输出的 pipeline `align-to-tree-mafft-iqtree`（一并给出 rooted tree）
+```
 
 - *短读长 de novo 建树的局限*：从 250–460 bp 的 ASV de novo 建树，深层分支不可靠，会传导到 Faith PD 与 UniFrac。
 - *更稳的现代替代*：*SEPP 片段插入到参考树*（如 Greengenes2 参考树）或直接用 Greengenes2 放置。本文 closed-reference 主线本就推荐用 GG2 同版本参考树（见 6.0），正是为此；de novo FastTree 只作 ASV 支线备选。
