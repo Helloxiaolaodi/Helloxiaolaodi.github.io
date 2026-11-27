@@ -3,3 +3,28 @@ CUSTOM STYLES
 
 Add your custom CSS styles here to override or extend the default styles.
 *******************************************************************************/
+
+/* Collapsible language blocks on Home / CV (default English, zh & ko folded) */
+details.lang-fold {
+  margin: 1.4rem 0;
+  padding: 0.1rem 1rem;
+  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  border-radius: 10px;
+}
+details.lang-fold > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.7rem 0;
+  font-weight: 600;
+  user-select: none;
+}
+details.lang-fold > summary::-webkit-details-marker { display: none; }
+details.lang-fold > summary::before {
+  content: "▸";
+  display: inline-block;
+  width: 1.1em;
+  margin-right: 0.35rem;
+}
+details.lang-fold[open] > summary::before { content: "▾"; }
+details.lang-fold[open] { padding-bottom: 0.5rem; }
+
