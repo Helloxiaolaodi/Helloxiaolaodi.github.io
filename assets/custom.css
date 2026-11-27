@@ -45,3 +45,18 @@ details.lang-fold[open] > summary::before { content: "▾"; }
   }
 }
 
+/* Margin-note photo stack on Home. A global `img { width: auto }` in tufted.css
+   overrides the HTML `width=` attribute, so each image renders at its natural
+   pixel width capped by the column. home-photo-1 is 290px wide but the map and
+   medal are 1195px / 4096px, so they fill the whole side column and look wider
+   than home-photo-1. Pin all three to one common width so they match exactly
+   (290px = home-photo-1's natural width; max-width keeps them from overflowing
+   narrow columns). */
+.marginnote img[src$="home-photo-1.jpg"],
+.marginnote img[src$="cycling-jiangxi-nanchang-jiujiang.jpg"],
+.marginnote img[src$="pbp2027-jiangxi-brm200-medal.jpg"] {
+  width: 290px;
+  max-width: 100%;
+  height: auto;
+}
+
