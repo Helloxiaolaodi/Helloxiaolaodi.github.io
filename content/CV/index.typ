@@ -24,7 +24,7 @@ _Cracking codes and microbes, mile by mile._
 
 - *2018–2020*: Undergraduate, Yantai University.
 
-== Competitions & Achievements
+== Competition Experience
 
 - Shanhai Qiyuan — 9th Lianyungang City Loop Ride (2023)
 - 17th "Panlang Festival" Triathlon, Shangyu, China (2023)
@@ -33,7 +33,7 @@ _Cracking codes and microbes, mile by mile._
 
 == Volunteer Experience
 
-- France PBP Qualifier · Around-Jiangxi BRM200 Cycling Certification Challenge — Nanchang Station (2026.11.20-2026.11.21)
+- France PBP Qualifier · Around-Jiangxi BRM200 Cycling Certification Challenge·Nanchang Station (2026.11.20-2026.11.21)
 
 == Publications & Blogs
 
@@ -53,7 +53,7 @@ _Cracking codes and microbes, mile by mile._
 
     - *2018–2020*：本科，烟台大学。
 
-    == 参赛与成绩
+    == 参赛经历
 
     - 山海骑缘 —— 第九届连云港环城骑行大会（2023）
     - 中国·上虞 第十七届「攀浪节」铁人三项（2023）
@@ -62,7 +62,7 @@ _Cracking codes and microbes, mile by mile._
 
     == 志愿服务
 
-    - 法国 PBP 资格赛 · 环江西 BRM200 骑行认证挑战 —— 南昌站（2026.11.20-2026.11.21）
+    - 法国 PBP 资格赛 · 环江西 BRM200 骑行认证挑战·南昌站（2026.11.20-2026.11.21）
 
     == 发表与博客
 
@@ -82,7 +82,7 @@ _Cracking codes and microbes, mile by mile._
 
     - *2018–2020*: 학부, 옌타이 대학.
 
-    == 대회 및 성과
+    == 대회 경험
 
     - 산해기연 — 제9회 롄윈강 일주 자전거 라이딩 대회 (2023)
     - 중국·상위 제17회 반랑절 철인3종 (2023)
@@ -91,7 +91,7 @@ _Cracking codes and microbes, mile by mile._
 
     == 자원봉사
 
-    - 프랑스 PBP 예선 · 장시 일주 BRM200 라이딩 인증 챌린지 — 난창 대회 (2026.11.20-2026.11.21)
+    - 프랑스 PBP 예선 · 장시 일주 BRM200 라이딩 인증 챌린지·난창 대회 (2026.11.20-2026.11.21)
 
     == 발표 성과
 

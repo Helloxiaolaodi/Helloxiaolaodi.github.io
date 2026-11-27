@@ -4,18 +4,18 @@ CUSTOM STYLES
 Add your custom CSS styles here to override or extend the default styles.
 *******************************************************************************/
 
-/* Collapsible language blocks on Home / CV (default English, zh & ko folded) */
+/* Collapsible language blocks on Home / CV (default English; 中文 & 한국어 folded).
+   The summary is a subtle toggle; the opened body flows exactly like normal
+   content so text keeps the 55% column and never runs under the margin notes. */
 details.lang-fold {
-  margin: 1.4rem 0;
-  padding: 0.1rem 1rem;
-  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
-  border-radius: 10px;
+  margin: 1.2rem 0 0;
 }
 details.lang-fold > summary {
   cursor: pointer;
   list-style: none;
-  padding: 0.7rem 0;
+  padding: 0.6rem 0;
   font-weight: 600;
+  border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
   user-select: none;
 }
 details.lang-fold > summary::-webkit-details-marker { display: none; }
@@ -26,5 +26,22 @@ details.lang-fold > summary::before {
   margin-right: 0.35rem;
 }
 details.lang-fold[open] > summary::before { content: "▾"; }
-details.lang-fold[open] { padding-bottom: 0.5rem; }
+
+@media (min-width: 761px) {
+  /* Tufte gives `section > p` a 55% content column, but blocks nested in
+     <details> miss that direct-child rule and would render full-width,
+     running their text under the right-margin notes. Mirror the column. */
+  details.lang-fold > p,
+  details.lang-fold > ul,
+  details.lang-fold > ol,
+  details.lang-fold > dl,
+  details.lang-fold > table,
+  details.lang-fold > h1,
+  details.lang-fold > h2,
+  details.lang-fold > h3,
+  details.lang-fold > h4,
+  details.lang-fold > h5 {
+    width: 55%;
+  }
+}
 
