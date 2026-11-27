@@ -4,8 +4,8 @@
 // 侧栏照片（home-photo-1 已按要求缩小）
 #tufted.margin-note({
   image("imgs/home-photo-1.jpg", width: 140pt)
-  image("imgs/cycling-jiangxi-nanchang-jiujiang.jpg", width: 120pt)
-  image("imgs/pbp2027-jiangxi-brm200-medal.jpg", width: 120pt)
+  image("imgs/cycling-jiangxi-nanchang-jiujiang.jpg", width: 140pt)
+  image("imgs/pbp2027-jiangxi-brm200-medal.jpg", width: 140pt)
 })
 
 #tufted.margin-note[
