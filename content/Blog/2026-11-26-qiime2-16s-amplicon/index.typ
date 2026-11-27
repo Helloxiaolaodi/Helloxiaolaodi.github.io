@@ -3,15 +3,15 @@
 
 // 如需生成 RSS feed，必须填写 title、description 和 date 元数据
 #show: template.with(
-  title: "16S rRNA 扩增子生信分析全流程（QIIME 2 2024.2）",
+  title: "16S rRNA 扩增子分析全流程（QIIME 2 2024.2）",
   description: "面向硕士研究生的 16S 扩增子分析教程：从数据质控、DADA2 去噪、Greengenes2 closed-reference 建 OTU 表与物种注释，到 Alpha/Beta 多样性、系统进化树、PCoA/PCA/NMDS/UPGMA、差异丰度、RDA/CCA 与共发生网络，以 QIIME 2 2024.2 串起完整流程，并给出 R（vegan/SpiecEasi）端复现代码。",
   date: datetime(year: 2026, month: 11, day: 26),
   lang: "zh",
 )
 
-= 16S rRNA 扩增子生信分析全流程（QIIME 2 2024.2）
+= 16S rRNA 扩增子分析全流程（QIIME 2 2024.2）
 
-本教程以 *QIIME 2 2024.2* 为分析环境，采用 *DADA2 去噪*推断 ASV（扩增子序列变体）；在需要跨研究统一特征空间的主线中，进一步把 ASV 通过 *Greengenes2 backbone 做 99% closed-reference mapping*，得到参考库定义的 OTU 特征表。群落组成、Alpha/Beta 多样性及基于分类单元的比较分析，以该 OTU 表为主要输入；ASV 表与未匹配序列则保留用于序列层面质控、参考库覆盖度评估和 PICRUSt2 等功能预测。
+本教程以 *QIIME 2 2024.2* 为分析环境，采用 *DADA2 去噪*推断 #link(<t-asv>)[ASV]（扩增子序列变体）；在需要跨研究统一特征空间的主线中，进一步把 ASV 通过 *Greengenes2 backbone 做 99% closed-reference mapping*，得到参考库定义的 #link(<t-asv>)[OTU] 特征表。群落组成、#link(<t-alpha>)[Alpha/Beta 多样性]及基于分类单元的比较分析，以该 OTU 表为主要输入；ASV 表与未匹配序列则保留用于序列层面质控、参考库覆盖度评估和 PICRUSt2 等功能预测。
 
 分工原则：*QIIME 2 负责上游——把原始 reads 变成干净的特征表、物种注释、进化树和核心多样性指标；PCA、NMDS、RDA/CCA、Rank-Abundance、UPGMA、LEfSe、网络分析等下游统计与可视化，交给 R 生态或独立工具*。每一步都会标注归属，避免在 QIIME 2 里找一个它本就不提供的命令。
 
@@ -39,11 +39,11 @@
 
 == 0. 准备工作与分析总览
 
-=== 0.1 版本、环境与基本概念
+=== 0.1 版本与环境
 
 本文所有命令以 *QIIME 2 2024.2*（amplicon 发行版）为准。QIIME 2 不能直接在 Windows 上运行，需要在 Linux 服务器、Windows 的 WSL2（Ubuntu）或 macOS 上通过 Conda 安装（安装命令见附录 A）。各版本命令高度一致，个别插件参数会变，遇到报错先 `qiime <插件> <命令> --help` 查看当前版本的真实参数，比背参数更重要。
 
-*适用范围*：Illumina PE 短读长的 16S rRNA 细菌 / 古菌扩增子（V3–V4 或 V4）、双端或单端常规数据。*不覆盖*：真菌 ITS（换 UNITE 数据库与 ITSx 流程）、PacBio / ONT 三代全长 16S（无需拼接、建树与分类器策略不同）、shotgun 宏基因组（那是另一套分析框架）。另注意：2024.2 之后 QIIME 2 个别插件的参数有过变动（如 `--show-importable-*` 被移除、python 版本号变化），跑更新版本时以 `--help` 与 docs.qiime2.org/en/stable 为准。
+*适用范围*：Illumina PE 短读长的 #link(<t-16s>)[16S rRNA] 细菌 / 古菌扩增子（#link(<t-region>)[V3–V4 或 V4]）、双端或单端常规数据。*不覆盖*：真菌 ITS（换 UNITE 数据库与 ITSx 流程）、PacBio / ONT 三代全长 16S（无需拼接、建树与分类器策略不同）、shotgun 宏基因组（那是另一套分析框架）。另注意：2024.2 之后 QIIME 2 个别插件的参数有过变动（如 `--show-importable-*` 被移除、python 版本号变化），跑更新版本时以 `--help` 与 docs.qiime2.org/en/stable 为准。
 
 QIIME 2 用两种文件承载数据，理解它们能省掉很多困惑：
 
@@ -96,28 +96,9 @@ qiime tools import \
   --input-format SingleEndFastqManifestPhred33V2
 ```
 
-=== 0.3 术语与基本量：先把话说清楚
+=== 0.3 术语与关键口径 <sec-keyterms>
 
-后面反复出现的几个概念，先统一口径，免得边学边猜：
-
-#tablem[
-  | 术语 | 含义 | 为什么重要 |
-  | :--- | :--- | :--- |
-  | 16S rRNA 基因 | 细菌 / 古菌核糖体小亚基基因，全长约 1542 bp，含 V1–V9 约九个高变区与夹在中间的保守区 | 保守区用于设计「通用引物」，高变区用于区分物种 |
-  | 扩增区（V3–V4 / V4） | 引物决定扩哪一段；V3–V4 约 460 bp、分辨力高；V4 约 250 bp、适合 2×250 | 扩增区必须与数据库、分类器一致 |
-  | 测序深度 | 每个样本的 reads 条数 | 深度不足会漏掉稀有类群，且样本间不能直接比多样性 |
-  | Q20 / Q30 | 碱基质量 ≥ 20 / ≥ 30 的碱基占比；Q20≈错误率 1%，Q30≈0.1% | Q20>90%、Q30>80% 通常算质量合格 |
-  | Good's 覆盖度 | 样本覆盖度估计 C = 1 − F₁/N（F₁ = 只出现一次的特征数，N = 总计数）；不是「已发现种数 / 真实种数」 | 越接近 1，说明「测得越全」 |
-  | ASV / OTU | 特征（feature）的两种单位 | 现代去噪用 ASV，经典聚类用 OTU（见第 4 节） |
-  | Bray–Curtis | 定量 β 距离：对丰度求差再归一，0=完全相同、1=完全不重叠 | 生态学最常用的群落相异度，对丰度敏感（见 7.1） |
-  | UniFrac（加权 / 非加权） | 结合进化树的 β 距离；加权计入丰度、非加权只看有无 | 用系统发育关系比较群落，需先建树（见 6.0、7.1） |
-  | Faith PD | Faith 系统发育多样性：样本内类群在树上覆盖的分支长度之和 | 强调「遗传多样性」而非仅物种数（见 6.1） |
-  | Chao1 | 依低丰度（singleton/doubleton）估计的物种丰富度 | 校正「测少了」的丰富度，深度低时更重要 |
-  | PERMANOVA（R² / pseudo-F） | 基于距离矩阵的多元方差分析；R²=某因子解释的方差比例，P 由置换得到 | β 组间差异的标准检验（见 7.2） |
-  | 稀释曲线 rarefaction | 抽到不同深度时的多样性曲线；走平说明深度足够 | 判断测序深度、选抽平深度（见 6.2） |
-  | NSTI | PICRUSt2 中序列放置到参考树的偏离指数，越大越不可靠（默认阈值 2） | 判断功能预测是否可信（见 16.4） |
-  | SparCC / SPIEC-EASI | 组成型网络方法：SparCC=稀疏相关，SPIEC-EASI=稀疏偏相关 | 共发生网络不能用普通 Pearson（见 15） |
-]
+后面反复出现的术语（16S rRNA 基因、测序深度、Q20/Q30、Good's 覆盖度、ASV/OTU、Bray–Curtis、UniFrac、Faith PD、Chao1、PERMANOVA、稀释曲线、NSTI、SparCC / SPIEC-EASI 等）已统一收录到文末的 #link(<glossary>)[附表：术语]，并在正文首次出现处加内链，点击即可跳转查阅。这里只保留两处最容易混淆、也最影响后续分析的「口径」：
 
 *ASV 与 OTU 要分清四种口径，别混用*：
 
@@ -132,19 +113,11 @@ qiime tools import \
 
 *99% closed-reference OTU 不等于物种鉴定成功*：它只是把 ASV 归到参考库中最相近的参考序列，分辨率仍受扩增区与参考库覆盖限制。
 
-多样性分三个层次，名字只差一个希腊字母，含义却完全不同：
-
-#tablem[
-  | 层次 | 回答的问题 | 典型指标 | 本文位置 |
-  | :--- | :--- | :--- | :--- |
-  | α（Alpha） | 单个样本内部有多少种、多均匀 | Shannon、Simpson、Chao1、Faith PD | 第 6 节 |
-  | β（Beta） | 样本与样本之间差多少 | Bray–Curtis、Jaccard、UniFrac | 第 7 节 |
-  | γ（Gamma） | 整个区域 / 所有样本合起来的总多样性 | 区域物种池丰富度 | 综合解读时提及 |
-]
+另一个只差希腊字母、容易混掉的口径——α / β / γ 三个多样性层次（单样本内部 / 样本之间 / 区域整体，各对应哪些指标与章节），一并收在 #link(<t-alpha>)[附表：术语]。
 
 一个常被忽略的量：*样本间测序深度不齐时，直接比较 α 多样性会被深度差异带偏*，所以 *QIIME 2 的常规 Alpha/Beta 流程*会先抽平（rarefy，即 `--p-sampling-depth`）到同一深度再比较。但抽平并非所有下游步骤的通用前提——*差异丰度分析通常使用未抽平的计数表*，由方法自身做归一化或偏差校正（见第 12 节）；`core-metrics-phylogenetic` 输出的抽平表也*不要*直接当作 ANCOM-BC / MaAsLin 的默认输入。
 
-=== 0.4 分析总览：哪一步归 QIIME 2，哪一步归 R
+=== 0.4 分析总览与工具分工
 
 #tablem[
   | 分析环节 | 主要工具 | 代表命令 / 函数 | 主要产物 |
@@ -155,7 +128,7 @@ qiime tools import \
   | Alpha 多样性 | QIIME 2 | `core-metrics-phylogenetic`、`alpha-rarefaction` | 多样性向量、稀释曲线 |
   | Beta 多样性 | QIIME 2 + R | `beta-group-significance`、vegan | 距离矩阵、PERMANOVA |
   | PCoA | QIIME 2 | `diversity pcoa` + `emperor plot` | 排序图 |
-  | PCA / NMDS / UPGMA | R（vegan） | `prcomp` / `rda(~1)`、`metaMDS`、`hclust` | 排序图、聚类树 |
+  | PCA / NMDS / UPGMA | R（vegan / base） | `prcomp` / `rda(~1)`、`metaMDS`、`hclust` | 排序图、聚类树 |
   | 组间差异 | QIIME 2 + R/LEfSe | `composition ancom`、LEfSe | 差异特征、标志物种 |
   | RDA / CCA / db-RDA | R（vegan） | `rda`、`cca`、`capscale`（DCA 选型诊断用 `decorana`，见第 13 节） | 约束排序图 |
   | Rank-Abundance | R | `ggplot2`、`radfit` | 等级丰度曲线 |
@@ -179,7 +152,7 @@ qiime tools import \
   | `tree-gg2.qza` | 与 closed-reference 特征 ID 匹配的树（de novo 生成，或直接用 GG2 参考树，见 6.0） | Faith PD、UniFrac |
 ]
 
-=== 0.5 实验设计与 Metadata 质量控制
+=== 0.5 实验设计与 Metadata
 
 主线能走多远，取决于 metadata 的设计质量——分组、协变量、配对 / 纵向结构直接决定第 7、12、14 节能建什么统计模型，所以它是*准备工作*的一部分，不是收尾杂项。合格 metadata 至少应含：sample-id（唯一、与特征表严格对应）、Group、Age、Sex、Batch、SubjectID、Time、采样部位、16S 可变区、测序平台。要点：
 
@@ -191,7 +164,7 @@ qiime tools import \
 
 metadata 写好后先自检：用 `qiime metadata tabulate --m-input-file metadata.tsv --o-visualization metadata.qzv` 在 view 里过一眼，确认样本 ID 无重复、分组列无意外取值（`qiime metadata tabulate` 能直接暴露「列被当成数字」「多余空白」这类低级错误）。
 
-=== 0.6 三类核心文件解读：FeatureTable（BIOM）、Metadata、Taxonomy
+=== 0.6 三类核心文件
 
 真正在流程里流转的是三张表：*特征表*（谁在、各多少）、*元数据*（样本怎么分组）、*物种注释*（每个特征是谁）。它们格式与行列方向各不相同，弄反一次，后面所有命令和 R 代码都会*静默*算错。先一次看清「文件类型 / 行 = 什么 / 列 = 什么 / 值 = 什么」：
 
@@ -259,7 +232,7 @@ b5f0b7e7a37b6094…	d__Bacteria;p__Firmicutes;c__Clostridia;…;g__Prevotella	0.
 4b0e4a3b01c1d2e3…	d__Bacteria;p__Bacteroidetes;c__Bacteroidia;…;g__Bacteroides	0.98
 ```
 
-- *行 = feature*，给出该 feature 的七级谱系 `d__/p__/c__/o__/f__/g__/s__`；`Confidence` 列仅朴素贝叶斯 `classify-sklearn` 会输出（其含义见 4.5）。
+- *行 = feature*，给出该 feature 的七级谱系 `d__/p__/c__/o__/f__/g__/s__`；`Confidence` 列的数值仅朴素贝叶斯 `classify-sklearn` 提供（其含义见 4.5），consensus 方法输出的是投票一致度（Consensus），含义不同，以导出文件为准。
 - 谱系前缀的版本差异：Greengenes2 与 SILVA 138.1 的第一级是 `d__`（domain）；旧库（Greengenes 13_8、旧版 SILVA）则写成 `k__`（kingdom）——见到 `k__` 起头的谱系即可断定注释来自旧版本库。
 - 用途：`qiime taxa collapse --p-level N` 把特征合并到门（2）/属（6）等层级；`qiime taxa barplot` 画堆叠柱状图（见第 5 节）。合并后特征 ID 变成拼接的分类名，别再当 ASV ID 用。
 
@@ -269,7 +242,7 @@ b5f0b7e7a37b6094…	d__Bacteria;p__Firmicutes;c__Clostridia;…;g__Prevotella	0.
 
 #line()
 
-== 1. 数据质量评估及 QC
+== 1. 数据质量评估（QC）
 
 下机原始数据（raw reads）里混着低质量碱基、测序接头、残留引物和错误序列。*质控没做好，后面所有统计都是在噪声上做文章*。QC 要做两件事：一是看清数据到底长什么样，二是决定在哪里切、切多少。
 
@@ -289,7 +262,7 @@ qiime demux summarize \
 - *质量分数随位置的变化*：通常 3' 端质量会掉，据此决定反向 reads 的截断位置（对应第 2 节的 `--p-trunc-len-r`）。
 - *碱基组成*：开头若引物未去干净、GC 异常富集，要警惕。
 
-=== 1.2 用 Cutadapt 去引物（q2-cutadapt）
+=== 1.2 去引物（Cutadapt）
 
 DADA2 不会自己「识别并切除」引物——它只是按 `--p-trim-left` 盲切固定长度。*若下机序列里引物还在，而你不知道引物有多长，最稳妥是用 Cutadapt 显式去引物*。常见扩增区的引物如下（写论文时也常需要提供）：
 
@@ -315,7 +288,7 @@ qiime cutadapt trim-paired \
 
 *关键衔接*：一旦跑了 Cutadapt，第 2 节 DADA2 的输入*必须是 `demux-trimmed.qza`*，不能再回到 `demux.qza`，否则去引物结果根本没进入去噪。两种去引物方式（Cutadapt 显式去 vs DADA2 用 `--p-trim-left` 按固定长度盲切）*二选一、不可重复*，否则会把引物区切两次。
 
-=== 1.3 QIIME 2 内建质控 vs 公司预处理流程
+=== 1.3 内建质控 vs 公司预处理
 
 很多测序公司交付前已经做过一轮预处理，常见的是「Trimmomatic 去低质量 → Cutadapt 去引物 → USEARCH 拼接 → UCHIME 去嵌合体」这条老流水线。理解它的参数，有助于判断公司给你的「clean data」到底做了什么。以百迈客 v2.6 方法为例：
 
@@ -334,7 +307,7 @@ qiime cutadapt trim-paired \
 
 质控没有统一的合格线。DADA2 去噪完成后，应结合各样本 input、filtered、denoised、merged、non-chimeric *各阶段的序列保留数量与比例*识别异常样本：若个别样本在过滤或拼接阶段明显异常损失，再回看原始质量分布、引物去除情况、目标扩增片段长度与双端重叠长度逐一排查。*不能仅凭整体保留率设一个统一阈值*（例如「低于 20% 就不可信」并不成立）——保留率低可能是参数设置问题，保留率高也不代表数据可靠。方法部分应如实报告各阶段保留情况，必要时画一张按样本的去噪保留率图。
 
-=== 1.5 读段级去宿主与替代质控（可选）
+=== 1.5 去宿主与替代质控（可选）
 
 宿主相关样本（肠道、口腔、组织、根际）建议在去噪前先去掉「读段级宿主污染」：`taxa filter-table`（4.5 节）只能去掉已注释成线粒体 / 叶绿体的特征，而 KneadData / Bowtie2 / BWA 能在比对阶段直接剔除宿主 reads，更彻底。*执行顺序务必在导入 QIIME 2 之前*（fastp 质控 → 去宿主 → `qiime tools import`），因为导入后再删 reads 就要回到 manifest 重建了。
 
@@ -351,6 +324,8 @@ kneaddata -i clean_R1.fq.gz -i clean_R2.fq.gz -db human_db \
   -o kneaddata_out --threads 16 --remove-intermediate
 
 # 或直接用 BWA-MEM 去宿主，保留未比对 reads
+# 注：-f 12 只保留「双端都未比对上宿主」的 pair；若要连「仅一端比对上」pair 中
+# 未比对上的那条也留下，改用 -f 4（两种口径都要在方法里写明）
 bwa index GRCh38.fa
 bwa mem -t 16 GRCh38.fa clean_R1.fq.gz clean_R2.fq.gz \
   | samtools view -bS -f 12 -F 256 - > nonhost.bam
@@ -360,7 +335,7 @@ FastQC 做单样本质量画像、MultiQC 汇总整批报告；它们与 `demux 
 
 #line()
 
-== 2. DADA2 去噪与 ASV 构建（拼接内建）
+== 2. DADA2 去噪与 ASV 构建
 
 双端测序得到的是两条 reads：正向（R1）与反向（R2），来自同一扩增片段的两端。*拼接（merge）利用两条 reads 在中间的重叠区（overlap）把它们合成为一条完整序列*。在 QIIME 2 中，*拼接、去噪、去嵌合体都在 `dada2 denoise-paired` 一步内完成*——所以本节标题讲「去噪」，而不是把「拼接」当成一个独立主步骤。拼接质量取决于：重叠区够不够长、是否一致、两端质量好不好。
 
@@ -381,7 +356,7 @@ FastQC 做单样本质量画像、MultiQC 汇总整批报告；它们与 `demux 
 
 - *DADA2 自己会拼接，不要再手动 join*。`denoise-paired` 内部完成「去除引物之后的拼接」，你无需、也不应该先跑 `join-pairs`；只有 Deblur / vsearch 路线才需要先 `qiime vsearch join-pairs` 再进各自流程。
 - *`--p-trim-left` 用引物长度*。Illumina 下机序列 5' 端常残留引物，把正反向各切掉「引物长度」个碱基最稳（按 1.2 节表：341F/805R 为 17/21，515F/806R 为 19/20）；若已用 Cutadapt 去过引物（第 1.2 节），这里设 0。
-- *`--p-trunc-len` 要综合判断，不是只看 Q30*。截断位置应同时考虑：每个碱基位置的质量分布、期望错误数、截断后剩余长度、实际扩增子长度、去引物后正反向有效长度，以及双端拼接所需的最小重叠。*不要把某个固定值（如 250/230）当成通用标准*。
+- *`--p-trunc-len` 要综合判断，不是只看 #link(<t-q20>)[Q30]*。截断位置应同时考虑：每个碱基位置的质量分布、期望错误数、截断后剩余长度、实际扩增子长度、去引物后正反向有效长度，以及双端拼接所需的最小重叠。*不要把某个固定值（如 250/230）当成通用标准*。
 - *拼接的重叠长度要求*：截断后正反向 reads 的重叠要 ≥ `--p-min-overlap`（默认 12 nt）。可用 `L_overlap = L_F + L_R − L_amplicon` 估算重叠（`L_F`、`L_R` 为去引物并截断后的正反向有效长度，`L_amplicon` 为实际扩增片段长度），结果必须不小于所用最小重叠要求。
 
 *两种入口二选一*：若第 1.2 节用 Cutadapt 去过引物，DADA2 输入 `demux-trimmed.qza` 且 `--p-trim-left` 设 0；若没跑 Cutadapt，输入 `demux.qza` 并按引物长度设 `--p-trim-left`。具体数值都必须依据你自己的 `demux.qzv` 质量图调整：
@@ -410,7 +385,7 @@ qiime dada2 denoise-paired \
   --o-denoising-stats denoising-stats.qza
 ```
 
-*示例数值只适用于 V4 单区，V3–V4 必须重算*：V3–V4 扩增子约 460 bp，若照抄 V4 风格的浅截断（如截断后 250/230 再 trim-left 20），有效长度只剩 230+210 = 440 < 460，重叠区 = −20 bp，`denoise-paired` 会大面积 merge 失败。V3–V4 的典型做法是正向截到质量尚可的 280 bp 左右、反向截到 210 bp 左右（trim-left 17/21）——但*不要背任何具体数值*，一律代入你的 `L_amplicon` 自检：
+*示例数值只适用于 V4 单区，V3–V4 必须重算*：V3–V4 扩增子约 460 bp，若照抄 V4 风格的浅截断（如 230/200 截断再用 17/21 的 trim-left），有效长度只剩约 213+179 = 392 bp，重叠区 = −68 bp，`denoise-paired` 会大面积 merge 失败。V3–V4 需要更深的截断来保住重叠：2×300 数据的典型做法是正向截到 280 bp 左右、反向截到 250 bp 左右（trim-left 17/21，此时 L_F + L_R ≈ 492 bp > 460 bp，约剩 32 bp 重叠）；若 reads 只有 2×250，V3–V4 的拼接余量天然紧张——宁可在质量尚可处少截、用 `--p-max-ee` 收紧质量，也不要把重叠截没。但*不要背任何具体数值*，一律代入你的 `L_amplicon` 自检：
 
 ```text
 L_F、L_R = min(trunc_len, read_len) − trim_left（去引物并截断后的有效长度）
@@ -435,6 +410,7 @@ qiime metadata tabulate \
 
 ```r
 library(dada2)
+# fnFs / fnRs：正反向 FASTQ 路径向量；filtFs / filtRs：filterAndTrim 的输出（骨架代码，需先自行定义）
 # 1) 看质量：plotQualityProfile(fnFs[1:2])
 # 2) 过滤截断：maxEE=2 比「平均质量」更能反映错误累积
 #    truncLen 顺序为 (正向, 反向)；数值按你的质量图与引物长度定，见第 2 节自检公式
@@ -444,6 +420,7 @@ out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs,
                      multithread = TRUE)
 # 3) 学错误模型 → 4) 去噪 → 5) 拼接
 errF    <- learnErrors(filtFs, multithread = TRUE)
+errR    <- learnErrors(filtRs, multithread = TRUE)   # 反向也要单独学一套错误模型
 dadaFs  <- dada(filtFs, err = errF, multithread = TRUE)
 dadaRs  <- dada(filtRs, err = errR, multithread = TRUE)
 mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose = TRUE)
@@ -470,9 +447,9 @@ Rscript dada2_YL.r "${file_path}" trim
 
 #line()
 
-== 3. DADA2 输出质量审核与 ASV 特征整理
+== 3. 去噪输出审核与特征整理
 
-=== 3.1 嵌合体：DADA2 已内建，勿重复筛
+=== 3.1 嵌合体：已内建，勿重复筛
 
 嵌合体（chimera）是 PCR 中的「拼接错误」：两条不同模板的片段在某处错误接在一起，形成自然界并不存在的「杂合序列」，若不剔除会虚增多样性。*DADA2 的 `denoise-paired` 默认就会去嵌合体*（`--p-chimera-method consensus`），结果反映在 denoising-stats 的 `non-chimeric` 数量上。走 DADA2 主线时，这一步*已经做过*，不必再手动跑一遍。
 
@@ -489,7 +466,7 @@ qiime vsearch uchime-denovo \
 
 *不要在 DADA2 去噪之后重复跑 UCHIME*，除非有明确的额外质控目的，并在方法中写清为什么要重复筛查。
 
-=== 3.2 低丰度及低出现率特征过滤
+=== 3.2 低丰度特征过滤
 
 注意：这一节过滤的是「罕见特征」，*不是按序列长度切短序列*——短序列由去噪阶段的 `--p-trunc-len` / `--p-min-overlap` 控制。下面按「总频数」和「出现样本数」筛特征：
 
@@ -504,7 +481,7 @@ qiime feature-table filter-features \
 
 - `--p-min-frequency`：特征在所有样本中的*总丰度阈值*；
 - `--p-min-samples`：特征至少出现在多少个样本中；
-- 过滤过严会丢掉低丰度但真实存在的类群，过松则残留噪声。阈值需结合测序深度、研究问题与污染控制结果确定，并*建议做阈值敏感性分析*；文中 `10 / 2` 只是示例，不是普适标准。
+- 过滤过严会丢掉低丰度但真实存在的类群，过松则残留噪声。阈值需结合 #link(<t-depth>)[测序深度]、研究问题与污染控制结果确定，并*建议做阈值敏感性分析*；文中 `10 / 2` 只是示例，不是普适标准。
 
 `table-filtered.qza` 的定位：它是 *ASV 支线*分析（序列层面 QC、参考库覆盖度评估等）的常规过滤表；主线 cr99 OTU 表在映射前也可先做同样的 `filter-features`（生成 `table-gg2-cr99` 时用过滤后的表作输入），并在结果中如实报告是否过滤、过滤掉多少特征。*下游一旦用上了过滤表，全流程请保持一致*，不要混用过滤前后的两张表。
 
@@ -514,7 +491,7 @@ qiime feature-table filter-features \
 - *细胞器序列*：16S 通用引物会扩到宿主线粒体 / 叶绿体，需用 `taxa filter-table`（见 4.5）剔除。
 - *低生物量样本的试剂污染*：皮肤、组织、低微生物量环境里，提取 / PCR 试剂本身带来的污染会扭曲 Alpha/Beta 多样性。这类「实验污染」与被扩增到的「生物学非目标（线粒体 / 叶绿体）」不同，应结合*阴性对照*用 `decontam` 识别，而不是简单把低丰度特征全当污染删掉。
 
-=== 3.4 阴性对照、阳性对照与污染识别（decontam）
+=== 3.4 对照设置与污染识别（decontam）
 
 - *阴性对照*：DNA 提取空白（extraction blank）与 PCR 空白（PCR negative control），用于识别试剂、耗材与环境带来的污染序列。
 - *阳性对照 / Mock Community*：已知组成的菌群混合物，用来验证流程能否正确检出、扩增偏好与去噪是否异常。
@@ -522,9 +499,9 @@ qiime feature-table filter-features \
 
 #line()
 
-== 4. OTU 统计分析及注释
+== 4. OTU 与物种注释
 
-=== 4.1 ASV 与 OTU：先分清再动手
+=== 4.1 ASV 与 OTU
 
 这是 16S 分析绕不开的概念分歧，也是审稿人会追问的点：
 
@@ -563,7 +540,7 @@ qiime vsearch cluster-features-de-novo \
 
 去冗余（`dereplicate-sequences`）是 de novo 聚类的常见前置步骤，可先合并重复序列再加速；所有 vsearch 聚类都应在去嵌合体之后做。
 
-=== 4.2 Greengenes2 99% closed-reference mapping（主线）
+=== 4.2 Greengenes2 99% closed-reference（主线）
 
 为什么 DADA2 之后还要做 closed-reference？因为*不同研究、不同扩增区的 DADA2 ASV 不是同一个特征空间*，无法直接合并比较；把 ASV 映射到固定版本的 Greengenes2 backbone，才能让多个队列落到同一套参考特征上。*注意这是本文跨队列整合的设定，不是所有 16S 项目的强制步骤*——单队列高分辨率分析可以直接用 ASV。
 
@@ -596,7 +573,7 @@ qiime vsearch cluster-features-closed-reference \
 4. *输出 feature ID 继承参考序列 / 聚类中心 ID，不再是原始 ASV ID*，所以下游 taxonomy、tree 必须换成与新表 ID 对应的版本（见 4.5）。
 5. 若上游是 R 版 DADA2 产出的 `ASVs_counts.tsv` / `ASVs.fa`，先用 `biom convert ... --to-hdf5` 转 BIOM、再 `qiime tools import` 成 `table-asv.qza` / `rep-seqs-asv.qza`，再接上面的映射命令。
 
-=== 4.3 映射率（mapping rate）与未匹配 ASV 质控
+=== 4.3 映射率与未匹配 ASV
 
 映射率衡量有多少 ASV reads 落到了参考库，是跨队列整合的关键质控。*样本级*定义：
 
@@ -723,7 +700,7 @@ qiime feature-classifier classify-consensus-blast \
 ```bash
 qiime taxa filter-table \
   --i-table table-gg2-cr99.qza \
-  --i-taxonomy 2024.09.backbone.tax.qza \
+  --i-taxonomy taxonomy-gg2.qza \
   --p-exclude mitochondria,chloroplast \
   --p-mode contains \
   --o-filtered-table table-clean.qza
@@ -754,7 +731,7 @@ qiime feature-table filter-samples \
 
 #line()
 
-== 5. 物种丰度统计及群落组成分析
+== 5. 群落组成分析
 
 有了特征表和分类注释，就可以回答第一个生态学问题：「这群落里都有谁、各占多少」。核心是*把特征表按分类水平合并，再计算相对丰度并可视化*。
 
@@ -783,9 +760,9 @@ qiime feature-table relative-frequency \
   --o-relative-frequency-table rel-l6.qza
 ```
 
-分类水平编号：1 界、2 门、3 纲、4 目、5 科、6 属、7 种。
+分类水平编号：1 域（界）、2 门、3 纲、4 目、5 科、6 属、7 种。
 
-注意 `relative-frequency` 是「逐样本」归一（每个样本各特征占比之和为 1），便于跨样本比较组成，但它*不是*抽平，不改变样本之间的深度差异。*差异丰度分析在第 12 节用未抽平的计数表*；Alpha/Beta 的深度处理按具体指标与方法决定（见第 6/7 节），不要把 `core-metrics` 的抽平表直接拿去做差异分析。
+注意 `relative-frequency` 是「逐样本」归一（每个样本各特征占比之和为 1），便于跨样本比较组成，但它*不是*抽平，不改变样本之间的深度差异。*差异丰度分析在第 12 节用未抽平的计数表*；另记住相对丰度只反映组成占比——16S 无法测绝对载量，组间占比变化不能直接解读为绝对丰度变化（见 12.3）；Alpha/Beta 的深度处理按具体指标与方法决定（见第 6/7 节），不要把 `core-metrics` 的抽平表直接拿去做差异分析。
 
 === 5.2 堆叠柱状图与热图
 
@@ -827,9 +804,9 @@ Alpha 多样性描述*单个样本内部*的物种丰富度与均匀度。它回
 
 常用指标名（`--p-metric`）：α = `shannon`、`simpson`、`chao1`、`observed_features`、`faith_pd`、`pielou_e`、`goods_coverage`；β = `braycurtis`、`jaccard`、`unweighted_unifrac`、`weighted_unifrac`（`beta` 还支持 `aitchison`、`jensenshannon`、`euclidean` 等）。`core-metrics-phylogenetic` 的必填输入是 `--i-table`（`FeatureTable[Frequency]`）、`--i-phylogeny`（`Phylogeny[Rooted]`）、`--p-sampling-depth`、`--m-metadata-file`。
 
-=== 6.0 建树（Alpha / Beta 的前置）
+=== 6.0 建树
 
-*Faith PD、UniFrac 都依赖进化树，所以它必须在跑 6.1 与第 7 节之前建好*。把建树放在本节开头，目录顺序与实际执行顺序就一致了，不用再「跳到第 8 节建完树再回来」。
+*#link(<t-faith>)[Faith PD]、#link(<t-unifrac>)[UniFrac] 都依赖进化树，所以它必须在跑 6.1 与第 7 节之前建好*。把建树放在本节开头，目录顺序与实际执行顺序就一致了，不用再「跳到第 8 节建完树再回来」。
 
 标准做法：MAFFT 多序列比对 → 屏蔽高变/低信息区（masking）→ FastTree 建树 → 定根：
 
@@ -851,9 +828,11 @@ qiime phylogeny align-to-tree-mafft-fasttree \
 
 ```bash
 wget https://ftp.microbio.me/greengenes_release/2024.09/2024.09.phylogeny.md5.nwk.qza
-# 该 .nwk.qza 已是 QIIME 2 artifact（FeatureData[Tree]），无需再 import：
-# 直接作 core-metrics-phylogenetic / faith_pd / unifrac 的 --i-phylogeny
-# md5 版面向去冗余 16S 表（cr99 主线）；asv / id 版面向 ASV 表与 backbone ID 表，按需选
+# 该 .nwk.qza 已是 QIIME 2 artifact（*Phylogeny[Rooted]*，q2-greengenes2 按有根树注册），
+# 无需再 import，可直接作 core-metrics-phylogenetic / faith_pd / unifrac 的 --i-phylogeny：
+cp 2024.09.phylogeny.md5.nwk.qza tree-gg2.qza
+# md5 版面向去冗余 16S 表（cr99 主线）；asv / id 版面向 ASV 表与 backbone ID 表，按需选——
+# 别只凭文件名判断版本归属，跑前抽样核对树 tip 与特征表 feature ID 是否同一命名空间
 ```
 
 用参考树保证 tip 与特征 ID 一一对应、省去建树耗时，且与 backbone 严格一致；de novo FastTree 只作 ASV 支线的备选。另外两点说明：① *「短读长建树深层分支不可靠」只针对 ASV 支线*——cr99 主线的 `rep-seqs-gg2-cr99.qza` 中是命中的 Greengenes2 *全长参考序列*，用它 de novo 建树不踩这个坑；② 若走 de novo 路线且表做过过滤，树的 tip 仍须覆盖过滤后表的每个 feature ID（见下一段），否则会报「feature IDs missing from tree」。
@@ -862,7 +841,7 @@ wget https://ftp.microbio.me/greengenes_release/2024.09/2024.09.phylogeny.md5.nw
 
 建树策略的进一步取舍、IQ-TREE 进阶与 SEPP 片段放置，见第 8 节。
 
-=== 6.1 Alpha 多样性指数分析
+=== 6.1 Alpha 多样性指数
 
 先认识常用指数，避免「只看一个数就下结论」：
 
@@ -891,7 +870,7 @@ Alatalo    Ea = [1/ΣPi² - 1] / [exp(H') - 1]
 
 *Gleason 的两种写法不可混用*：上表取的是计数数据常用的离散变体 `(S − 1)/log₂(N)`。Gleason (1922) 的种—面积关系原始形式是 `S/ln(A)`（A 为抽样*面积*），只适用于面积样本；有的手册把 Gleason 直接写成 Margalef 换底（`(S−1)/ln N`）。写方法时注明你用的是哪一种即可，别三式互串。
 
-`core-metrics-phylogenetic` 只算一部分指标（shannon、observed_features、faith_pd、evenness 等）；Chao1、Simpson 等要单独算（不同版本可用指标略有差异，以 `qiime diversity alpha --help` 为准）：
+`core-metrics-phylogenetic` 只算一部分指标（shannon、observed_features、faith_pd、evenness 等）；#link(<t-chao1>)[Chao1]、#link(<t-simpson>)[Simpson] 等要单独算（不同版本可用指标略有差异，以 `qiime diversity alpha --help` 为准）：
 
 ```bash
 qiime diversity alpha \
@@ -930,9 +909,9 @@ done
 
 结果解读要克制：*统计学显著不等于生物学意义大*。同时看箱线图的分布、P 值与效应量，并至少联合观察丰富度与均匀度两类指标。常见论文写法是「与对照组相比，病例组 Shannon 下降，提示均匀度降低；Observed features 无显著差异，提示丰富度变化有限」。
 
-=== 6.2 物种多样性稀释曲线
+=== 6.2 稀释曲线
 
-稀释曲线（rarefaction curve）回答一个前置问题：*测序深度够不够*。它按不同抽样深度重算多样性，曲线趋于平台说明「再多测也发现不了多少新物种」，此时比较 Alpha 多样性才可靠。
+#link(<t-rare>)[稀释曲线]（rarefaction curve）回答一个前置问题：*测序深度够不够*。它按不同抽样深度重算多样性，曲线趋于平台说明「再多测也发现不了多少新物种」，此时比较 Alpha 多样性才可靠。
 
 ```bash
 qiime diversity alpha-rarefaction \
@@ -954,16 +933,18 @@ qiime diversity alpha-rarefaction \
 
 Beta 多样性描述*样本之间*的群落差异，是「分组有没有意义」的核心证据。它先算样本两两之间的距离矩阵，再做排序（第 10、14 节）与统计检验（本节）。
 
-=== 7.1 距离指标怎么选
+=== 7.1 距离指标选择
 
 #tablem[
   | 距离 | QIIME 2 名称 | 是否用进化树 | 是否加权丰度 | 特点 |
   | :--- | :--- | :--- | :--- | :--- |
-  | Bray–Curtis | `bray_curtis` | 否 | 是 | 生态学最常用，敏感于丰度 |
+  | Bray–Curtis | `braycurtis` | 否 | 是 | 生态学最常用，敏感于丰度 |
   | Jaccard | `jaccard` | 否 | 否 | 只看有无，不看多少 |
   | 加权 UniFrac | `weighted_unifrac` | 是 | 是 | 结合进化关系与丰度 |
   | 非加权 UniFrac | `unweighted_unifrac` | 是 | 否 | 结合进化关系、只看有无 |
 ]
+
+注意 `--p-metric` 传的是 *`braycurtis`（无下划线）*；`bray_curtis_…` 只是 `core-metrics-phylogenetic` 输出*文件名*的前缀，别当成指标名（下文命令引用的是文件名，与此表不矛盾）。
 
 *β 距离指数也有解析式*（`a` 为两样本共有类群，`b`/`c` 为各自独有；`S` 为总类群数；`α_mean` 为平均样本内多样性）：
 
@@ -988,9 +969,9 @@ d_jd <- vegdist(comm, method = "jaccard", binary = TRUE)   # 只看有无
 d_bc                                                        # 下三角距离矩阵
 ```
 
-经验：*一般同时报告 Bray–Curtis 与 unweighted UniFrac*，前者看丰度格局，后者看进化层面的「有无」。UniFrac 需要 6.0 建好的进化树，因此 `core-metrics-phylogenetic` 会把四种距离矩阵一次性算好，输出在 `core-metrics-results/` 下。
+经验：*一般同时报告 #link(<t-bc>)[Bray–Curtis] 与 unweighted UniFrac*，前者看丰度格局，后者看进化层面的「有无」。UniFrac 需要 6.0 建好的进化树，因此 `core-metrics-phylogenetic` 会把四种距离矩阵一次性算好，输出在 `core-metrics-results/` 下。
 
-=== 7.2 组间差异检验（PERMANOVA / ANOSIM / PERMDISP）
+=== 7.2 组间差异检验（PERMANOVA 等）
 
 有了距离矩阵，用 `beta-group-significance` 检验分组对群落结构的解释力：
 
@@ -1030,8 +1011,7 @@ qiime diversity adonis \
 
 ```r
 library(vegan)
-meta <- read.delim("metadata.tsv", row.names = 1, comment.char = "")
-meta <- meta[rownames(comm), , drop = FALSE]              # 与 comm 样本顺序对齐
+# meta：已按附录 C 的统一导入模块就绪，与 comm 样本顺序对齐
 adonis2(d_bc ~ Group, data = meta, permutations = 999)    # 报 R² 与 P（PERMANOVA 的 R² 从这里拿）
 
 # 有测序批次时：把 Batch 显式放进模型（或限定置换都在批次内进行）
@@ -1049,7 +1029,7 @@ permutest(bd, permutations = 999)                         # 显著 → 组内离
 plot(bd)
 ```
 
-*报告规范（先看 PERMDISP）*：解读时先看 PERMDISP 的 P 值。若 PERMDISP 不显著，才能把 PERMANOVA 的伪 F（或 adonis 的 R²）解释为「组间群落组成差异」；若 PERMDISP 显著，则必须说明「组间离散度也不一致」，PERMANOVA 的显著不能单纯归因于组成变化。一个可直接套用的写法：「PERMANOVA 显示 Group 显著（伪 F=…，P=…，`qiime diversity adonis` R²=…）；PERMDISP 亦显著（P=…），提示组间组内离散度不一致，组间差异需结合离散度差异一并解读。」
+*报告规范（先看 PERMDISP）*：解读时先看 PERMDISP 的 P 值。若 PERMDISP 不显著，才能把 #link(<t-permanova>)[PERMANOVA] 的伪 F（或 adonis 的 R²）解释为「组间群落组成差异」；若 PERMDISP 显著，则必须说明「组间离散度也不一致」，PERMANOVA 的显著不能单纯归因于组成变化。一个可直接套用的写法：「PERMANOVA 显示 Group 显著（伪 F=…，P=…，`qiime diversity adonis` R²=…）；PERMDISP 亦显著（P=…），提示组间组内离散度不一致，组间差异需结合离散度差异一并解读。」
 
 #line()
 
@@ -1100,9 +1080,7 @@ QIIME 2 不直接出这张图，标准做法是在 R 里用相对丰度表绘制
 ```r
 library(ggplot2)
 
-# BIOM 导出的 TSV 是「行=特征，列=样本」→ 先转置成 样本×特征
-dat  <- read.delim("feature-table.tsv", row.names = 1, skip = 1, check.names = FALSE)
-comm <- t(dat)                                 # 行=样本，列=特征
+# comm：行=样本、列=特征，已按附录 C 的统一导入模块就绪
 
 # 取一个样本，按相对丰度降序排列后编号
 x <- sort(as.numeric(comm["S1", ]) / sum(comm["S1", ]), decreasing = TRUE)
@@ -1121,7 +1099,7 @@ ggplot(df, aes(rank, abundance)) +
 
 #line()
 
-== 10. 样品间主坐标分析（PCoA）与主成分分析（PCA）
+== 10. PCoA 与 PCA
 
 PCoA 和 PCA 都是「降维排序」：把高维的样本关系压到二维平面，让*图上点与点的远近尽量反映样本的真实差异*。两者常被混用，区别必须讲清：
 
@@ -1158,9 +1136,7 @@ PCA 直接在丰度矩阵上做，常用 Hellinger 变换降低「大量零值�
 ```r
 library(vegan)
 
-dat  <- read.delim("feature-table.tsv", row.names = 1, skip = 1, check.names = FALSE)
-comm <- t(dat)                                  # 样本×特征
-comm <- comm[, colSums(comm) > 0, drop = FALSE] # 去掉全零特征（这里是「列」，不是行）
+# comm：行=样本、列=特征，已按附录 C 的统一导入模块就绪（全零特征已去掉）
 
 # Hellinger 变换后做 PCA；rda() 不带公式（或显式 ~ 1）即为 PCA
 pca <- rda(decostand(comm, method = "hellinger") ~ 1)
@@ -1178,7 +1154,7 @@ points(sc, pch = 21, bg = "steelblue")
 
 #line()
 
-== 11. 样品非加权配对平均法聚类分析（UPGMA）
+== 11. UPGMA 聚类分析
 
 UPGMA（非加权配对平均法）是一种层次聚类：*每次把距离最近的两个对象并成一簇，用组间平均距离继续合并*，最终形成一棵样本聚类树。它和 PCoA 是「一体两面」——都基于距离矩阵，一个用坐标展示，一个用树形展示。QIIME 2 不直接提供样本 UPGMA，用 R 实现：
 
@@ -1186,8 +1162,7 @@ UPGMA（非加权配对平均法）是一种层次聚类：*每次把距离最�
 library(vegan)
 library(ape)
 
-dat  <- read.delim("feature-table.tsv", row.names = 1, skip = 1, check.names = FALSE)
-comm <- t(dat)                                  # 样本×特征
+# comm：行=样本、列=特征，已按附录 C 的统一导入模块就绪
 comm <- decostand(comm, method = "total")       # 可选：先转相对丰度
 d    <- vegdist(comm, method = "bray")          # 样本间 Bray-Curtis 距离
 
@@ -1199,11 +1174,11 @@ plot(as.dendrogram(hc), horiz = TRUE, hang = -1)
 
 #line()
 
-== 12. 组间显著性差异分析
+== 12. 差异丰度分析
 
 前面几节回答「整体结构是否不同」，本节回答「*到底哪些物种/特征在组间显著不同*」。这是论文创新点的富矿，也是统计最容易出问题的地方——*只报 P 值不校正多重比较，结论不可靠*。
 
-=== 12.1 ANCOM / ANCOM-BC（QIIME 2 原生）
+=== 12.1 ANCOM / ANCOM-BC
 
 16S 数据是组成型（compositional）数据，各组丰度之和固定，普通 t 检验会失真。ANCOM 与 ANCOM-BC 专为此设计。先按属水平合并，再检验：
 
@@ -1222,12 +1197,13 @@ qiime composition ancom \
 # ANCOM-BC：直接建模，给出 log fold change 与校正后 P 值
 # ancombc 输出 FeatureData[DifferentialAbundance] Artifact；QIIME 2 不提供该 Artifact
 # 的内置 qzv 可视化：用 composition tabulate 转成含 lfc/p/q 的表，或 da-barplot 出图，
-# 再导出 TSV 进 R。注意 --p-adj-method 默认也是 holm，要与全文 BH 统一需显式传 BH
+# 再导出 TSV 进 R。注意 q2 把 R 侧 p_adj_method 暴露为 --p-p-adj-method（默认 holm），
+# 要与全文 BH 统一需显式传参；确切拼写以 qiime composition ancombc --help 为准
 qiime composition ancombc \
   --i-table table-gg2-l6.qza \
   --m-metadata-file metadata.tsv \
   --p-formula "Group" \
-  --p-adj-method BH \
+  --p-p-adj-method BH \
   --o-differentials ancombc-l6.qza
 
 # 把差异丰度 Artifact 转成含 lfc/p/q 的表 qzv（参数名以本机 --help 为准）
@@ -1253,7 +1229,7 @@ ANCOM 的原理建立在「类群之间两两 log 比值」的 Aitchison 思想�
 
 ```bash
 # LEfSe 输入不是 QIIME 的 BIOM 表，必须转成 LEfSe 格式（行为特征、列为样本，class 列放第一列）
-# 当前版本（SegataLab/lefse）的三个命令都带 lefse_ 前缀：
+# 当前版本（SegataLab/lefse）的命令都带 lefse_ 前缀：
 lefse_format_input.py otu_table.txt otu.in -c 1 -o 1000000
 lefse_run.py otu.in otu.res -l 4.0
 lefse_plot_cladogram.py otu.res lefse.cladogram.pdf          # 可选：圈图
@@ -1281,7 +1257,7 @@ lefse_plot_res.py otu.res lefse.png                          # 结果条形图
 
 *务必做多重检验校正（FDR/BH），并如实报告 P 值、Q 值与效应量*；没有统计学意义的结果，不要包装成结论。
 
-=== 12.3 其他差异丰度方法（MaAsLin3 / LinDA / metagenomeSeq）
+=== 12.3 其他差异丰度方法
 
 ANCOM-BC 之外，主流还有几种，假设不同、可互为校验：
 
@@ -1336,9 +1312,7 @@ maaslin3(input_data = feat, input_metadata = meta,
 ```r
 library(vegan)
 
-dat  <- read.delim("feature-table.tsv", row.names = 1, skip = 1, check.names = FALSE)
-comm <- t(dat)                                   # 样本×特征（vegan 群落矩阵约定）
-comm <- comm[, colSums(comm) > 0, drop = FALSE]
+# comm：行=样本、列=特征，已按附录 C 的统一导入模块就绪（全零特征已去掉）
 env  <- read.delim("env.tsv", row.names = 1, comment.char = "")
 env  <- env[rownames(comm), , drop = FALSE]      # 环境表按同样本顺序对齐
 
@@ -1378,14 +1352,14 @@ RsquareAdj(rda_mod)
 vif.cca(rda_mod)                                 # 检查共线性
 
 # envfit：把环境因子叠加到排序图（PCoA/NMDS/RDA 均可）
-fit <- envfit(rda_mod ~ ., env, permutations = 999)   # 或 envfit(ord, env)
+fit <- envfit(rda_mod, env, permutations = 999)       # 公式接口 envfit(ord ~ ., env) 亦可
 plot(rda_mod)
 plot(fit, p.max = 0.05)                          # 只画显著因子箭头
 ```
 
 #line()
 
-== 14. 非度量多维尺度分析（NMDS）
+== 14. NMDS 分析
 
 NMDS（非度量多维尺度分析）与 PCoA 都是排序，但思路不同：*PCoA 尽量保持真实距离，NMDS 只保持样本间距离的「排序（次序）」*。因此 NMDS 对距离的绝对数值不敏感，特别适合「只能得到样本间等级关系」的情形，也更扛得住非线性。
 
@@ -1394,16 +1368,12 @@ NMDS（非度量多维尺度分析）与 PCoA 都是排序，但思路不同：*
 ```r
 library(vegan)
 
-dat  <- read.delim("feature-table.tsv", row.names = 1, skip = 1, check.names = FALSE)
-comm <- t(dat)                                  # 样本×特征
+# comm、meta：已按附录 C 的统一导入模块就绪
 
 # ASV/OTU 丰度高度偏态：先 Wisconsin 双标准化或 sqrt 变换，
 # 避免少数高丰度特征主导距离排序
 comm_w <- wisconsin(sqrt(comm))
 d <- vegdist(comm_w, method = "bray")
-
-meta <- read.delim("metadata.tsv", row.names = 1, comment.char = "")
-meta <- meta[rownames(comm), , drop = FALSE]    # 按样本顺序对齐
 
 nmds <- metaMDS(d, k = 2, trymax = 100)
 nmds$stress                                     # 报告应力值
@@ -1419,11 +1389,11 @@ ordiellipse(nmds, groups = meta$Group, kind = "se", conf = 0.95)
 
 #line()
 
-== 15. 微生物共发生网络分析（SparCC / SPIEC-EASI）
+== 15. 共发生网络分析（SparCC / SPIEC-EASI）
 
 共发生网络（co-occurrence network）把每个类群（属 / OTU / ASV）当成节点，把「两个类群在不同样本中丰度是否协同变化」当成边。正相关 = 共发生（可能互利或同生态位），负相关 = 互斥（竞争 / 拮抗）。它把分析从「谁在」推进到「谁和谁相关」。
 
-=== 15.1 为什么不能用 Pearson：组成型数据
+=== 15.1 为什么不能用 Pearson
 
 16S 丰度是组成型（compositional）数据：各特征相对丰度之和恒为 1，一个类群升高会「挤压」其他类群的相对值，直接算 Pearson 相关会得到大量假相关。因此要用专门处理组成型数据的稀疏相关 / 偏相关方法：
 
@@ -1442,7 +1412,7 @@ ordiellipse(nmds, groups = meta$Group, kind = "se", conf = 0.95)
 
 === 15.2 标准流程
 
-1. *选层级*：用属水平*计数表*（`taxa collapse --p-level 6`，*不要预先 `relative-frequency` 转相对丰度*——SparCC 与 SPIEC-EASI 都在计数 / CLR 空间建模，`spiec.easi` 内部会自行按比例归一化，预先转相对丰度反而丢信息）；节点过多时先按丰度 / 出现率过滤。
+1. *选层级*：用属水平*计数表*（`taxa collapse --p-level 6`，*不要预先 `relative-frequency` 转相对丰度*——#link(<t-sparcc>)[SparCC 与 SPIEC-EASI] 都在计数 / CLR 空间建模，`spiec.easi` 内部会自行按比例归一化，预先转相对丰度反而丢信息）；节点过多时先按丰度 / 出现率过滤。
 2. *过滤*：去掉出现率过低、或平均相对丰度极低的类群，减少噪声边。*出现率阈值不是固定规则*（20%、30% 只是常见示例），要结合样本量、特征数、稀疏程度和研究问题设定，并对不同阈值做敏感性分析。
 3. *变换与相关*：CLR 变换后估计稀疏相关 / 偏相关（SparCC 或 SPIEC-EASI）。
 4. *阈值*：保留 |r| ≥ 0.6（或 0.7）且 FDR 校正后 P ＜ 0.05 的边。
@@ -1461,7 +1431,7 @@ X  <- as.matrix(dat[, colMeans(dat > 0) > 0.2])      # 出现率 > 20%
 se <- spiec.easi(X, method = "mb", lambda.min.ratio = 1e-2,
                  nlambda = 20, sel.criterion = "stars",
                  pulsar.params = list(rep.num = 50, ncores = 4))
-getStability(se)                 # 稳定性选择越接近阈值 0.05 越好
+getStability(se)                 # λ 路径上网络的稳定性摘要；spiec.easi 内部按 stars 阈值（默认 0.05）自动选 λ，解读见 ?getStability
 adj <- getRefit(se)              # 稀疏邻接矩阵
 ig  <- adj2igraph(adj)           # 转 igraph，正 / 负边可按符号着色
 plot(ig, vertex.size = 3, vertex.label = NA, layout = layout_with_fr)
@@ -1475,8 +1445,9 @@ SparCC 的 Python 路线（*注意参数语义与常见误写*）：`SparCC.py` 
 #   github.com/TankMermaid/sparcc
 python SparCC.py otu_table.txt -i 10 -c sparcc_corr.txt          # ① 相关
 python MakeBootstraps.py otu_table.txt -n 100 -t permutation_#.csv -p ./   # ② 置换表
-# ③ 对每个 permutation_#.csv 各跑一次 SparCC.py 得到置换相关后，合成 P 值：
-python PseudoPvals.py sparcc_corr.txt permutation_#.csv 100 -o sparcc_pvals.txt -t two_sided
+# ③ 对每张置换表各跑一次 SparCC.py 得到置换相关（如 perm_cor_#.txt），
+#    再把置换相关（不是置换表本身）喂给 PseudoPvals 合成 P 值：
+python PseudoPvals.py sparcc_corr.txt perm_cor_#.txt 100 -o sparcc_pvals.txt -t two_sided
 ```
 
 更省事的是 C++ 重写版 *FastSpar*（速度远快于原版，bioconda 可直接装，参数接口对齐 SparCC）：
@@ -1538,7 +1509,7 @@ Pi = 1 - Σ (Kis / Ki)²
 
 #line()
 
-== 16. 从结果到论文：出图、统计与常见坑
+== 16. 出图、报告与常见坑
 
 做到这里，你已经有了一套可复现的结果。要让它们变成「能发表的图」，还要过几道关。
 
@@ -1572,7 +1543,21 @@ ggplot(long, aes(SampleID, Abundance, fill = Genus)) +
 
 - 组间差异*必须做多重检验校正*，报告 P 值、Q 值、效应量。
 - Alpha 用 Kruskal–Wallis（多组）或 Wilcoxon（两组）；Beta 用 PERMANOVA（QIIME 2 报伪 F 与 P，R² 用 `qiime diversity adonis` 或 R 端 `adonis2` 补），并用 PERMDISP 检查离散度。
+- 全流程固定收集版本信息：QIIME 2 跑 `qiime info` 存档，R 里 `sessionInfo()` 存档，数据库 / 预训练分类器记录下载日期与 MD5。
 - 小样本研究的结论要克制，写成「提示……，仍需进一步验证」，不要绝对化。
+
+逐项留档的*最小报告清单*（别全凭记忆回写方法部分）：
+
+#tablem[
+  | 阶段 | 必报内容 |
+  | :--- | :--- |
+  | 导入与 QC | 样本数、去噪各阶段保留率、嵌合体比例、宿主 / 细胞器与污染去除量 |
+  | 特征表 | 过滤阈值与过滤前后特征数、抽平深度、因深度不足被丢弃的样本数 |
+  | 注释与映射 | 数据库 / 预训练分类器版本、confidence 阈值、mapping rate 分布（cr99 主线） |
+  | 多样性 | 距离指标及选择理由、PERMANOVA 伪 F / R² / P、PERMDISP P、置换次数 |
+  | 差异丰度 | 方法（含多方法共识策略）、多重校正方法与 Q 值阈值、log fold change、效应量 |
+  | 环境 | `qiime info`、R `sessionInfo()`、脚本与参数版本、数据库 MD5 |
+]
 
 === 16.3 常见坑清单
 
@@ -1594,7 +1579,7 @@ ggplot(long, aes(SampleID, Abundance, fill = Genus)) +
 
 拿到物种组成后，常被追问「这些菌在干什么」。先说底线：*下面这些方法都是「预测」，不是「测量」*——它们基于 16S 序列与参考基因组的相似性推断功能，不能替代 shotgun 宏基因组的功能实测；结论用于*生成假设*，不用于下功能定论。常见几类：
 
-- *PICRUSt2 功能预测（走 ASV 支线）*：以*质控后的 ASV 表 `table-asv.qza` + ASV 代表序列 `rep-seqs-asv.qza`* 为输入（*不要*换成 closed-reference OTU 表——PICRUSt2 要把序列放置到参考系统发育树上，OTU 的参考编号会破坏这一步）。QIIME 2 里用 `q2-picrust2` 插件，命令是 `qiime picrust2 full-pipeline`（输入 `--i-table` 与 `--i-seq`，常用 `--p-placement-tool sepp --p-hsp-method pic --p-max-nsti 2`；`--p-max-nsti 2` 默认即 2，weighted NSTI > 2 表示该序列偏离参考树较远、预测不可靠，会被剔除或标记）；输出 EC（酶）、KO（KEGG 同源）、MetaCyc pathway 三类预测。
+- *PICRUSt2 功能预测（走 ASV 支线）*：以*质控后的 ASV 表 `table-asv.qza` + ASV 代表序列 `rep-seqs-asv.qza`* 为输入（*不要*换成 closed-reference OTU 表——PICRUSt2 要把序列放置到参考系统发育树上，OTU 的参考编号会破坏这一步）。QIIME 2 里用 `q2-picrust2` 插件，命令是 `qiime picrust2 full-pipeline`（输入 `--i-table` 与 `--i-seq`，常用 `--p-placement-tool sepp --p-hsp-method pic --p-max-nsti 2`；`--p-max-nsti 2` 默认即 2，weighted #link(<t-nsti>)[NSTI] > 2 表示该序列偏离参考树较远、预测不可靠，会被剔除或标记）；输出 EC（酶）、KO（KEGG 同源）、MetaCyc pathway 三类预测。
 - *Tax4Fun2*：按 16S 与参考基因组的相似度直接映射 KEGG 功能，适合环境样本、可自建参考集，可与 PICRUSt2 互为校验。
 - *FAPROTAX 生态功能*：用「分类单元→功能」经验映射表，把 16S 物种表翻译成碳 / 氮 / 硫循环、发酵、光养等功能；只有 16S 又关心元素循环时最常用（`collapse_table.py`）。
 - *BugBase 表型预测*：输出革兰氏阴阳性、好氧 / 厌氧、生物膜形成、致病性等表型比例。
@@ -1682,7 +1667,7 @@ qiime --help
 
 === 附录 B. 分类器与数据库
 
-官方为常见引物区提供了预训练分类器，可直接下载使用；也可按第 4.3 节自行训练。若扩增的是特定高变区（如 V3–V4、V4），用对应引物 `extract-reads` 截取参考后再训练，精度更高：
+官方为常见引物区提供了预训练分类器，可直接下载使用；也可按第 4.5 节自行训练。若扩增的是特定高变区（如 V3–V4、V4），用对应引物 `extract-reads` 截取参考后再训练，精度更高：
 
 ```bash
 # 以 V4 (515F/806R) 为例，截取参考区段后训练
@@ -1892,6 +1877,36 @@ library(maaslin3); maaslin3(input_data = feat, input_metadata = meta,
 ```
 
 选型原则：*先用 QIIME 2 把上游标准化，再用 DADA2（ASV）或 VSEARCH（OTU）二选一；功能预测用 PICRUSt2（肠道）或 FAPROTAX / Tax4Fun2（环境）；差异分析优先组成型方法（ANCOM-BC2 / LinDA），模型类结论务必交叉验证*。
+
+#line()
+
+== 附表：术语 <glossary>
+
+正文反复出现的术语按主题收录于此，供集中查阅；正文首次出现处已加内链，点击即跳转本表对应条目。概念辨析的展开（ASV/OTU 的四种口径、抽平不是通用前提）见 #link(<sec-keyterms>)[0.3 节] 与第 4 节。
+
+#grid(
+  columns: (14em, 1fr),
+  gutter: 12pt,
+  row-gutter: 10pt,
+  align: (left, top),
+  [*16S rRNA 基因* <t-16s>], [细菌 / 古菌核糖体小亚基基因，全长约 1542 bp，含 V1–V9 约九个高变区与夹在中间的保守区；保守区用于设计「通用引物」，高变区用于区分物种。],
+  [*扩增区（V3–V4 / V4）* <t-region>], [引物决定扩哪一段；V3–V4 约 460 bp、分辨力高；V4 约 250 bp、适合 2×250。扩增区必须与数据库、分类器一致（第 1、4 节）。],
+  [*测序深度* <t-depth>], [每个样本的 reads 条数。深度不足会漏掉稀有类群，且样本间不能直接比多样性（第 4、6 节）。],
+  [*Q20 / Q30* <t-q20>], [碱基质量 ≥ 20 / ≥ 30 的碱基占比；Q20≈错误率 1%，Q30≈0.1%。Q20>90%、Q30>80% 通常算质量合格（第 1 节）。],
+  [*Good's 覆盖度* <t-goods>], [样本覆盖度估计 C = 1 − F₁/N（F₁ = 只出现一次的特征数，N = 总计数）；不是「已发现种数 / 真实种数」。越接近 1，说明「测得越全」（`goods_coverage`，见 6.1）。],
+  [*ASV / OTU* <t-asv>], [特征（feature）的两种单位：ASV 由 DADA2 等方法基于错误模型去噪得到，OTU 按相似度聚类形成；四种聚类口径的对比见 #link(<sec-keyterms>)[0.3 节] 与 4.1。],
+  [*Shannon* <t-shannon>], [兼顾丰富度与均匀度的多样性指数 H' = −Σ Pi·ln(Pi)，越大多样性越高（定义式见 6.1）。],
+  [*Simpson* <t-simpson>], [D = 1 − Σ Pi²，偏向优势类群的多样性；QIIME 2 的 `simpson` 取「越大越多样」方向（见 6.1）。],
+  [*α / β / γ 多样性* <t-alpha>], [三个只差希腊字母的层次：α（Alpha）= 单个样本内部有多少种、多均匀，典型指标 Shannon、Simpson、Chao1、Faith PD（第 6 节）；β（Beta）= 样本与样本之间差多少，典型指标 Bray–Curtis、Jaccard、UniFrac（第 7 节）；γ（Gamma）= 整个区域 / 所有样本合起来的总多样性（区域物种池丰富度），综合解读时提及。],
+  [*Bray–Curtis* <t-bc>], [定量 β 距离：对丰度求差再归一，0 = 完全相同、1 = 完全不重叠；生态学最常用的群落相异度，对丰度敏感（公式见 7.1）。],
+  [*UniFrac（加权 / 非加权）* <t-unifrac>], [结合进化树的 β 距离；加权计入丰度、非加权只看有无。需先建树（见 6.0、7.1）。],
+  [*Faith PD* <t-faith>], [Faith 系统发育多样性：样本内类群在有根进化树上覆盖的分支长度之和；强调「遗传多样性」而非仅物种数（见 6.0、6.1）。],
+  [*Chao1* <t-chao1>], [依低丰度（singleton / doubleton）估计的物种丰富度；校正「测少了」的丰富度估计，深度低时更重要（见 6.1）。],
+  [*PERMANOVA（伪 F / R²）* <t-permanova>], [基于距离矩阵的多元方差分析；伪 F 为组间 / 组内离差比，QIIME 2 报伪 F 与置换 P 值，R²（因子解释的方差比例）用 `qiime diversity adonis` 或 R 端 `adonis2` 补算（见 7.2）。],
+  [*稀释曲线（rarefaction）* <t-rare>], [固定样本、抽取不同测序深度时重算多样性得到的曲线；走平说明深度足够、可据此选抽平深度（见 6.2）。注意与「改变样本数」的物种累积曲线（`specaccum`）区分。],
+  [*NSTI* <t-nsti>], [PICRUSt2 中序列放置到参考树的偏离指数，越大越不可靠（默认阈值 2；见 16.4）。],
+  [*SparCC / SPIEC-EASI* <t-sparcc>], [组成型网络方法：SparCC 估计稀疏*相关*，SPIEC-EASI 估计稀疏*偏相关*；共发生网络不能用普通 Pearson（见第 15 节）。],
+)
 
 #line()
 
