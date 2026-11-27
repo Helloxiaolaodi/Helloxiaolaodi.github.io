@@ -5,6 +5,8 @@
 #tufted.margin-note({
   image("imgs/home-photo-1.jpg", width: 140pt)
   image("imgs/home-photo-2.jpg")
+  image("imgs/cycling-jiangxi-nanchang-jiujiang.jpg", width: 120pt)
+  image("imgs/pbp2027-jiangxi-brm200-medal.jpg", width: 120pt)
 })
 
 #tufted.margin-note[
@@ -20,23 +22,13 @@ I am a cycling enthusiast. My wheels have rolled across the Qilu plains, the wat
 
 I have worked a corporate job. I know the crush of the early subway and the taste of carving out time to train and write after a full day. That is probably why I am a little clearer about the life I want to live.
 
-#figure(caption: "Yang Sanduo · Helloxiaolaodi")[#image("imgs/profile.jpg", width: 420pt)]
+#figure(image("imgs/profile.jpg", width: 420pt))
 
 This is my personal website. I collect research notes, cycling records, and fragments of life that are hard to fit anywhere else. Feel free to look around.
 
 == Lighting Up Jiangxi — 2026–2027 Cycling Check-in
 
 From 2026 to 2027 I am riding the map of Jiangxi into light, one city at a time. So far: ① Nanchang, ② Jiujiang. (Across all my rides I have lit up 8 provinces and 35 cities so far.)
-
-#figure(
-  image("imgs/cycling-jiangxi-nanchang-jiujiang.jpg"),
-  caption: [Jiangxi cycling check-in · Nanchang & Jiujiang lit up],
-)
-
-#figure(
-  image("imgs/pbp2027-jiangxi-brm200-medal.jpg", width: 60%),
-  caption: [2027 PBP qualifier · Around-Jiangxi BRM200 challenge, Nanchang station — finisher's medal],
-)
 
 == About This Site
 
@@ -69,16 +61,6 @@ If you also have a world worth recording, start here.
 
     2026 到 2027 年，我用单车一城一城地点亮江西地图。目前已完成：① 南昌市，② 九江市。（累计已点亮 8 省 35 市。）
 
-    #figure(
-      image("imgs/cycling-jiangxi-nanchang-jiujiang.jpg"),
-      caption: [江西骑行打卡 · 南昌、九江已点亮],
-    )
-
-    #figure(
-      image("imgs/pbp2027-jiangxi-brm200-medal.jpg", width: 60%),
-      caption: [2027 法国 PBP 资格赛 · 环江西 BRM200 骑行认证挑战 南昌站 —— 完赛奖牌],
-    )
-
     == 关于本站
 
     - #link("/Blog/")[博客]：研究笔记、骑行记录与日常随笔。
@@ -109,16 +91,6 @@ If you also have a world worth recording, start here.
     == 장시(江西) 점등 — 2026–2027 자전거 라이딩
 
     2026년부터 2027년까지 자전거로 도시를 하나씩 밟으며 장시성 지도를 '점등'하고 있습니다. 지금까지: ① 난창(南昌), ② 주장(九江). (지금까지 누적 8개 성, 35개 도시 점등.)
-
-    #figure(
-      image("imgs/cycling-jiangxi-nanchang-jiujiang.jpg"),
-      caption: [장시 라이딩 체크인 · 난창·주장 점등 완료],
-    )
-
-    #figure(
-      image("imgs/pbp2027-jiangxi-brm200-medal.jpg", width: 60%),
-      caption: [2027 프랑스 PBP 예선 · 장시 일주 BRM200 챌린지 난창 대회 — 완주 메달],
-    )
 
     == 이 웹사이트에 대하여
 
